@@ -14,6 +14,18 @@ export function unsplash(path: string, width = 1920): string {
 }
 
 /**
+ * Build a landscape-cropped Unsplash URL. Forcing a wide aspect ratio makes
+ * Unsplash smart-crop the source to landscape, so tall/portrait photos still
+ * fill a full-screen hero without showing only a thin slice.
+ */
+export function unsplashLandscape(path: string, width = 2200, ratio = 16 / 9): string {
+  const height = Math.round(width / ratio);
+  // Centre crop (no `crop=entropy`, which can lock onto a dark/busy region and
+  // miss the composed subject).
+  return `${BASE}/${path}?auto=format&fit=crop&w=${width}&h=${height}&q=80`;
+}
+
+/**
  * Central registry of the photos used across the site, so the same shot is
  * referenced by name rather than by an opaque id scattered through the data.
  */

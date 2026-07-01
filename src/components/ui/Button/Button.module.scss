@@ -13,6 +13,7 @@
   line-height: 1;
   border-radius: $radius-pill;
   padding: var(--btn-pad-y) var(--btn-pad-x);
+  white-space: nowrap;
   transition:
     transform 0.35s $ease-out,
     box-shadow 0.35s $ease-out,

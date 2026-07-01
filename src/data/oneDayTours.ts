@@ -1,5 +1,5 @@
 import type { Tour } from '@/types/tour';
-import { photos, unsplash } from '@/lib/images';
+import { photos, unsplash, unsplashLandscape } from '@/lib/images';
 import {
   airportTransfers,
   hotelPickup,
@@ -21,7 +21,7 @@ export const oneDayTours: Tour[] = [
     city: 'Tbilisi',
     duration: '8 hours',
     price: 320,
-    heroImage: unsplash(photos.tbilisiDusk),
+    heroImage: unsplashLandscape(photos.tbilisiDusk),
     cardImage: unsplash(photos.tbilisiDusk, 1200),
     shortDescription:
       'Wander the cobbled lanes of the capital — from the domed sulphur baths of Abanotubani up to Narikala Fortress, with wine cellars and balconied courtyards along the way.',
@@ -56,7 +56,7 @@ export const oneDayTours: Tour[] = [
     city: 'Mtskheta',
     duration: '6 hours',
     price: 260,
-    heroImage: unsplash(photos.mtskhetaChurch),
+    heroImage: unsplashLandscape(photos.mtskhetaChurch),
     cardImage: unsplash(photos.mtskhetaChurch, 1200),
     shortDescription:
       'A half-day into the spiritual heart of Georgia — UNESCO churches, the meeting of two rivers, and 1,500 years of history just outside Tbilisi.',
@@ -91,7 +91,7 @@ export const oneDayTours: Tour[] = [
     city: 'Kazbegi',
     duration: '11 hours',
     price: 420,
-    heroImage: unsplash(photos.kazbegiValley),
+    heroImage: unsplashLandscape(photos.kazbegiValley),
     cardImage: unsplash(photos.kazbegiValley, 1200),
     shortDescription:
       'The definitive Georgian mountain day — the Georgian Military Highway to a lone church beneath the glaciers of Mt. Kazbek at 5,000 metres.',
@@ -126,7 +126,7 @@ export const oneDayTours: Tour[] = [
     city: 'Kakheti',
     duration: '10 hours',
     price: 380,
-    heroImage: unsplash(photos.kakhetiVineyard),
+    heroImage: unsplashLandscape(photos.kakhetiVineyard),
     cardImage: unsplash(photos.kakhetiVineyard, 1200),
     shortDescription:
       'The birthplace of wine — 8,000 years of qvevri winemaking across hilltop towns, family cellars and the Alazani Valley beneath the Caucasus.',
@@ -161,7 +161,7 @@ export const oneDayTours: Tour[] = [
     city: 'Kutaisi',
     duration: '9 hours',
     price: 350,
-    heroImage: unsplash(photos.martviliCanyon),
+    heroImage: unsplashLandscape(photos.martviliCanyon),
     cardImage: unsplash(photos.martviliCanyon, 1200),
     shortDescription:
       'Emerald water and underground wonders in western Georgia — a boat glide through a jungle canyon and a walk through illuminated stalactite halls.',
@@ -196,7 +196,7 @@ export const oneDayTours: Tour[] = [
     city: 'Batumi',
     duration: '7 hours',
     price: 300,
-    heroImage: unsplash(photos.batumiSeaside),
+    heroImage: unsplashLandscape(photos.batumiSeaside),
     cardImage: unsplash(photos.batumiSeaside, 1200),
     shortDescription:
       'The Black Sea riviera — a subtropical botanical garden on the cliffs, a modern skyline, and a sunset stroll along the boulevard.',
