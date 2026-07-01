@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Medieval towers of Svaneti beneath high peaks">
+  <defs>
+    <linearGradient id="sv-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182028"/>
+      <stop offset="0.55" stop-color="#4c5a63"/>
+      <stop offset="1" stop-color="#aebcbe"/>
+    </linearGradient>
+    <linearGradient id="sv-snow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2f0ec"/>
+      <stop offset="1" stop-color="#a9b0b2"/>
+    </linearGradient>
+    <linearGradient id="sv-mead" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4d5f3c"/>
+      <stop offset="1" stop-color="#2b3623"/>
+    </linearGradient>
+    <radialGradient id="sv-vig" cx="0.5" cy="0.42" r="0.75">
+      <stop offset="0.6" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.42"/>
+    </radialGradient>
+    <filter id="sv-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#sv-sky)"/>
+  <polygon points="0,520 260,300 520,520 700,360 900,520 1160,280 1420,520 1600,380 1600,640 0,640" fill="url(#sv-snow)"/>
+  <polygon points="1160,280 1230,392 1090,392" fill="#fff" opacity="0.85"/>
+  <polygon points="260,300 330,430 190,430" fill="#fff" opacity="0.85"/>
+  <rect y="600" width="1600" height="400" fill="url(#sv-mead)"/>
+  <!-- Svan towers -->
+  <g fill="#241d17">
+    <rect x="360" y="500" width="46" height="200"/><polygon points="360,500 406,500 383,468"/>
+    <rect x="470" y="540" width="40" height="160"/><polygon points="470,540 510,540 490,512"/>
+    <rect x="1080" y="520" width="48" height="200"/><polygon points="1080,520 1128,520 1104,486"/>
+    <rect x="1180" y="560" width="38" height="150"/><polygon points="1180,560 1218,560 1199,534"/>
+  </g>
+  <rect width="1600" height="1000" fill="url(#sv-vig)"/>
+  <rect width="1600" height="1000" filter="url(#sv-grain)" opacity="0.5"/>
+</svg>

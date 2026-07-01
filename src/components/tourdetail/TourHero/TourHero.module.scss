@@ -1,0 +1,103 @@
+@use '../../../styles/mixins' as *;
+
+.hero {
+  position: relative;
+  min-height: 72vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(0deg, rgba(8, 7, 6, 0.95) 0%, rgba(8, 7, 6, 0.25) 55%, rgba(8, 7, 6, 0.5) 100%);
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding: 8rem clamp(1.25rem, 5vw, 3.5rem) clamp(2.5rem, 5vw, 4rem);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+
+  a {
+    transition: color 0.25s ease;
+    @include focus-ring;
+
+    &:hover {
+      color: var(--accent-bright);
+    }
+  }
+
+  svg {
+    color: var(--text-faint);
+  }
+
+  span[aria-current] {
+    color: var(--text);
+    max-width: 40vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.typeTag {
+  display: inline-block;
+  padding: 0.4rem 0.9rem;
+  margin-bottom: 1.1rem;
+  border-radius: $radius-pill;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-900);
+  background: var(--grad-gold);
+}
+
+.title {
+  font-size: clamp(2.25rem, 6vw, 4.25rem);
+  line-height: 1.02;
+  max-width: 20ch;
+  margin-bottom: 1.5rem;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+}
+
+.fact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.95rem;
+  color: var(--text);
+
+  svg {
+    color: var(--accent-bright);
+  }
+}

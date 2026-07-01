@@ -1,0 +1,30 @@
+@use '../../../styles/mixins' as *;
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+  background:
+    radial-gradient(70% 50% at 50% 100%, rgba(201, 162, 75, 0.06), transparent 70%),
+    var(--ink-800);
+  @include hairline(top);
+}
+
+/* CSS columns give an organic, hand-arranged masonry feel. */
+.masonry {
+  margin-top: clamp(2.75rem, 6vw, 4rem);
+  column-gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  column-count: 1;
+
+  @include up($bp-sm) {
+    column-count: 2;
+  }
+
+  @include up($bp-lg) {
+    column-count: 3;
+  }
+}
+
+.cell {
+  break-inside: avoid;
+  margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+}

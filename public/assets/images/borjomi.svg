@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Forested valley of Borjomi in autumn">
+  <defs>
+    <linearGradient id="bo-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#241a24"/>
+      <stop offset="0.55" stop-color="#6a4a44"/>
+      <stop offset="1" stop-color="#d0a05f"/>
+    </linearGradient>
+    <linearGradient id="bo-hill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b4a2a"/>
+      <stop offset="1" stop-color="#2f2417"/>
+    </linearGradient>
+    <radialGradient id="bo-vig" cx="0.5" cy="0.45" r="0.75">
+      <stop offset="0.6" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.42"/>
+    </radialGradient>
+    <filter id="bo-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bo-sky)"/>
+  <!-- misty ridges -->
+  <polygon points="0,480 400,400 820,470 1200,400 1600,470 1600,620 0,620" fill="#7a5a44" opacity="0.4"/>
+  <polygon points="0,560 380,480 760,560 1160,490 1600,560 1600,1000 0,1000" fill="url(#bo-hill)"/>
+  <!-- pine forest silhouettes -->
+  <g fill="#20301f" opacity="0.9">
+    <polygon points="120,760 160,640 200,760"/><polygon points="130,720 160,600 190,720"/>
+    <polygon points="320,800 366,660 412,800"/><polygon points="332,752 366,616 400,752"/>
+    <polygon points="560,780 600,656 640,780"/>
+    <polygon points="900,800 950,650 1000,800"/><polygon points="912,748 950,612 988,748"/>
+    <polygon points="1200,780 1244,648 1288,780"/>
+    <polygon points="1420,800 1466,660 1512,800"/>
+  </g>
+  <rect width="1600" height="1000" fill="url(#bo-vig)"/>
+  <rect width="1600" height="1000" filter="url(#bo-grain)" opacity="0.5"/>
+</svg>

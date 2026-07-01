@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Snow peaks of Kazbegi at dawn">
+  <defs>
+    <linearGradient id="kz-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2330"/>
+      <stop offset="0.45" stop-color="#3a3a44"/>
+      <stop offset="0.7" stop-color="#8a6a4e"/>
+      <stop offset="1" stop-color="#d9a86a"/>
+    </linearGradient>
+    <linearGradient id="kz-snow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4efe6"/>
+      <stop offset="1" stop-color="#b9b0a4"/>
+    </linearGradient>
+    <radialGradient id="kz-sun" cx="0.72" cy="0.34" r="0.28">
+      <stop offset="0" stop-color="#ffe6bd" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#ffe6bd" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="kz-vig" cx="0.5" cy="0.4" r="0.75">
+      <stop offset="0.6" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.4"/>
+    </radialGradient>
+    <filter id="kz-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#kz-sky)"/>
+  <circle cx="1152" cy="340" r="120" fill="url(#kz-sun)"/>
+  <polygon points="0,560 260,470 520,540 760,430 1040,520 1320,440 1600,520 1600,1000 0,1000" fill="#2c3340" opacity="0.55"/>
+  <polygon points="0,660 300,520 560,640 820,500 1120,620 1380,540 1600,600 1600,1000 0,1000" fill="#242a34"/>
+  <polygon points="620,500 760,320 900,440 980,380 1120,560 900,560" fill="url(#kz-snow)"/>
+  <polygon points="760,320 812,388 760,420 720,388" fill="#fff" opacity="0.9"/>
+  <polygon points="0,760 240,650 480,740 700,660 700,1000 0,1000" fill="url(#kz-snow)" opacity="0.85"/>
+  <polygon points="900,720 1120,640 1360,730 1600,660 1600,1000 900,1000" fill="url(#kz-snow)" opacity="0.8"/>
+  <g fill="#1a1f28">
+    <rect x="742" y="600" width="36" height="70"/>
+    <polygon points="760,560 792,600 728,600"/>
+    <rect x="754" y="548" width="12" height="18"/>
+  </g>
+  <rect width="1600" height="1000" fill="url(#kz-vig)"/>
+  <rect width="1600" height="1000" filter="url(#kz-grain)" opacity="0.5"/>
+</svg>

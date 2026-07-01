@@ -1,0 +1,21 @@
+@use '../../../styles/mixins' as *;
+
+.section {
+  padding-block: var(--section-y);
+  @include hairline(top);
+}
+
+.grid {
+  display: grid;
+  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  grid-template-columns: 1fr;
+  margin-top: clamp(2rem, 4vw, 3rem);
+
+  @include up($bp-sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include up($bp-lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

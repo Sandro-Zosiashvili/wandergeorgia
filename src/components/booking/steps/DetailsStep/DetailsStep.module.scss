@@ -1,0 +1,11 @@
+@use '../../../../styles/mixins' as *;
+
+.row {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+
+  @include up($bp-sm) {
+    grid-template-columns: 1fr 1fr;
+  }
+}

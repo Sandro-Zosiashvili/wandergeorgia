@@ -1,0 +1,94 @@
+@use '../../../styles/mixins' as *;
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.text {
+  color: var(--text-muted);
+  max-width: 52ch;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: 1fr;
+
+  @include up($bp-md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem;
+  border-radius: $radius-md;
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline-soft);
+  transition: border-color 0.3s ease, transform 0.4s $ease-out;
+  @include focus-ring;
+
+  &:hover {
+    border-color: var(--hairline);
+    transform: translateY(-3px);
+
+    .arrow {
+      transform: translateX(4px);
+      color: var(--accent-bright);
+    }
+  }
+}
+
+.media {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
+  border-radius: $radius-sm;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.meta {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.arrow {
+  margin-left: auto;
+  color: var(--text-faint);
+  flex-shrink: 0;
+  transition: transform 0.4s $ease-out, color 0.3s ease;
+}

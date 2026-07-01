@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Emerald water of Martvili Canyon">
+  <defs>
+    <linearGradient id="cn-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16231f"/>
+      <stop offset="1" stop-color="#4a6b52"/>
+    </linearGradient>
+    <linearGradient id="cn-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3fae8f"/>
+      <stop offset="1" stop-color="#12564a"/>
+    </linearGradient>
+    <radialGradient id="cn-vig" cx="0.5" cy="0.5" r="0.72">
+      <stop offset="0.55" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.5"/>
+    </radialGradient>
+    <filter id="cn-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#cn-sky)"/>
+  <!-- canyon walls -->
+  <polygon points="0,0 560,0 460,1000 0,1000" fill="#1c2b23"/>
+  <polygon points="1600,0 1040,0 1140,1000 1600,1000" fill="#18251e"/>
+  <polygon points="0,0 420,0 360,1000 0,1000" fill="#243a2e" opacity="0.6"/>
+  <polygon points="1600,0 1180,0 1240,1000 1600,1000" fill="#203327" opacity="0.6"/>
+  <!-- overhanging greenery -->
+  <g fill="#2f5238" opacity="0.85">
+    <path d="M300 0 q 40 90 -10 150 q -50 -70 10 -150 z"/>
+    <path d="M520 0 q 30 70 -20 120 q -40 -60 20 -120 z"/>
+    <path d="M1120 0 q -34 84 12 150 q 46 -70 -12 -150 z"/>
+    <path d="M1300 0 q -26 70 16 118 q 40 -60 -16 -118 z"/>
+  </g>
+  <!-- emerald river -->
+  <polygon points="470,520 1130,520 1240,1000 360,1000" fill="url(#cn-water)"/>
+  <g stroke="#bfeede" stroke-width="4" opacity="0.4">
+    <path d="M520 640 q 260 -20 540 0" fill="none"/>
+    <path d="M500 740 q 300 -24 620 0" fill="none"/>
+    <path d="M470 860 q 340 -28 700 0" fill="none"/>
+  </g>
+  <rect width="1600" height="1000" fill="url(#cn-vig)"/>
+  <rect width="1600" height="1000" filter="url(#cn-grain)" opacity="0.5"/>
+</svg>

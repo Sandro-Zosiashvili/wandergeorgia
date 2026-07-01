@@ -1,0 +1,20 @@
+@use '../../../styles/mixins' as *;
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+  scroll-margin-top: 90px;
+  // Subtle tonal shift to separate from the day-tours section above.
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(31, 95, 82, 0.08), transparent 70%),
+    var(--ink-800);
+  @include hairline(top);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.75rem, 4vw, 2.75rem);
+  margin-top: clamp(2.75rem, 6vw, 4rem);
+}

@@ -1,0 +1,29 @@
+@use '../../../styles/mixins' as *;
+
+.layout {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 4rem);
+  padding-block: clamp(3rem, 6vw, 5rem);
+  grid-template-columns: 1fr;
+
+  @include up($bp-lg) {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 5vw, 3.5rem);
+  min-width: 0;
+}
+
+.sidebar {
+  // On mobile the booking card sits first for quick access.
+  order: -1;
+
+  @include up($bp-lg) {
+    order: 0;
+  }
+}

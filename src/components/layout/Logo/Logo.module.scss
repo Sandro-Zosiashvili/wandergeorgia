@@ -1,0 +1,56 @@
+@use '../../../styles/mixins' as *;
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  @include focus-ring;
+}
+
+.mark {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  transition: transform 0.5s $ease-spring;
+}
+
+.logo:hover .mark {
+  transform: rotate(-8deg) scale(1.05);
+}
+
+.word {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+.wander {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.georgia {
+  font-size: 0.72rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--accent-bright);
+  padding-left: 0.1em;
+}
+
+.compact {
+  .mark {
+    width: 32px;
+    height: 32px;
+  }
+  .wander {
+    font-size: 1.05rem;
+  }
+  .georgia {
+    font-size: 0.66rem;
+  }
+}

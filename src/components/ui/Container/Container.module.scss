@@ -1,0 +1,21 @@
+@use '../../../styles/mixins' as *;
+
+.container {
+  position: relative;
+  z-index: $z-base;
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+}
+
+.default {
+  max-width: 1240px;
+}
+
+.narrow {
+  max-width: 780px;
+}
+
+.wide {
+  max-width: 1440px;
+}
