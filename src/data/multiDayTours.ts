@@ -1,5 +1,5 @@
 import type { Tour } from '@/types/tour';
-import { photos, unsplash } from '@/lib/images';
+import { photos, unsplash, unsplashLandscape } from '@/lib/images';
 import {
   airportTransfers,
   accommodation,
@@ -22,7 +22,7 @@ export const multiDayTours: Tour[] = [
     duration: '3 days',
     days: 3,
     price: 1450,
-    heroImage: unsplash(photos.kazbegiMisty),
+    heroImage: unsplashLandscape(photos.kazbegiMisty),
     cardImage: unsplash(photos.kazbegiMisty, 1200),
     shortDescription:
       'A perfect long weekend — the capital’s old town, the ancient churches of Mtskheta, and a day in the high Caucasus at Kazbegi.',
@@ -54,7 +54,7 @@ export const multiDayTours: Tour[] = [
     duration: '5 days',
     days: 5,
     price: 2380,
-    heroImage: unsplash(photos.wineGrapes),
+    heroImage: unsplashLandscape(photos.wineGrapes),
     cardImage: unsplash(photos.wineGrapes, 1200),
     shortDescription:
       'The two faces of Georgia — the amber wine cellars of Kakheti and the glaciers of the Greater Caucasus, with the capital in between.',
@@ -91,7 +91,7 @@ export const multiDayTours: Tour[] = [
     duration: '7 days',
     days: 7,
     price: 3450,
-    heroImage: unsplash(photos.caucasusValley),
+    heroImage: unsplashLandscape(photos.caucasusValley),
     cardImage: unsplash(photos.caucasusValley, 1200),
     shortDescription:
       'The complete journey coast to mountains — wine country, western canyons, the Black Sea in Batumi and the high Caucasus, all privately guided.',

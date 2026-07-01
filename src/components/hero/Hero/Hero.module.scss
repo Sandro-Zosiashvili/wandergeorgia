@@ -2,7 +2,10 @@
 
 .hero {
   position: relative;
-  min-height: 100svh;
+  // Pin to the viewport so the background photo always fills exactly one
+  // screen — never taller, which would leave only the top slice visible.
+  height: 100svh;
+  min-height: 600px;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -14,9 +17,10 @@
   width: 100%;
   max-width: 1400px;
   margin-inline: auto;
-  padding: 8rem clamp(1.25rem, 5vw, 3.5rem) 6rem;
+  // Clear the fixed header; content is vertically centred within the hero.
+  padding: 6rem clamp(1.25rem, 5vw, 3.5rem) 4rem;
 
   @include up($bp-md) {
-    padding-block: 9rem 7rem;
+    padding-block: 7rem 5rem;
   }
 }
