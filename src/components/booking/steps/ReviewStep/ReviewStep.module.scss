@@ -1,0 +1,65 @@
+@use '../../../../styles/mixins' as *;
+
+.list {
+  display: flex;
+  flex-direction: column;
+  border-radius: $radius-md;
+  overflow: hidden;
+  border: 1px solid var(--hairline-soft);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.2rem;
+  padding: 1rem 1.15rem;
+  background: var(--surface-raised);
+
+  &:not(:last-child) {
+    @include hairline(bottom);
+  }
+
+  @include up($bp-sm) {
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+    gap: 1rem;
+  }
+}
+
+.term {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+
+  svg {
+    color: var(--accent);
+  }
+}
+
+.desc {
+  color: var(--text);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 1rem 1.1rem;
+  border-radius: $radius-md;
+  background: rgba(31, 95, 82, 0.14);
+  border: 1px solid rgba(47, 138, 118, 0.3);
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.55;
+
+  svg {
+    color: var(--emerald-bright);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}

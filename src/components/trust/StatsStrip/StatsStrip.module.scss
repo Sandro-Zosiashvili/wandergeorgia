@@ -1,0 +1,40 @@
+@use '../../../styles/mixins' as *;
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  margin-top: clamp(2rem, 4vw, 3rem);
+  border-radius: $radius-lg;
+  overflow: hidden;
+  background: var(--hairline-soft);
+  border: 1px solid var(--hairline-soft);
+
+  @include up($bp-md) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem) 1rem;
+  background: var(--ink-800);
+  text-align: center;
+}
+
+.value {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  line-height: 1;
+  color: var(--accent-bright);
+}
+
+.label {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}

@@ -1,0 +1,122 @@
+@use '../../../styles/mixins' as *;
+
+.summary {
+  border-radius: $radius-lg;
+  overflow: hidden;
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-md);
+
+  @include up($bp-lg) {
+    position: sticky;
+    top: 100px;
+  }
+}
+
+.media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.mediaScrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 7, 6, 0.1), rgba(8, 7, 6, 0.55));
+}
+
+.tag {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: $radius-pill;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-900);
+  background: var(--grad-gold);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.4rem 1.5rem 1.6rem;
+}
+
+.title {
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+
+.place {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+
+  svg {
+    color: var(--accent);
+  }
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding-top: 1rem;
+  @include hairline(top);
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+
+  dd {
+    color: var(--text);
+    font-weight: 500;
+  }
+}
+
+.included {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  svg {
+    color: var(--emerald-bright);
+  }
+}
+
+.free {
+  color: var(--emerald-bright) !important;
+  font-weight: 600 !important;
+}
+
+.totalRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 1rem;
+  margin-top: 0.25rem;
+  @include hairline(top);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.total {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  color: var(--accent-bright);
+}

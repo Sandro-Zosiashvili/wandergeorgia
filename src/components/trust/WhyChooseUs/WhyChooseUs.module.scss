@@ -1,0 +1,22 @@
+@use '../../../styles/mixins' as *;
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+  scroll-margin-top: 90px;
+}
+
+.grid {
+  display: grid;
+  gap: clamp(1.25rem, 2.5vw, 1.5rem);
+  grid-template-columns: 1fr;
+  margin-top: clamp(2.75rem, 6vw, 4rem);
+
+  @include up($bp-sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include up($bp-lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

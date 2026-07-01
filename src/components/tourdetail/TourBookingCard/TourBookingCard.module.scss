@@ -1,0 +1,94 @@
+@use '../../../styles/mixins' as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: $radius-lg;
+  background: linear-gradient(160deg, var(--surface-raised), var(--ink-700));
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-md);
+
+  @include up($bp-lg) {
+    position: sticky;
+    top: 100px;
+  }
+}
+
+.priceRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.1rem;
+  @include hairline(bottom);
+}
+
+.from {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+}
+
+.price {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5vw, 2.9rem);
+  line-height: 1;
+  color: var(--accent-bright);
+}
+
+.per {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding-bottom: 0.4rem;
+}
+
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.92rem;
+    color: var(--text);
+
+    svg {
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+  }
+}
+
+.highlight {
+  color: var(--accent-bright) !important;
+  font-weight: 600;
+
+  svg {
+    color: var(--accent-bright) !important;
+  }
+}
+
+.book {
+  margin-top: 0.35rem;
+}
+
+.reassurance {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+
+  svg {
+    color: var(--emerald-bright);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}

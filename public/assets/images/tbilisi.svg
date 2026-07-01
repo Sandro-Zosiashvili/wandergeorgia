@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Old town rooftops of Tbilisi at dusk">
+  <defs>
+    <linearGradient id="tb-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#241726"/>
+      <stop offset="0.5" stop-color="#6b3a3f"/>
+      <stop offset="1" stop-color="#d98a55"/>
+    </linearGradient>
+    <linearGradient id="tb-hill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a2a2a"/>
+      <stop offset="1" stop-color="#241a1c"/>
+    </linearGradient>
+    <radialGradient id="tb-sun" cx="0.3" cy="0.42" r="0.3">
+      <stop offset="0" stop-color="#ffd9a0" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#ffd9a0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tb-vig" cx="0.5" cy="0.45" r="0.75">
+      <stop offset="0.6" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.45"/>
+    </radialGradient>
+    <filter id="tb-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#tb-sky)"/>
+  <circle cx="480" cy="420" r="130" fill="url(#tb-sun)"/>
+  <polygon points="0,560 400,470 900,540 1300,470 1600,540 1600,1000 0,1000" fill="url(#tb-hill)"/>
+  <!-- Narikala fortress silhouette -->
+  <g fill="#1b1315">
+    <rect x="1120" y="440" width="220" height="120"/>
+    <rect x="1120" y="410" width="34" height="40"/><rect x="1180" y="410" width="34" height="40"/><rect x="1246" y="410" width="34" height="40"/><rect x="1306" y="410" width="34" height="40"/>
+  </g>
+  <!-- rooftops -->
+  <g fill="#2a1c1d">
+    <rect x="120" y="640" width="160" height="360"/>
+    <rect x="300" y="600" width="140" height="400"/>
+    <rect x="470" y="670" width="120" height="330"/>
+    <rect x="640" y="610" width="150" height="390"/>
+    <rect x="820" y="660" width="130" height="340"/>
+    <rect x="980" y="600" width="160" height="400"/>
+    <rect x="1180" y="650" width="150" height="350"/>
+    <rect x="1360" y="620" width="160" height="380"/>
+  </g>
+  <!-- warm window lights -->
+  <g fill="#f4c777" opacity="0.85">
+    <rect x="160" y="690" width="14" height="20"/><rect x="210" y="740" width="14" height="20"/>
+    <rect x="340" y="660" width="14" height="20"/><rect x="390" y="720" width="14" height="20"/>
+    <rect x="690" y="670" width="14" height="20"/><rect x="740" y="730" width="14" height="20"/>
+    <rect x="1020" y="660" width="14" height="20"/><rect x="1080" y="720" width="14" height="20"/>
+    <rect x="1400" y="680" width="14" height="20"/><rect x="1450" y="740" width="14" height="20"/>
+  </g>
+  <rect width="1600" height="1000" fill="url(#tb-vig)"/>
+  <rect width="1600" height="1000" filter="url(#tb-grain)" opacity="0.5"/>
+</svg>

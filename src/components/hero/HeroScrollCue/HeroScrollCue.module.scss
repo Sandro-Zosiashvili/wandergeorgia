@@ -1,0 +1,48 @@
+@use '../../../styles/mixins' as *;
+
+.cue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.5rem, 4vw, 2.5rem);
+  transform: translateX(-50%);
+  z-index: 2;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-muted);
+  @include focus-ring;
+
+  &:hover {
+    color: var(--accent-bright);
+  }
+
+  @include up($bp-md) {
+    display: inline-flex;
+  }
+}
+
+.label {
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.track {
+  position: relative;
+  width: 24px;
+  height: 40px;
+  border: 1.5px solid var(--hairline);
+  border-radius: $radius-pill;
+  display: flex;
+  justify-content: center;
+  padding-top: 7px;
+}
+
+.dot {
+  width: 4px;
+  height: 8px;
+  border-radius: $radius-pill;
+  background: var(--accent-bright);
+}

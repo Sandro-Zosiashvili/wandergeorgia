@@ -1,0 +1,98 @@
+@use '../../../styles/mixins' as *;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.req {
+  color: var(--accent-bright);
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  position: absolute;
+  left: 0.95rem;
+  color: var(--text-faint);
+  pointer-events: none;
+  transition: color 0.25s ease;
+}
+
+.input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: $radius-md;
+  background: var(--ink-800);
+  border: 1px solid var(--hairline-soft);
+  color: var(--text);
+  font-size: 0.98rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+
+  &::placeholder {
+    color: var(--text-faint);
+  }
+
+  &:hover {
+    border-color: var(--hairline);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+    background: var(--ink-700);
+  }
+
+  // Native date picker indicator — nudge it toward the accent on dark bg.
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(0.7) sepia(1) saturate(3) hue-rotate(3deg);
+    cursor: pointer;
+  }
+}
+
+.withIcon {
+  padding-left: 2.7rem;
+}
+
+.inputWrap:focus-within .icon {
+  color: var(--accent-bright);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 3.2rem;
+  line-height: 1.5;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--text-faint);
+}
+
+.error {
+  font-size: 0.82rem;
+  color: #e98a7a;
+}
+
+.hasError {
+  .input {
+    border-color: rgba(233, 138, 122, 0.6);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(233, 138, 122, 0.18);
+    }
+  }
+}

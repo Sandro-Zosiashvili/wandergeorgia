@@ -1,0 +1,8 @@
+@use '../../styles/mixins' as *;
+
+.page {
+  // Clear the fixed header.
+  padding-top: clamp(6.5rem, 12vw, 9rem);
+  padding-bottom: var(--section-y);
+  min-height: 100vh;
+}

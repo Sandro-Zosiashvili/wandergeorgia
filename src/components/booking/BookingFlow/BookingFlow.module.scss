@@ -1,0 +1,48 @@
+@use '../../../styles/mixins' as *;
+
+.flow {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3rem);
+  grid-template-columns: 1fr;
+  align-items: start;
+
+  @include up($bp-lg) {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  border-radius: $radius-lg;
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline-soft);
+
+  // Summary appears above the form on mobile for context.
+  order: 1;
+
+  @include up($bp-lg) {
+    order: 0;
+  }
+}
+
+.stepArea {
+  position: relative;
+  min-height: 320px;
+  overflow: hidden;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  @include hairline(top);
+}
+
+.navSpacer {
+  display: inline-block;
+}

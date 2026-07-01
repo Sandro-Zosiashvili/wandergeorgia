@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Vineyards of Kakheti wine country">
+  <defs>
+    <linearGradient id="ka-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b2233"/>
+      <stop offset="0.5" stop-color="#7c5a5a"/>
+      <stop offset="1" stop-color="#e2b779"/>
+    </linearGradient>
+    <linearGradient id="ka-field" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5f6b3a"/>
+      <stop offset="1" stop-color="#33401f"/>
+    </linearGradient>
+    <radialGradient id="ka-vig" cx="0.5" cy="0.45" r="0.75">
+      <stop offset="0.6" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.4"/>
+    </radialGradient>
+    <filter id="ka-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#ka-sky)"/>
+  <!-- Caucasus backdrop -->
+  <polygon points="0,470 300,360 620,450 940,340 1260,440 1600,360 1600,560 0,560" fill="#4a4a52" opacity="0.45"/>
+  <polygon points="620,450 720,352 810,440" fill="#e8e2d6" opacity="0.6"/>
+  <polygon points="940,340 1040,250 1140,360" fill="#e8e2d6" opacity="0.6"/>
+  <rect y="540" width="1600" height="460" fill="url(#ka-field)"/>
+  <!-- vine rows in perspective -->
+  <g stroke="#26311a" stroke-width="6" opacity="0.7">
+    <line x1="200" y1="1000" x2="720" y2="560"/>
+    <line x1="440" y1="1000" x2="770" y2="560"/>
+    <line x1="700" y1="1000" x2="815" y2="560"/>
+    <line x1="980" y1="1000" x2="860" y2="560"/>
+    <line x1="1260" y1="1000" x2="905" y2="560"/>
+    <line x1="1520" y1="1000" x2="960" y2="560"/>
+  </g>
+  <rect width="1600" height="1000" fill="url(#ka-vig)"/>
+  <rect width="1600" height="1000" filter="url(#ka-grain)" opacity="0.5"/>
+</svg>

@@ -1,0 +1,71 @@
+@use '../../../styles/mixins' as *;
+
+.list {
+  display: flex;
+  align-items: center;
+}
+
+.inline {
+  gap: clamp(1.25rem, 2.5vw, 2.4rem);
+}
+
+.stacked {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.link {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text);
+  }
+
+  // Animated gold underline.
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    height: 1.5px;
+    width: 100%;
+    background: var(--grad-gold);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.4s $ease-out;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+.inline .link {
+  font-size: 0.95rem;
+}
+
+.stacked {
+  .item {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .link {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 9vw, 2.9rem);
+    color: var(--text);
+    padding: 0.35rem 0;
+
+    &::after {
+      bottom: 4px;
+    }
+  }
+}

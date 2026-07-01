@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Black Sea coast of Batumi at sunset">
+  <defs>
+    <linearGradient id="ba-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2140"/>
+      <stop offset="0.5" stop-color="#a24e63"/>
+      <stop offset="1" stop-color="#f0a45c"/>
+    </linearGradient>
+    <linearGradient id="ba-sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9895a"/>
+      <stop offset="0.3" stop-color="#7a5878"/>
+      <stop offset="1" stop-color="#25203a"/>
+    </linearGradient>
+    <radialGradient id="ba-vig" cx="0.5" cy="0.45" r="0.78">
+      <stop offset="0.6" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.42"/>
+    </radialGradient>
+    <filter id="ba-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#ba-sky)"/>
+  <circle cx="800" cy="470" r="90" fill="#ffe0ad" opacity="0.95"/>
+  <rect y="560" width="1600" height="440" fill="url(#ba-sea)"/>
+  <!-- sun reflection -->
+  <g fill="#ffe0ad" opacity="0.5">
+    <rect x="770" y="600" width="60" height="8"/><rect x="760" y="640" width="80" height="8"/>
+    <rect x="748" y="690" width="104" height="8"/><rect x="736" y="750" width="128" height="8"/>
+  </g>
+  <!-- skyline right -->
+  <g fill="#181428">
+    <rect x="1180" y="300" width="40" height="260"/>
+    <rect x="1240" y="380" width="90" height="180"/>
+    <rect x="1350" y="340" width="60" height="220"/>
+    <rect x="1430" y="410" width="120" height="150"/>
+    <circle cx="1200" cy="300" r="26"/>
+  </g>
+  <!-- palm -->
+  <g fill="#141024">
+    <rect x="180" y="470" width="16" height="120"/>
+    <path d="M188 470 q -70 -30 -120 -10 q 60 -6 120 20 z"/>
+    <path d="M188 470 q 70 -34 128 -8 q -66 -8 -128 22 z"/>
+    <path d="M188 470 q -30 -60 -70 -78 q 40 30 70 82 z"/>
+    <path d="M188 470 q 34 -58 78 -72 q -46 26 -78 76 z"/>
+  </g>
+  <rect width="1600" height="1000" fill="url(#ba-vig)"/>
+  <rect width="1600" height="1000" filter="url(#ba-grain)" opacity="0.5"/>
+</svg>

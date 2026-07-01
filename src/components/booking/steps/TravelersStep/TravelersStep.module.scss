@@ -1,0 +1,20 @@
+@use '../../../../styles/mixins' as *;
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 1rem 1.1rem;
+  border-radius: $radius-md;
+  background: var(--accent-tint);
+  border: 1px solid var(--hairline);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+
+  svg {
+    color: var(--accent-bright);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}

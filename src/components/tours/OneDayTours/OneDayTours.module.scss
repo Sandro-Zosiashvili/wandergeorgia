@@ -1,0 +1,21 @@
+@use '../../../styles/mixins' as *;
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+  scroll-margin-top: 90px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+
+  @include up($bp-lg) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3rem;
+  }
+}

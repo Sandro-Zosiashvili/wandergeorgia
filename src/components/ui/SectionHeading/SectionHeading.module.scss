@@ -1,0 +1,58 @@
+@use '../../../styles/mixins' as *;
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 62ch;
+}
+
+.center {
+  align-items: center;
+  text-align: center;
+  margin-inline: auto;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+}
+
+.eyebrowMark {
+  width: 34px;
+  height: 1px;
+  background: var(--grad-gold);
+}
+
+.center .eyebrow {
+  justify-content: center;
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.04;
+
+  // A touch of editorial italic accent is applied by the caller via <em>.
+  em {
+    font-style: italic;
+    color: var(--accent-bright);
+  }
+}
+
+.description {
+  color: var(--text-muted);
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.7;
+  max-width: 56ch;
+}
+
+.center .description {
+  margin-inline: auto;
+}

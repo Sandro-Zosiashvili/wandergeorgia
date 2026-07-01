@@ -1,0 +1,89 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import type { Tour } from '@/types/tour';
+import { useBooking } from '@/hooks/useBooking';
+import BookingStepper from '../BookingStepper/BookingStepper';
+import OrderSummary from '../OrderSummary/OrderSummary';
+import TravelersStep from '../steps/TravelersStep/TravelersStep';
+import DatesStep from '../steps/DatesStep/DatesStep';
+import DetailsStep from '../steps/DetailsStep/DetailsStep';
+import ReviewStep from '../steps/ReviewStep/ReviewStep';
+import PaymentStep from '../steps/PaymentStep/PaymentStep';
+import Button from '@/components/ui/Button/Button';
+import styles from './BookingFlow.module.scss';
+
+interface BookingFlowProps {
+  tour: Tour;
+}
+
+/** Orchestrates the multi-step booking UI: stepper, animated steps, summary. */
+export default function BookingFlow({ tour }: BookingFlowProps) {
+  const booking = useBooking(tour);
+  const { data, errors, step, stepIndex, isFirst, isLast, isComplete, total, update } = booking;
+
+  const stepProps = { tour, data, errors, update };
+
+  const renderStep = () => {
+    switch (step) {
+      case 'travelers':
+        return <TravelersStep {...stepProps} />;
+      case 'dates':
+        return <DatesStep {...stepProps} />;
+      case 'details':
+        return <DetailsStep {...stepProps} />;
+      case 'review':
+        return <ReviewStep {...stepProps} />;
+      case 'payment':
+        return (
+          <PaymentStep total={total} isComplete={isComplete} onComplete={booking.complete} />
+        );
+    }
+  };
+
+  return (
+    <div className={styles.flow}>
+      <div className={styles.panel}>
+        {!isComplete ? (
+          <BookingStepper currentIndex={stepIndex} onStepClick={booking.goTo} />
+        ) : null}
+
+        <div className={styles.stepArea}>
+          {/* Keyed remount + mount animation (no AnimatePresence exit, which can
+              stall under `mode="wait"`); each step slides + fades in cleanly. */}
+          <motion.div
+            key={step + String(isComplete)}
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {renderStep()}
+          </motion.div>
+        </div>
+
+        {!isComplete ? (
+          <div className={styles.nav}>
+            <Button
+              variant="ghost"
+              onClick={booking.back}
+              disabled={isFirst}
+              aria-label="Previous step"
+            >
+              Back
+            </Button>
+
+            {!isLast ? (
+              <Button onClick={booking.next} icon="arrow-right">
+                Continue
+              </Button>
+            ) : (
+              <span className={styles.navSpacer} />
+            )}
+          </div>
+        ) : null}
+      </div>
+
+      <OrderSummary tour={tour} data={data} total={total} />
+    </div>
+  );
+}

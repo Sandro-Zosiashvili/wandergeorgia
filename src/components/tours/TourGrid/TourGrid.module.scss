@@ -1,0 +1,26 @@
+@use '../../../styles/mixins' as *;
+
+.grid {
+  display: grid;
+  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  grid-template-columns: 1fr;
+
+  @include up($bp-sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include up($bp-lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  // Direct children fill their cell so cards share equal height.
+  > * {
+    min-width: 0;
+  }
+}
+
+.featuredCell {
+  @include up($bp-lg) {
+    grid-column: span 2;
+  }
+}

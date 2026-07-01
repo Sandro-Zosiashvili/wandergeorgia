@@ -1,0 +1,22 @@
+@use '../../../styles/mixins' as *;
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding: 8rem clamp(1.25rem, 5vw, 3.5rem) 6rem;
+
+  @include up($bp-md) {
+    padding-block: 9rem 7rem;
+  }
+}
