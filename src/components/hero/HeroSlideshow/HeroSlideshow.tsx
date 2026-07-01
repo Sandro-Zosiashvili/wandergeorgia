@@ -63,7 +63,9 @@ export default function HeroSlideshow() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Progress dots */}
+      {/* Progress dots — the active one fills left→right over the slide's
+          duration. Keying the fill on `index` remounts it each slide so the
+          animation always restarts cleanly and runs fully to the end. */}
       <div className={styles.dots} role="tablist" aria-label="Hero slides">
         {heroSlides.map((s, i) => (
           <button
@@ -74,7 +76,7 @@ export default function HeroSlideshow() {
             aria-selected={i === index}
             aria-label={`Show ${s.place}`}
           >
-            <span className={styles.dotFill} />
+            {i === index ? <span key={index} className={styles.dotFill} /> : null}
           </button>
         ))}
       </div>

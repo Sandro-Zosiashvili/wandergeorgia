@@ -67,36 +67,63 @@
   bottom: clamp(1.5rem, 4vw, 2.75rem);
   right: clamp(1.25rem, 5vw, 3.5rem);
   display: flex;
+  align-items: center;
   gap: 0.6rem;
   z-index: 2;
 }
 
 .dot {
+  position: relative;
   width: 34px;
-  height: 4px;
+  height: 5px;
+  padding: 0;
   border-radius: $radius-pill;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.28);
   overflow: hidden;
-  transition: background-color 0.3s ease;
+  cursor: pointer;
+  transition:
+    width 0.45s $ease-out,
+    background-color 0.3s ease;
   @include focus-ring;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.5);
   }
 }
 
-.dotFill {
-  display: block;
-  height: 100%;
-  width: 0;
-  background: var(--grad-gold);
+// The active track is longer to emphasise the current slide, and slightly
+// dimmer so the gold fill reads clearly on top.
+.dotActive {
+  width: 60px;
+  background: rgba(255, 255, 255, 0.22);
 }
 
-.dotActive {
-  background: rgba(255, 255, 255, 0.25);
+// Absolutely fills the whole pill (including the rounded ends) and scales from
+// left to right over the slide duration.
+.dotFill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--grad-gold);
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
 
-  .dotFill {
-    width: 100%;
-    transition: width 6.5s linear;
+  @include motion-safe {
+    animation: dotProgress 6.5s linear forwards;
+  }
+
+  // Reduced motion: show the active slide as fully filled, no sweep.
+  @media (prefers-reduced-motion: reduce) {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes dotProgress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
   }
 }
