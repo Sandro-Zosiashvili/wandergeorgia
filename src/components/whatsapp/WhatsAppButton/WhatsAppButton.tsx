@@ -27,7 +27,7 @@ export default function WhatsAppButton() {
     >
       <span className={styles.pulse} aria-hidden="true" />
       <span className={styles.iconWrap}>
-        <Icon name="whatsapp" size={26} />
+        <Icon name="whatsapp" size={30} />
       </span>
 
       <AnimatePresence>
