@@ -50,8 +50,17 @@ export default function TourHero({ tour }: TourHeroProps) {
             {tour.duration}
           </li>
           <li className={styles.fact}>
-            <Icon name="plane-arrival" size={17} />
-            Airport transfers included
+            {tour.type === 'multi-day' ? (
+              <>
+                <Icon name="plane-arrival" size={17} />
+                Airport transfers included
+              </>
+            ) : (
+              <>
+                <Icon name="map-pin" size={17} />
+                Hotel pick-up included
+              </>
+            )}
           </li>
         </ul>
       </div>

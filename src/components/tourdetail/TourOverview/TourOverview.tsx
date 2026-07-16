@@ -16,7 +16,7 @@ export default function TourOverview({ tour }: TourOverviewProps) {
       <h2 id="overview-title" className={styles.heading}>
         About this {tour.type === 'multi-day' ? 'journey' : 'day'}
       </h2>
-      <p className={styles.lead}>{tour.shortDescription}</p>
+      <p className={styles.lead}>{tour.overview ?? tour.shortDescription}</p>
       <p className={styles.body}>
         Every departure is fully private — just your party, a dedicated guide and
         a comfortable vehicle. We handle the details so you can be fully present:

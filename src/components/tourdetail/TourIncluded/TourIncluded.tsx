@@ -39,6 +39,19 @@ export default function TourIncluded({ tour }: TourIncludedProps) {
           );
         })}
       </ul>
+
+      {tour.notIncluded && tour.notIncluded.length > 0 ? (
+        <ul className={styles.notIncluded}>
+          {tour.notIncluded.map((label) => (
+            <li key={label} className={styles.notItem}>
+              <span className={styles.notIcon}>
+                <Icon name="close" size={16} />
+              </span>
+              <span className={styles.itemLabel}>{label}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </section>
   );
 }
