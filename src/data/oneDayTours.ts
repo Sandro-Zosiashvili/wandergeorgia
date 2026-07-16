@@ -176,7 +176,7 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
     tourType: 'Private tour',
     price: 380,
     image:
-      'https://images.unsplash.com/photo-1543076499-a6133cb932fd?q=80&w=2000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1631037988823-a29608bbeff6?auto=format&fit=crop&w=2400&q=80',
     shortDescription:
       "Western Georgia's most spectacular nature — emerald canyon waters and one of Europe's largest caves in a single day.",
     overview:
