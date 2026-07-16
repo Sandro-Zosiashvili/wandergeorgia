@@ -26,6 +26,16 @@ export function unsplashLandscape(path: string, width = 2200, ratio = 16 / 9): s
 }
 
 /**
+ * Portrait-cropped Unsplash URL for phones. A full-screen hero on a tall phone
+ * would otherwise blow a landscape photo up to a thin central slice; asking
+ * Unsplash for a portrait crop keeps the whole scene in view at a sane zoom.
+ */
+export function unsplashPortrait(path: string, width = 1200, ratio = 3 / 4): string {
+  const height = Math.round(width / ratio);
+  return `${BASE}/${path}?auto=format&fit=crop&w=${width}&h=${height}&q=80`;
+}
+
+/**
  * Central registry of the photos used across the site, so the same shot is
  * referenced by name rather than by an opaque id scattered through the data.
  */

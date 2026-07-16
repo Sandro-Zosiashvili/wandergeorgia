@@ -23,6 +23,24 @@
   object-fit: cover;
 }
 
+// Art direction: show the landscape crop from tablet up, the portrait crop on
+// phones. Keeps the whole scene in frame instead of a blown-up centre slice.
+.imageDesktop {
+  display: none;
+
+  @include up($bp-md) {
+    display: block;
+  }
+}
+
+.imageMobile {
+  display: block;
+
+  @include up($bp-md) {
+    display: none;
+  }
+}
+
 /* Left-weighted dark gradient so the headline stays legible. */
 .scrim {
   position: absolute;

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { heroSlides } from '@/data/heroSlides';
+import { unsplashLandscape, unsplashPortrait } from '@/lib/images';
 import { useSlideshow } from '@/hooks/useSlideshow';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './HeroSlideshow.module.scss';
@@ -32,13 +33,25 @@ export default function HeroSlideshow() {
             animate={{ scale: 1.16 }}
             transition={{ duration: 8, ease: 'linear' }}
           >
+            {/* Landscape crop for tablet/desktop, portrait crop for phones —
+                a full-screen landscape shot would otherwise over-zoom on a
+                tall phone screen. Only one is shown at a time (CSS). */}
             <Image
-              src={slide.image}
+              src={unsplashLandscape(slide.photo)}
               alt={slide.alt}
               fill
               priority={index === 0}
               sizes="100vw"
-              className={styles.image}
+              className={`${styles.image} ${styles.imageDesktop}`}
+            />
+            <Image
+              src={unsplashPortrait(slide.photo)}
+              alt=""
+              aria-hidden="true"
+              fill
+              priority={index === 0}
+              sizes="100vw"
+              className={`${styles.image} ${styles.imageMobile}`}
             />
           </motion.div>
         </motion.div>

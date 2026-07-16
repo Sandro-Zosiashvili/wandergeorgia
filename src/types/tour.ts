@@ -5,6 +5,34 @@
 
 export type TourType = 'one-day' | 'multi-day';
 
+/**
+ * CSS `object-position` value — decides which part of a photo stays in frame
+ * when it's cropped to fill a hero or card. Order is horizontal + vertical, but
+ * either order of the keywords works ('bottom left' === 'left bottom').
+ */
+export type ImagePosition =
+  | 'center'
+  | 'top'
+  | 'bottom'
+  | 'left'
+  | 'right'
+  | 'top left'
+  | 'top right'
+  | 'top center'
+  | 'bottom left'
+  | 'bottom right'
+  | 'bottom center'
+  | 'left top'
+  | 'left bottom'
+  | 'left center'
+  | 'right top'
+  | 'right bottom'
+  | 'right center'
+  | 'center top'
+  | 'center bottom'
+  | 'center left'
+  | 'center right';
+
 /** A single point of interest featured within a tour. */
 export interface TourLocation {
   name: string;
@@ -40,6 +68,13 @@ export interface Tour {
   image?: string;
   heroImage: string;
   cardImage: string;
+  /**
+   * Which part of the photo to keep in frame on the hero and card (CSS
+   * object-position). Use it when the default centre crop hides the subject —
+   * e.g. 'bottom' to favour the foreground, 'top' for a skyline. Defaults to
+   * 'center'.
+   */
+  imagePosition?: ImagePosition;
   /** One-line teaser shown on cards. */
   shortDescription: string;
   /** Longer intro paragraph shown on the detail page. */

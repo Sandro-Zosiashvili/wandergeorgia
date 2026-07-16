@@ -22,6 +22,7 @@ export default function TourHero({ tour }: TourHeroProps) {
           priority
           sizes="100vw"
           className={styles.image}
+          style={{ objectPosition: tour.imagePosition ?? 'center' }}
         />
         <div className={styles.scrim} aria-hidden="true" />
       </div>

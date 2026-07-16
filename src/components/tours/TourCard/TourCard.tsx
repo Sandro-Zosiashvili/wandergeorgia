@@ -25,6 +25,7 @@ export default function TourCard({ tour, featured = false }: TourCardProps) {
           fill
           sizes={featured ? '(max-width: 768px) 100vw, 66vw' : '(max-width: 768px) 100vw, 33vw'}
           className={styles.image}
+          style={{ objectPosition: tour.imagePosition ?? 'center' }}
         />
         <div className={styles.mediaScrim} aria-hidden="true" />
         <span className={styles.city}>

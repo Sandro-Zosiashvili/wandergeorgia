@@ -7,6 +7,10 @@ import type { Tour, TourInclusion } from '@/types/tour';
  *  Everything about the day tours lives in this one file.
  *
  *  • To swap a photo:      edit the `image` line of that tour (one place).
+ *  • To frame a photo:     add `imagePosition` — which part of the image stays
+ *    in view on the hero/card. Values: 'center' (default), 'top', 'bottom',
+ *    'left', 'right', or a pair like 'bottom left' / 'center bottom' /
+ *    'left center'. Use it when the default centre crop hides the subject.
  *  • To change price/text: edit the field right there in the object.
  *  • `included` / `notIncluded` are shared by every tour (see below) — change
  *    them once and every tour updates.
@@ -208,6 +212,8 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
     price: 350,
     image:
       'https://images.unsplash.com/photo-1660038090901-9dc6d7768e47?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8a2FraGV0aXxlbnwwfHwwfHx8MA%3D%3D',
+    // This shot is sky-heavy — favour the lower half so the vineyards show.
+    imagePosition: 'bottom',
     shortDescription:
       "Georgia's famous wine region — 8,000 years of winemaking, local food, Bodbe Monastery and the hilltop City of Love.",
     overview:
@@ -359,21 +365,23 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
 ];
 
 /**
- * Re-crop an Unsplash URL to a fixed size/aspect so narrow or low-res source
- * photos don't look zoomed-in when stretched across the layout. We drop the
- * source's own query string and ask Unsplash for a centre-cropped version at
- * the ratio we actually render. Non-Unsplash URLs are returned untouched.
+ * Ask Unsplash for a large, sharp version of the photo, dropping the source
+ * URL's own sizing query. We deliberately DON'T force an aspect ratio here:
+ * the layout crops each image with CSS `object-fit: cover`, and the per-tour
+ * `imagePosition` controls which part stays in frame. (Forcing a crop on
+ * Unsplash would centre-cut the photo before the browser ever sees it, so
+ * `imagePosition` could no longer reveal the edges.)
  */
-function crop(url: string, w: number, h: number): string {
+function sized(url: string, w: number): string {
   if (!url.includes('images.unsplash.com')) return url;
   const base = url.split('?')[0];
-  return `${base}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
+  return `${base}?auto=format&w=${w}&q=80`;
 }
 
-/** Wide landscape for the full-bleed detail hero. */
-const toHero = (url: string) => crop(url, 2400, 1350); // 16:9
-/** 4:3 for the tour cards. */
-const toCard = (url: string) => crop(url, 1200, 900); // 4:3
+/** High-res source for the full-bleed detail hero. */
+const toHero = (url: string) => sized(url, 2400);
+/** High-res source for the tour cards. */
+const toCard = (url: string) => sized(url, 1400);
 
 /**
  * Exported list. Card + hero images are derived from the single `image` field
