@@ -13,6 +13,7 @@ interface UseSlideshowResult {
   index: number;
   goTo: (i: number) => void;
   next: () => void;
+  prev: () => void;
 }
 
 /**
@@ -28,6 +29,7 @@ export function useSlideshow({
 
   const goTo = useCallback((i: number) => setIndex(((i % count) + count) % count), [count]);
   const next = useCallback(() => setIndex((i) => (i + 1) % count), [count]);
+  const prev = useCallback(() => setIndex((i) => (i - 1 + count) % count), [count]);
 
   useEffect(() => {
     if (!autoPlay || count <= 1) return;
@@ -51,5 +53,5 @@ export function useSlideshow({
     };
   }, [autoPlay, count, interval, next]);
 
-  return { index, goTo, next };
+  return { index, goTo, next, prev };
 }

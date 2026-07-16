@@ -36,6 +36,17 @@ export function unsplashPortrait(path: string, width = 1200, ratio = 3 / 4): str
 }
 
 /**
+ * Take a full Unsplash URL (as pasted into the tour data) and return a large,
+ * sharp version, dropping the source URL's own sizing query. No aspect ratio is
+ * forced — the layout crops with `object-fit`/`object-position` — so a photo's
+ * framing stays adjustable. Non-Unsplash URLs pass through untouched.
+ */
+export function unsplashSized(url: string, width = 2400): string {
+  if (!url.includes('images.unsplash.com')) return url;
+  return `${url.split('?')[0]}?auto=format&w=${width}&q=80`;
+}
+
+/**
  * Central registry of the photos used across the site, so the same shot is
  * referenced by name rather than by an opaque id scattered through the data.
  */

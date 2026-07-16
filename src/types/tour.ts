@@ -39,6 +39,24 @@ export interface TourLocation {
   description: string;
 }
 
+/** One day of a multi-day itinerary. */
+export interface TourDay {
+  /** Label kept as free text so ranges work too, e.g. 'Day 1' or 'Day 4–5'. */
+  day: string;
+  /** Short title for the day, e.g. 'Discover Tbilisi'. */
+  title: string;
+  /** Places / experiences of the day. */
+  highlights: string[];
+  /** "About the day" paragraph. */
+  description: string;
+  /**
+   * Photo for this day — direct Unsplash URL. These are what the tour's hero
+   * slideshow cycles through, so the visitor previews where the trip goes.
+   */
+  image: string;
+  imagePosition?: ImagePosition;
+}
+
 /** What a traveler gets — reused for the "Included" block on detail pages. */
 export interface TourInclusion {
   label: string;
@@ -81,6 +99,11 @@ export interface Tour {
   overview?: string;
   /** 3–5 highlighted places visited on the tour. */
   locations: TourLocation[];
+  /**
+   * Day-by-day plan for multi-day tours. When present, the detail page shows
+   * these (with per-day photos) and the hero becomes a slideshow of them.
+   */
+  itinerary?: TourDay[];
   /** Everything bundled into the price. */
   included: TourInclusion[];
   /** Things the traveler pays for separately. */
