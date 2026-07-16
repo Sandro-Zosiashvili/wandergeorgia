@@ -21,14 +21,14 @@ export const heroSlides: HeroSlide[] = [
     place: 'Tbilisi',
   },
   {
-    image: unsplashLandscape(photos.svanetiTowers),
-    alt: 'Medieval stone towers of Ushguli in Svaneti beneath high peaks',
-    place: 'Svaneti',
+    image: unsplashLandscape(photos.kakhetiVineyard),
+    alt: 'Vineyards of the Kakheti wine region beneath the Caucasus',
+    place: 'Kakheti',
   },
   {
-    image: unsplashLandscape(photos.martviliCanyon),
-    alt: 'Emerald water winding through Martvili Canyon',
-    place: 'Martvili',
+    image: unsplashLandscape(photos.caucasusValley),
+    alt: 'A green valley deep in the Caucasus mountains',
+    place: 'Caucasus',
   },
   {
     image: unsplashLandscape(photos.batumiCoast),
