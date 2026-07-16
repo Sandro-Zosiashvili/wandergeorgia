@@ -246,11 +246,28 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
 ];
 
 /**
+ * Re-crop an Unsplash URL to a fixed size/aspect so narrow or low-res source
+ * photos don't look zoomed-in when stretched across the layout. We drop the
+ * source's own query string and ask Unsplash for a centre-cropped version at
+ * the ratio we actually render. Non-Unsplash URLs are returned untouched.
+ */
+function crop(url: string, w: number, h: number): string {
+  if (!url.includes('images.unsplash.com')) return url;
+  const base = url.split('?')[0];
+  return `${base}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
+}
+
+/** Wide landscape for the full-bleed detail hero. */
+const toHero = (url: string) => crop(url, 2400, 1350); // 16:9
+/** 4:3 for the tour cards. */
+const toCard = (url: string) => crop(url, 1200, 900); // 4:3
+
+/**
  * Exported list. Card + hero images are derived from the single `image` field
  * so you never have to keep two URLs in sync — just edit `image` above.
  */
 export const oneDayTours: Tour[] = tours.map((t) => ({
   ...t,
-  heroImage: t.image,
-  cardImage: t.image,
+  heroImage: toHero(t.image),
+  cardImage: toCard(t.image),
 }));
