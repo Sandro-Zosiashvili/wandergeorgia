@@ -243,7 +243,137 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
     included: INCLUDED,
     notIncluded: NOT_INCLUDED,
   },
+  {
+    id: 6,
+    slug: 'tbilisi-mtskheta-day-tour',
+    type: 'one-day',
+    title: 'Tbilisi & Mtskheta Day Tour',
+    city: 'Tbilisi',
+    duration: '1 day',
+    tourType: 'Private tour',
+    price: 280,
+    image:
+      'https://images.unsplash.com/photo-1505294399615-2479253a4990?auto=format&fit=crop&w=2400&q=80',
+    shortDescription:
+      "Georgia's capital paired with its ancient one — Tbilisi's landmarks and the UNESCO churches of Mtskheta in a single day.",
+    overview:
+      "Discover Georgia's capital city together with its ancient capital, Mtskheta, where history, culture, and religion come together.",
+    highlights: [
+      'Chronicle of Georgia',
+      'Holy Trinity Cathedral (Sameba)',
+      'Mother of Georgia',
+      'Bridge of Peace',
+      'Clock Tower',
+      'Old Tbilisi',
+      'Mtskheta',
+      'Svetitskhoveli Cathedral',
+      'Jvari Monastery',
+    ],
+    locations: [
+      {
+        name: 'Chronicle of Georgia',
+        description:
+          'A monumental masterpiece offering incredible views over the Tbilisi Sea.',
+      },
+      {
+        name: 'Holy Trinity Cathedral (Sameba)',
+        description: 'One of the largest Orthodox churches in the world.',
+      },
+      {
+        name: 'Mother of Georgia',
+        description:
+          'The iconic aluminium statue overlooking the city — a sword in one hand, a bowl of wine in the other.',
+      },
+      {
+        name: 'Bridge of Peace',
+        description: 'A modern glass bridge connecting old and new Tbilisi.',
+      },
+      {
+        name: 'Clock Tower',
+        description:
+          'A unique leaning clock tower beside the famous Gabriadze puppet theatre.',
+      },
+      {
+        name: 'Old Tbilisi',
+        description:
+          'Walk through colorful streets, historic churches, sulphur baths, and charming cafés.',
+      },
+      {
+        name: 'Mtskheta',
+        description:
+          "Georgia's ancient capital and one of the oldest continuously inhabited cities in the world.",
+      },
+      {
+        name: 'Svetitskhoveli Cathedral',
+        description:
+          'The 11th-century UNESCO cathedral at the heart of Mtskheta — said to hold the robe of Christ and the coronation site of Georgian kings.',
+      },
+      {
+        name: 'Jvari Monastery',
+        description:
+          'A UNESCO World Heritage Site with spectacular views over the confluence of the Mtkvari and Aragvi rivers. Return to Tbilisi.',
+      },
+    ],
+    included: INCLUDED,
+    notIncluded: NOT_INCLUDED,
+  },
+  {
+    id: 7,
+    slug: 'tbilisi-batumi-private-transfer',
+    type: 'one-day',
+    title: 'Tbilisi to Batumi Private Transfer',
+    city: 'Batumi',
+    duration: 'Approx. 6 hours',
+    tourType: 'Private transfer',
+    price: 300,
+    image:
+      'https://images.unsplash.com/photo-1625566360146-918001e76064?auto=format&fit=crop&w=2400&q=80',
+    shortDescription:
+      'A comfortable door-to-door private transfer from Tbilisi to the Black Sea coast — travel on your own schedule, with optional stops along the way.',
+    overview:
+      'A private, direct transfer from Tbilisi to Batumi in a comfortable air-conditioned vehicle. The drive takes around 6 hours, and because the car is yours you can leave when it suits you and break the journey with optional stops en route.',
+    highlights: [
+      'Private door-to-door transfer',
+      'Comfortable air-conditioned vehicle',
+      'Flexible departure time',
+      'Optional stops en route',
+    ],
+    locations: [
+      {
+        name: 'Hotel pick-up in Tbilisi',
+        description: 'Depart from your accommodation at a time that suits you.',
+      },
+      {
+        name: 'Optional stops en route',
+        description:
+          'On request, break the drive at highlights along the way — Gori, Uplistsikhe, Borjomi or Kutaisi (adds to the total travel time).',
+      },
+      {
+        name: 'Arrival in Batumi',
+        description: 'Drop-off at your hotel on the Black Sea coast.',
+      },
+    ],
+    included: INCLUDED,
+    notIncluded: NOT_INCLUDED,
+  },
 ];
+
+/**
+ * Re-crop an Unsplash URL to a fixed size/aspect so narrow or low-res source
+ * photos don't look zoomed-in when stretched across the layout. We drop the
+ * source's own query string and ask Unsplash for a centre-cropped version at
+ * the ratio we actually render. Non-Unsplash URLs are returned untouched.
+ */
+function crop(url: string, w: number, h: number): string {
+  if (!url.includes('images.unsplash.com')) return url;
+  const base = url.split('?')[0];
+  return `${base}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
+}
+
+/** Wide landscape for the full-bleed detail hero. */
+const toHero = (url: string) => crop(url, 2400, 1350); // 16:9
+/** 4:3 for the tour cards. */
+const toCard = (url: string) => crop(url, 1200, 900); // 4:3
 
 /**
  * Exported list. Card + hero images are derived from the single `image` field
@@ -251,6 +381,6 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
  */
 export const oneDayTours: Tour[] = tours.map((t) => ({
   ...t,
-  heroImage: t.image,
-  cardImage: t.image,
+  heroImage: toHero(t.image),
+  cardImage: toCard(t.image),
 }));
