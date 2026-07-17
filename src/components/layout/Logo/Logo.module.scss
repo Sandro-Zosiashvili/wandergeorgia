@@ -8,14 +8,19 @@
 }
 
 .mark {
-  width: 38px;
-  height: 38px;
+  height: 42px;
   flex-shrink: 0;
   transition: transform 0.5s $ease-spring;
 }
 
+.markSvg {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+
 .logo:hover .mark {
-  transform: rotate(-8deg) scale(1.05);
+  transform: scale(1.06);
 }
 
 .word {
@@ -44,8 +49,7 @@
 
 .compact {
   .mark {
-    width: 32px;
-    height: 32px;
+    height: 34px;
   }
   .wander {
     font-size: 1.05rem;
