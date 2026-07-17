@@ -47,7 +47,7 @@ export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHero
       setIndex(((i % count) + count) % count);
       setBrowsingBoth(true);
       if (idleTimer.current) clearTimeout(idleTimer.current);
-      idleTimer.current = setTimeout(() => setBrowsingBoth(false), 1500);
+      idleTimer.current = setTimeout(() => setBrowsingBoth(false), 3500);
     },
     [count, setBrowsingBoth],
   );
@@ -95,7 +95,7 @@ export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHero
           onClick={() => go(index - 1)}
           aria-label="Previous photo"
         >
-          <Icon name="chevron-right" size={22} />
+          <Icon name="chevron-right" size={26} stroke={2.4} />
         </button>
         <button
           type="button"
@@ -103,7 +103,7 @@ export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHero
           onClick={() => go(index + 1)}
           aria-label="Next photo"
         >
-          <Icon name="chevron-right" size={22} />
+          <Icon name="chevron-right" size={26} stroke={2.4} />
         </button>
       </div>
 
