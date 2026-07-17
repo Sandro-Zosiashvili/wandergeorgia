@@ -212,7 +212,6 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
     price: 350,
     image:
       'https://images.unsplash.com/photo-1660038090901-9dc6d7768e47?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8a2FraGV0aXxlbnwwfHwwfHx8MA%3D%3D',
-    // This shot is sky-heavy — favour the lower half so the vineyards show.
     imagePosition: 'bottom',
     shortDescription:
       "Georgia's famous wine region — 8,000 years of winemaking, local food, Bodbe Monastery and the hilltop City of Love.",
