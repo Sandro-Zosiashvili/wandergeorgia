@@ -36,13 +36,16 @@ export default function Reviews() {
             </div>
           </div>
 
-          {/* Authenticity note */}
-          <p className={styles.certified}>
-            <span className={styles.verifiedBadge}>
-              <Icon name="check" size={13} />
+          {/* Google-style verified badge + authenticity note */}
+          <span className={styles.verifiedChip}>
+            <span className={styles.check}>
+              <Icon name="check" size={12} />
             </span>
-            Every review shown here is verified — only certified, genuinely written reviews from real
-            guests. Nothing is edited or invented.
+            Verified by Google
+          </span>
+          <p className={styles.certified}>
+            Only certified, genuinely written reviews from real guests — nothing is edited or
+            invented.
           </p>
         </div>
 

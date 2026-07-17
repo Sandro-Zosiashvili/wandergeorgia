@@ -84,45 +84,60 @@
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-.certified {
+// Google-style "Verified" pill: blue check + blue label.
+.verifiedChip {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  max-width: 62ch;
-  margin-top: 0.2rem;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: var(--text-muted);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.9rem 0.4rem 0.5rem;
+  border-radius: $radius-pill;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4c8dff;
+  background: rgba(26, 115, 232, 0.14);
+  border: 1px solid rgba(66, 133, 244, 0.35);
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-.verifiedBadge {
+.check {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
   border-radius: 50%;
   color: #fff;
-  background: #34a853;
+  background: #1a73e8;
 }
 
-/* CSS columns give an organic, hand-arranged masonry feel. */
+.certified {
+  max-width: 58ch;
+  margin-top: 0.1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Clean, aligned grid — cards in a row share the same height. */
 .masonry {
   margin-top: clamp(2.5rem, 5vw, 3.5rem);
-  column-gap: clamp(1.25rem, 2.5vw, 1.5rem);
-  column-count: 1;
+  display: grid;
+  gap: clamp(1.25rem, 2.5vw, 1.5rem);
+  grid-template-columns: 1fr;
+  align-items: stretch;
 
   @include up($bp-sm) {
-    column-count: 2;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   @include up($bp-lg) {
-    column-count: 3;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 .cell {
-  break-inside: avoid;
-  margin-bottom: clamp(1.25rem, 2.5vw, 1.5rem);
+  display: flex;
 }
