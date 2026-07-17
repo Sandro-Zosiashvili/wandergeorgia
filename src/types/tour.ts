@@ -46,7 +46,7 @@ export interface TourDay {
   /** Short title for the day, e.g. 'Discover Tbilisi'. */
   title: string;
   /** Places / experiences of the day. */
-  highlights: string[];
+  highlights?: string[];
   /** "About the day" paragraph. */
   description: string;
   /**

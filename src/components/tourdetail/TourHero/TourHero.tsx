@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Tour } from '@/types/tour';
@@ -11,10 +14,13 @@ interface TourHeroProps {
 }
 
 /** Immersive header for a tour: a single photo, or — for multi-day trips with a
- *  day-by-day plan — a slideshow that previews each day's destination. */
+ *  day-by-day plan — a slideshow that previews each day's destination. While the
+ *  visitor flips through the slideshow, the overlaid title/facts fade away so
+ *  the photo is unobstructed, returning once they pause. */
 export default function TourHero({ tour }: TourHeroProps) {
   const typeLabel = tour.type === 'multi-day' ? `${tour.days}-day package` : 'Day tour';
   const hasAirportTransfers = tour.included.some((inc) => inc.icon.startsWith('plane'));
+  const [browsing, setBrowsing] = useState(false);
 
   const slides =
     tour.itinerary
@@ -29,7 +35,7 @@ export default function TourHero({ tour }: TourHeroProps) {
     <header className={styles.hero}>
       <div className={styles.media}>
         {slides.length > 1 ? (
-          <TourHeroSlideshow slides={slides} />
+          <TourHeroSlideshow slides={slides} onBrowsingChange={setBrowsing} />
         ) : (
           <>
             <Image
@@ -46,7 +52,7 @@ export default function TourHero({ tour }: TourHeroProps) {
         )}
       </div>
 
-      <div className={styles.inner}>
+      <div className={[styles.inner, browsing ? styles.innerBrowsing : ''].filter(Boolean).join(' ')}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <Link href="/">Home</Link>
           <Icon name="chevron-right" size={14} />

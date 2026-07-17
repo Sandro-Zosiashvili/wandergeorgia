@@ -39,10 +39,21 @@
   max-width: 1240px;
   margin-inline: auto;
   padding: 8rem clamp(1.25rem, 5vw, 3.5rem) clamp(2.5rem, 5vw, 4rem);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
 
   @include down($bp-md) {
     padding-top: 5rem;
   }
+}
+
+// While the visitor flips through the hero slideshow, fade the title/facts out
+// of the way so the photo is unobstructed; they ease back once browsing stops.
+.innerBrowsing {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
 }
 
 .breadcrumb {

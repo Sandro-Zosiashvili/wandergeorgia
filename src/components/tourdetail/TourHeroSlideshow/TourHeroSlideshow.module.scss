@@ -10,6 +10,7 @@
 .slide {
   position: absolute;
   inset: 0;
+  transition: opacity 0.6s $ease-out;
   will-change: opacity;
 }
 
@@ -17,22 +18,29 @@
   object-fit: cover;
 }
 
-// Matches TourHero's scrim so the overlaid title/facts stay legible. Sits above
-// the photo but below the slideshow controls (caption, arrows, dots).
+// Matches TourHero's scrim so overlaid title/facts stay legible. Sits above the
+// photos but below the slideshow controls. Eases back while browsing so the
+// photo reads clearly.
 .scrim {
   position: absolute;
   inset: 0;
   z-index: 2;
+  transition: opacity 0.4s ease;
   background:
     linear-gradient(0deg, rgba(8, 7, 6, 0.95) 0%, rgba(8, 7, 6, 0.25) 55%, rgba(8, 7, 6, 0.5) 100%);
 }
 
-// Small "Day N · Place" chip so the visitor knows what they're looking at.
+.scrimDim {
+  opacity: 0.3;
+}
+
+// Small "Day N · Place" chip — always visible so the visitor knows which photo
+// they're looking at, even while the heavier overlay is dimmed.
 .caption {
   position: absolute;
   left: clamp(1.25rem, 5vw, 3.5rem);
   top: clamp(5.5rem, 12vw, 7rem);
-  z-index: 3;
+  z-index: 4;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -50,39 +58,46 @@
   }
 }
 
+.controls {
+  display: contents;
+}
+
 .arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 3;
+  z-index: 4;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   color: var(--text);
   cursor: pointer;
   transition:
     background-color 0.25s ease,
     transform 0.25s ease;
-  @include glass(rgba(10, 9, 8, 0.4));
+  @include glass(rgba(10, 9, 8, 0.42));
   @include focus-ring;
 
   &:hover {
-    background: rgba(10, 9, 8, 0.65);
+    background: rgba(10, 9, 8, 0.7);
   }
 
-  // Hide on small phones — dots + auto-play are enough there.
-  display: none;
+  // On phones the title is anchored low, so sit a touch above centre.
+  @include down($bp-md) {
+    top: 34%;
+  }
 
-  @include up($bp-sm) {
-    display: inline-flex;
+  @include up($bp-md) {
+    width: 46px;
+    height: 46px;
   }
 }
 
 .prev {
-  left: clamp(1rem, 3vw, 1.75rem);
+  left: clamp(0.75rem, 3vw, 1.75rem);
 
   svg {
     transform: rotate(180deg);
@@ -94,7 +109,7 @@
 }
 
 .next {
-  right: clamp(1rem, 3vw, 1.75rem);
+  right: clamp(0.75rem, 3vw, 1.75rem);
 
   &:hover {
     transform: translateY(-50%) translateX(2px);
@@ -106,7 +121,7 @@
   bottom: clamp(1.25rem, 4vw, 2.25rem);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 3;
+  z-index: 4;
   display: flex;
   align-items: center;
   gap: 0.55rem;

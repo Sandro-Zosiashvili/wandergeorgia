@@ -1,9 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ImagePosition } from '@/types/tour';
-import { useSlideshow } from '@/hooks/useSlideshow';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './TourHeroSlideshow.module.scss';
 
@@ -16,74 +15,97 @@ export interface HeroSlide {
 
 interface TourHeroSlideshowProps {
   slides: HeroSlide[];
+  /**
+   * Notifies the parent hero when the visitor is actively flipping through
+   * photos, so it can fade its overlaid title/facts out of the way and back.
+   */
+  onBrowsingChange?: (browsing: boolean) => void;
 }
 
 /**
- * Cross-fading hero backdrop for multi-day tours: it cycles through the photos
- * of each day so a visitor can preview the whole journey, and offers arrows +
- * dots to step through them manually.
+ * Manual hero gallery for multi-day tours. All photos are preloaded and stacked,
+ * so stepping through them is an instant CSS cross-fade — no lazy-load stutter,
+ * no auto-advance. While browsing, the heavy overlay dims so the photo is
+ * unobstructed; only the small "Day N · Place" caption stays.
  */
-export default function TourHeroSlideshow({ slides }: TourHeroSlideshowProps) {
-  const { index, goTo, next, prev } = useSlideshow({ count: slides.length, interval: 5000 });
-  const slide = slides[index]!;
+export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHeroSlideshowProps) {
+  const count = slides.length;
+  const [index, setIndex] = useState(0);
+  const [browsing, setBrowsing] = useState(false);
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const setBrowsingBoth = useCallback(
+    (b: boolean) => {
+      setBrowsing(b);
+      onBrowsingChange?.(b);
+    },
+    [onBrowsingChange],
+  );
+
+  const go = useCallback(
+    (i: number) => {
+      setIndex(((i % count) + count) % count);
+      setBrowsingBoth(true);
+      if (idleTimer.current) clearTimeout(idleTimer.current);
+      idleTimer.current = setTimeout(() => setBrowsingBoth(false), 1500);
+    },
+    [count, setBrowsingBoth],
+  );
+
+  useEffect(() => () => {
+    if (idleTimer.current) clearTimeout(idleTimer.current);
+  }, []);
 
   return (
     <div className={styles.slideshow}>
-      <AnimatePresence>
-        <motion.div
-          key={index}
+      {slides.map((s, i) => (
+        <div
+          key={s.label}
           className={styles.slide}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          style={{ opacity: i === index ? 1 : 0 }}
+          aria-hidden={i !== index}
         >
           <Image
-            src={slide.image}
-            alt={slide.label}
+            src={s.image}
+            alt={i === index ? s.label : ''}
             fill
-            priority={index === 0}
+            priority={i === 0}
             sizes="100vw"
             className={styles.image}
-            style={{ objectPosition: slide.imagePosition ?? 'center' }}
+            style={{ objectPosition: s.imagePosition ?? 'center' }}
           />
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      ))}
 
-      <div className={styles.scrim} aria-hidden="true" />
+      {/* Scrim eases back while browsing so the photo reads clearly. */}
+      <div
+        className={[styles.scrim, browsing ? styles.scrimDim : ''].filter(Boolean).join(' ')}
+        aria-hidden="true"
+      />
 
-      {/* Current-day caption */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={slide.label}
-          className={styles.caption}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.4 }}
+      <div className={styles.caption}>
+        <Icon name="map-pin" size={15} />
+        <span>{slides[index]!.label}</span>
+      </div>
+
+      <div className={styles.controls}>
+        <button
+          type="button"
+          className={`${styles.arrow} ${styles.prev}`}
+          onClick={() => go(index - 1)}
+          aria-label="Previous photo"
         >
-          <Icon name="map-pin" size={15} />
-          <span>{slide.label}</span>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Manual navigation */}
-      <button
-        type="button"
-        className={`${styles.arrow} ${styles.prev}`}
-        onClick={prev}
-        aria-label="Previous photo"
-      >
-        <Icon name="chevron-right" size={22} />
-      </button>
-      <button
-        type="button"
-        className={`${styles.arrow} ${styles.next}`}
-        onClick={next}
-        aria-label="Next photo"
-      >
-        <Icon name="chevron-right" size={22} />
-      </button>
+          <Icon name="chevron-right" size={22} />
+        </button>
+        <button
+          type="button"
+          className={`${styles.arrow} ${styles.next}`}
+          onClick={() => go(index + 1)}
+          aria-label="Next photo"
+        >
+          <Icon name="chevron-right" size={22} />
+        </button>
+      </div>
 
       <div className={styles.dots} role="tablist" aria-label="Tour photos">
         {slides.map((s, i) => (
@@ -91,7 +113,7 @@ export default function TourHeroSlideshow({ slides }: TourHeroSlideshowProps) {
             key={s.label}
             type="button"
             className={[styles.dot, i === index ? styles.dotActive : ''].filter(Boolean).join(' ')}
-            onClick={() => goTo(i)}
+            onClick={() => go(i)}
             role="tab"
             aria-selected={i === index}
             aria-label={`Show ${s.label}`}

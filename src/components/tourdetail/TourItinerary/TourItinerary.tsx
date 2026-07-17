@@ -32,7 +32,7 @@ export default function TourItinerary({ tour }: TourItineraryProps) {
               <div className={styles.stepBody}>
                 <span className={styles.dayLabel}>{day.day}</span>
                 <h3 className={styles.stepTitle}>{day.title}</h3>
-                {day.highlights.length > 0 ? (
+                {day.highlights && day.highlights.length > 0 ? (
                   <ul className={styles.chips}>
                     {day.highlights.map((h) => (
                       <li key={h} className={styles.chip}>

@@ -27,6 +27,17 @@ const HIGHLIGHTS_NOT_INCLUDED: string[] = [
   'Optional activities (zip line, ATV, boat ride, cable car)',
 ];
 
+/** Reusable day photos for the itinerary hero slideshows — swap freely. */
+const PHOTO = {
+  tbilisi: 'https://images.unsplash.com/photo-1505294399615-2479253a4990?auto=format&w=2000&q=80',
+  mtskheta: 'https://images.unsplash.com/photo-1558352532-d30aee197dea?auto=format&w=2000&q=80',
+  kazbegi: 'https://images.unsplash.com/photo-1563284223-333497472e88?auto=format&w=2000&q=80',
+  caucasus: 'https://images.unsplash.com/photo-1564755123091-ac6bfcddf43b?auto=format&w=2000&q=80',
+  kakheti: 'https://images.unsplash.com/photo-1694500788249-71b09a87db40?auto=format&w=2000&q=80',
+  canyon: 'https://images.unsplash.com/photo-1631037988823-a29608bbeff6?auto=format&w=2000&q=80',
+  batumi: 'https://images.unsplash.com/photo-1625566360146-918001e76064?auto=format&w=2000&q=80',
+} as const;
+
 /**
  * Multi-day packages. Prices are in GEL (Georgian Lari), per person,
  * placeholder values — edit freely.
@@ -175,6 +186,32 @@ export const multiDayTours: Tour[] = [
           'The drive to Stepantsminda and up to Gergeti Trinity Church beneath Mt. Kazbek before returning.',
       },
     ],
+    itinerary: [
+      {
+        day: 'Day 1',
+        title: 'Tbilisi',
+        highlights: ['Old town', 'Sulphur baths', 'Narikala Fortress'],
+        description:
+          'Old town, sulphur baths, Narikala Fortress by cable car and a welcome dinner with live polyphony.',
+        image: PHOTO.tbilisi,
+      },
+      {
+        day: 'Day 2',
+        title: 'Mtskheta & Gudauri',
+        highlights: ['Jvari & Svetitskhoveli', 'Ananuri Fortress', 'Gudauri viewpoint'],
+        description:
+          'UNESCO churches at the ancient capital, then the Military Highway to Ananuri and the Gudauri viewpoint.',
+        image: PHOTO.mtskheta,
+      },
+      {
+        day: 'Day 3',
+        title: 'Kazbegi',
+        highlights: ['Gergeti Trinity Church', 'Mt. Kazbek'],
+        description:
+          'The drive to Stepantsminda and up to Gergeti Trinity Church beneath Mt. Kazbek before returning.',
+        image: PHOTO.kazbegi,
+      },
+    ],
     included: [privateGuide, privateVehicle, accommodation, meals, ...airportTransfers],
   },
   {
@@ -210,6 +247,44 @@ export const multiDayTours: Tour[] = [
       {
         name: 'Day 5 — Departure',
         description: 'A final morning at leisure before your airport drop-off.',
+      },
+    ],
+    itinerary: [
+      {
+        day: 'Day 1',
+        title: 'Tbilisi',
+        highlights: ['Old town walking tour', 'Georgian cuisine'],
+        description: 'Arrival, old town walking tour and a first taste of Georgian cuisine.',
+        image: PHOTO.tbilisi,
+      },
+      {
+        day: 'Day 2',
+        title: 'Kakheti',
+        highlights: ['Sighnaghi', 'Bodbe Monastery', 'Qvevri wine tasting'],
+        description:
+          'Sighnaghi, Bodbe Monastery and tastings at family qvevri cellars in the Alazani Valley.',
+        image: PHOTO.kakheti,
+      },
+      {
+        day: 'Day 3',
+        title: 'Tbilisi & Mtskheta',
+        highlights: ['Svetitskhoveli', 'Jvari Monastery'],
+        description: "The ancient capital's cathedrals and a relaxed afternoon back in the city.",
+        image: PHOTO.mtskheta,
+      },
+      {
+        day: 'Day 4',
+        title: 'Kazbegi',
+        highlights: ['Ananuri', 'Gudauri', 'Gergeti Trinity Church'],
+        description: 'The Military Highway, Ananuri, Gudauri and Gergeti Trinity Church.',
+        image: PHOTO.kazbegi,
+      },
+      {
+        day: 'Day 5',
+        title: 'Departure',
+        highlights: ['Airport drop-off'],
+        description: 'A final morning at leisure before your airport drop-off.',
+        image: PHOTO.caucasus,
       },
     ],
     included: [privateGuide, privateVehicle, accommodation, wineTasting, meals, ...airportTransfers],
@@ -251,6 +326,50 @@ export const multiDayTours: Tour[] = [
       {
         name: 'Day 7 — Departure',
         description: 'Mtskheta’s churches en route to your airport drop-off.',
+      },
+    ],
+    itinerary: [
+      {
+        day: 'Day 1',
+        title: 'Tbilisi',
+        highlights: ['Airport welcome', 'Old town'],
+        description: 'Airport welcome, old town and an evening in the capital.',
+        image: PHOTO.tbilisi,
+      },
+      {
+        day: 'Day 2',
+        title: 'Kakheti',
+        highlights: ['Sighnaghi', 'Bodbe', 'Qvevri wine tasting'],
+        description: 'Sighnaghi, Bodbe and qvevri wine tastings across the Alazani Valley.',
+        image: PHOTO.kakheti,
+      },
+      {
+        day: 'Day 3',
+        title: 'Kutaisi & Canyons',
+        highlights: ['Martvili Canyon', 'Prometheus Cave'],
+        description: 'Martvili Canyon by boat and the illuminated halls of Prometheus Cave.',
+        image: PHOTO.canyon,
+      },
+      {
+        day: 'Day 4–5',
+        title: 'Batumi',
+        highlights: ['Botanical garden', 'Batumi Boulevard', 'Black Sea coast'],
+        description: 'The Black Sea riviera — botanical garden, boulevard and free time by the coast.',
+        image: PHOTO.batumi,
+      },
+      {
+        day: 'Day 6',
+        title: 'Kazbegi',
+        highlights: ['Military Highway', 'Gergeti Trinity Church'],
+        description: 'The Military Highway to Gergeti Trinity Church beneath the glaciers.',
+        image: PHOTO.kazbegi,
+      },
+      {
+        day: 'Day 7',
+        title: 'Departure',
+        highlights: ['Mtskheta', 'Airport drop-off'],
+        description: 'Mtskheta’s churches en route to your airport drop-off.',
+        image: PHOTO.mtskheta,
       },
     ],
     included: [privateGuide, privateVehicle, accommodation, wineTasting, meals, ...airportTransfers],
