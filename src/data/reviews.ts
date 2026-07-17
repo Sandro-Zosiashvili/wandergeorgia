@@ -1,4 +1,4 @@
-/** Guest testimonials. Placeholder content — swap for real reviews. */
+/** Verified guest reviews. Placeholder content — swap for real Google reviews. */
 
 export interface Review {
   quote: string;
@@ -6,6 +6,8 @@ export interface Review {
   country: string;
   rating: number;
   tour: string;
+  /** When the review was posted, e.g. '2 weeks ago'. */
+  date?: string;
 }
 
 export const reviews: Review[] = [
@@ -16,6 +18,7 @@ export const reviews: Review[] = [
     country: 'United Kingdom',
     rating: 5,
     tour: 'Wine & Mountains — 5 Days',
+    date: '2 weeks ago',
   },
   {
     quote:
@@ -24,6 +27,7 @@ export const reviews: Review[] = [
     country: 'Germany',
     rating: 5,
     tour: 'Kazbegi & Gergeti Trinity',
+    date: 'a month ago',
   },
   {
     quote:
@@ -32,6 +36,7 @@ export const reviews: Review[] = [
     country: 'United States',
     rating: 5,
     tour: 'Kakheti Wine Country Day',
+    date: '3 weeks ago',
   },
   {
     quote:
@@ -40,6 +45,7 @@ export const reviews: Review[] = [
     country: 'United Arab Emirates',
     rating: 5,
     tour: 'Essential Georgia — 3 Days',
+    date: 'a month ago',
   },
   {
     quote:
@@ -48,6 +54,7 @@ export const reviews: Review[] = [
     country: 'France',
     rating: 5,
     tour: 'Grand Georgia — 7 Days',
+    date: '2 months ago',
   },
   {
     quote:
@@ -56,5 +63,6 @@ export const reviews: Review[] = [
     country: 'Poland',
     rating: 5,
     tour: 'Tbilisi Old Town & Baths',
+    date: '6 days ago',
   },
 ];

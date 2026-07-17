@@ -9,10 +9,108 @@
   @include hairline(top);
 }
 
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.9rem;
+}
+
+.eyebrow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.05;
+
+  em {
+    font-style: italic;
+    color: var(--accent-bright);
+  }
+}
+
+// White Google-style summary chip.
+.summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 0.4rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+}
+
+.summaryG {
+  flex-shrink: 0;
+}
+
+.summaryText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.summaryTop {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #202124;
+  line-height: 1;
+}
+
+.summaryStars {
+  display: inline-flex;
+  gap: 1px;
+  color: #fbbc04;
+}
+
+.summaryMeta {
+  font-size: 0.82rem;
+  color: #5f6368;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.certified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  max-width: 62ch;
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.verifiedBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: #34a853;
+}
+
 /* CSS columns give an organic, hand-arranged masonry feel. */
 .masonry {
-  margin-top: clamp(2.75rem, 6vw, 4rem);
-  column-gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  column-gap: clamp(1.25rem, 2.5vw, 1.5rem);
   column-count: 1;
 
   @include up($bp-sm) {
@@ -26,5 +124,5 @@
 
 .cell {
   break-inside: avoid;
-  margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+  margin-bottom: clamp(1.25rem, 2.5vw, 1.5rem);
 }
