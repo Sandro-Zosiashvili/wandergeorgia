@@ -44,18 +44,37 @@ export default async function OpengraphImage() {
           height={630}
           style={{ position: 'absolute', inset: 0, width: 1200, height: 630, objectFit: 'cover' }}
         />
+        {/* Uniform darken so the bright snow doesn't wash out the logo.
+            Satori needs explicit dimensions on empty absolute layers. */}
         <div
           style={{
             position: 'absolute',
-            inset: 0,
+            top: 0,
+            left: 0,
+            width: 1200,
+            height: 630,
+            backgroundColor: 'rgba(8,7,6,0.58)',
+          }}
+        />
+        {/* Extra depth on the left where the logo + wordmark sit. */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: 1200,
+            height: 630,
             backgroundImage:
-              'linear-gradient(90deg, rgba(8,7,6,0.92) 0%, rgba(8,7,6,0.74) 40%, rgba(8,7,6,0.32) 64%, rgba(8,7,6,0.15) 100%)',
+              'linear-gradient(90deg, rgba(8,7,6,0.88) 0%, rgba(8,7,6,0.62) 46%, rgba(8,7,6,0.2) 100%)',
           }}
         />
         <div
           style={{
             position: 'absolute',
-            inset: 0,
+            top: 0,
+            left: 0,
+            width: 1200,
+            height: 630,
             display: 'flex',
             alignItems: 'center',
             gap: 44,
