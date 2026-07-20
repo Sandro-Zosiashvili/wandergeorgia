@@ -10,7 +10,9 @@
 .mark {
   height: 42px;
   flex-shrink: 0;
-  transition: transform 0.5s $ease-spring;
+  transition:
+    height 0.4s $ease-out,
+    transform 0.5s $ease-spring;
 }
 
 .markSvg {
@@ -35,6 +37,7 @@
   font-size: 1.2rem;
   font-weight: 500;
   color: var(--text);
+  transition: font-size 0.4s $ease-out;
 }
 
 .georgia {
@@ -45,6 +48,7 @@
   font-weight: 600;
   color: var(--accent-bright);
   padding-left: 0.1em;
+  transition: font-size 0.4s $ease-out;
 }
 
 .compact {

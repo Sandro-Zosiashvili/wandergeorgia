@@ -47,7 +47,7 @@ export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHero
       setIndex(((i % count) + count) % count);
       setBrowsingBoth(true);
       if (idleTimer.current) clearTimeout(idleTimer.current);
-      idleTimer.current = setTimeout(() => setBrowsingBoth(false), 3500);
+      idleTimer.current = setTimeout(() => setBrowsingBoth(false), 6000);
     },
     [count, setBrowsingBoth],
   );
