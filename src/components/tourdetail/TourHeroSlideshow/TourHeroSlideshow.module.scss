@@ -54,11 +54,30 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
   @include glass(rgba(10, 9, 8, 0.5));
 
   svg {
     color: var(--accent-bright);
     flex-shrink: 0;
+  }
+
+  // On phones the bottom band is tight (title + facts + dots). Keep the caption
+  // out of the way at rest and reveal it only while the visitor flips photos —
+  // exactly when knowing the day is useful. Desktop keeps it always on.
+  @include down($bp-md) {
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+  }
+}
+
+.captionOn {
+  @include down($bp-md) {
+    opacity: 1;
+    transform: none;
   }
 }
 

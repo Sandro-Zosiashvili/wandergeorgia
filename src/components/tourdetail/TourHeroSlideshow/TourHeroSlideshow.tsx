@@ -83,7 +83,7 @@ export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHero
         aria-hidden="true"
       />
 
-      <div className={styles.caption}>
+      <div className={`${styles.caption} ${browsing ? styles.captionOn : ''}`}>
         <Icon name="map-pin" size={15} />
         <span>{slides[index]!.label}</span>
       </div>
