@@ -24,7 +24,10 @@ const sans = Manrope({
 });
 
 export const metadata: Metadata = {
-    metadataBase: new URL(site.url),
+    metadataBase: new URL(
+        process.env.NEXT_PUBLIC_SITE_URL ??
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : site.url)
+    ),
     title: {
         default: `${site.name} — ${site.tagline}`,
         template: `%s · ${site.name}`,
