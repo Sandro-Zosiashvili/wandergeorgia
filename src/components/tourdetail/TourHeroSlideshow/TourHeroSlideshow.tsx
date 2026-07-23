@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ImagePosition } from '@/types/tour';
 import Icon from '@/components/ui/Icon/Icon';
+import TourPhotoGallery from '../TourPhotoGallery/TourPhotoGallery';
 import styles from './TourHeroSlideshow.module.scss';
 
 export interface HeroSlide {
@@ -25,13 +26,15 @@ interface TourHeroSlideshowProps {
 /**
  * Manual hero gallery for multi-day tours. All photos are preloaded and stacked,
  * so stepping through them is an instant CSS cross-fade — no lazy-load stutter,
- * no auto-advance. While browsing, the heavy overlay dims so the photo is
- * unobstructed; only the small "Day N · Place" caption stays.
+ * no auto-advance. Dots give a quick at-a-glance flip through days; the
+ * "Photos" pill is the one control that also opens the fullscreen gallery,
+ * on phones and desktop alike.
  */
 export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHeroSlideshowProps) {
   const count = slides.length;
   const [index, setIndex] = useState(0);
   const [browsing, setBrowsing] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const setBrowsingBoth = useCallback(
@@ -83,30 +86,6 @@ export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHero
         aria-hidden="true"
       />
 
-      <div className={`${styles.caption} ${browsing ? styles.captionOn : ''}`}>
-        <Icon name="map-pin" size={15} />
-        <span>{slides[index]!.label}</span>
-      </div>
-
-      <div className={styles.controls}>
-        <button
-          type="button"
-          className={`${styles.arrow} ${styles.prev}`}
-          onClick={() => go(index - 1)}
-          aria-label="Previous photo"
-        >
-          <Icon name="chevron-right" size={26} stroke={2.4} />
-        </button>
-        <button
-          type="button"
-          className={`${styles.arrow} ${styles.next}`}
-          onClick={() => go(index + 1)}
-          aria-label="Next photo"
-        >
-          <Icon name="chevron-right" size={26} stroke={2.4} />
-        </button>
-      </div>
-
       <div className={styles.dots} role="tablist" aria-label="Tour photos">
         {slides.map((s, i) => (
           <button
@@ -120,6 +99,25 @@ export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHero
           />
         ))}
       </div>
+
+      {/* The one photo control, phones and desktop alike. TourHero reserves
+          room in .facts so its text never wraps into this corner. */}
+      <button
+        type="button"
+        className={styles.galleryTrigger}
+        onClick={() => setGalleryOpen(true)}
+      >
+        <Icon name="images" size={15} />
+        <span>Photos</span>
+      </button>
+
+      <TourPhotoGallery
+        open={galleryOpen}
+        photos={slides}
+        index={index}
+        onIndexChange={setIndex}
+        onClose={() => setGalleryOpen(false)}
+      />
     </div>
   );
 }

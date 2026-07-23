@@ -64,6 +64,9 @@
   margin-bottom: 1.5rem;
   font-size: 0.85rem;
   color: var(--text-muted);
+  // The scrim thins out toward the middle of the hero, so a bright sky can
+  // wash this out. A soft shadow keeps it legible over any photo.
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
 
   a {
     transition: color 0.25s ease;
@@ -111,6 +114,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem 1.75rem;
+
+  // On phones the "Photos" pill floats over this same bottom-right corner.
+  // Reserving its width here means .facts wraps earlier and never runs under
+  // it, however long the city list or inclusion labels get — independent of
+  // exactly how many lines that takes.
+  @include down($bp-md) {
+    padding-right: 6.5rem;
+  }
 }
 
 .fact {

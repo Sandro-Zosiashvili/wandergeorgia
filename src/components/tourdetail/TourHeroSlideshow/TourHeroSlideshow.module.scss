@@ -34,115 +34,6 @@
   opacity: 0.3;
 }
 
-// Small "Day N · Place" chip — tucked into the bottom-right so it sits out of
-// the way of the title and reads as part of the gallery chrome.
-.caption {
-  position: absolute;
-  right: clamp(1rem, 5vw, 3.5rem);
-  bottom: clamp(1.1rem, 4vw, 2.1rem);
-  z-index: 4;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  max-width: 62%;
-  padding: 0.35rem 0.7rem;
-  border-radius: $radius-pill;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition:
-    opacity 0.35s ease,
-    transform 0.35s ease;
-  @include glass(rgba(10, 9, 8, 0.5));
-
-  svg {
-    color: var(--accent-bright);
-    flex-shrink: 0;
-  }
-
-  // On phones the bottom band is tight (title + facts + dots). Keep the caption
-  // out of the way at rest and reveal it only while the visitor flips photos —
-  // exactly when knowing the day is useful. Desktop keeps it always on.
-  @include down($bp-md) {
-    opacity: 0;
-    transform: translateY(6px);
-    pointer-events: none;
-  }
-}
-
-.captionOn {
-  @include down($bp-md) {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.controls {
-  display: contents;
-}
-
-.arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 4;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  color: var(--text);
-  cursor: pointer;
-  transition:
-    background-color 0.25s ease,
-    transform 0.25s ease;
-  @include glass(rgba(10, 9, 8, 0.42));
-  @include focus-ring;
-
-  &:hover {
-    background: rgba(10, 9, 8, 0.7);
-  }
-
-  // On phones the hero is a tall 4:5 crop and the title block grows upward
-  // from the bottom (it can reach ~32% down for a two-line title), so a
-  // vertically-centred arrow collides with the breadcrumb. Anchor the arrows
-  // to a fixed spot in the open sky instead — just below the fixed header
-  // and safely above the tallest realistic title block.
-  @include down($bp-md) {
-    top: 6rem;
-  }
-
-  @include up($bp-md) {
-    width: 54px;
-    height: 54px;
-  }
-}
-
-.prev {
-  left: clamp(0.75rem, 3vw, 1.75rem);
-
-  svg {
-    transform: rotate(180deg);
-  }
-
-  &:hover {
-    transform: translateY(-50%) translateX(-2px);
-  }
-}
-
-.next {
-  right: clamp(0.75rem, 3vw, 1.75rem);
-
-  &:hover {
-    transform: translateY(-50%) translateX(2px);
-  }
-}
-
 .dots {
   position: absolute;
   bottom: clamp(1.25rem, 4vw, 2.25rem);
@@ -153,7 +44,8 @@
   align-items: center;
   gap: 0.55rem;
 
-  // On phones the caption sits bottom-right, so left-align the dots to clear it.
+  // On phones, left-align rather than centre so dots read as part of the
+  // bottom-left chrome instead of floating mid-image.
   @include down($bp-md) {
     left: clamp(1.25rem, 5vw, 3.5rem);
     transform: none;
@@ -181,4 +73,44 @@
   width: 26px;
   border-radius: $radius-pill;
   background: var(--grad-gold);
+}
+
+// The one photo control, phones and desktop alike — reads unambiguously as
+// "there are more photos here" and opens the fullscreen gallery on tap.
+// Floating arrows over the hero either collided with the title (phones) or
+// just added visual noise (desktop) for a job this dedicated view does
+// properly. TourHero reserves room on the right of .facts so its text can
+// never wrap into this corner, however long the city/inclusion list gets.
+.galleryTrigger {
+  position: absolute;
+  right: clamp(1rem, 5vw, 3.5rem);
+  bottom: clamp(1.1rem, 4vw, 2.1rem);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: $radius-pill;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  @include glass(rgba(10, 9, 8, 0.5));
+  @include focus-ring;
+
+  svg {
+    color: var(--accent-bright);
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(10, 9, 8, 0.7);
+  }
+
+  @include up($bp-md) {
+    font-size: 0.85rem;
+    padding: 0.6rem 1.1rem;
+  }
 }

@@ -254,6 +254,16 @@ export const iconRegistry = {
       </>
     ),
   },
+  images: {
+    node: (
+      <>
+        <path d="M7 7V5.5A1.5 1.5 0 0 1 8.5 4H19a1.5 1.5 0 0 1 1.5 1.5V16a1.5 1.5 0 0 1-1.5 1.5h-1.5" />
+        <rect x="3" y="7" width="14" height="13" rx="1.8" />
+        <circle cx="7.7" cy="11.3" r="1.4" />
+        <path d="M3.8 17.3 8 13l2.5 2.5L14 12l2.9 3.8" />
+      </>
+    ),
+  },
 } satisfies Record<string, IconDef>;
 
 export type IconName = keyof typeof iconRegistry;
