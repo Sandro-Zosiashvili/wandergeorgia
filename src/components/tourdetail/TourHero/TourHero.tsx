@@ -67,10 +67,10 @@ export default function TourHero({ tour }: TourHeroProps) {
         <h1 className={styles.title}>{tour.title}</h1>
 
         <ul className={styles.facts}>
-          <li className={styles.fact}>
-            <Icon name="map-pin" size={17} />
-            {tour.city}
-          </li>
+          {/*<li className={styles.fact}>*/}
+          {/*  <Icon name="map-pin" size={17} />*/}
+          {/*  {tour.city}*/}
+          {/*</li>*/}
           <li className={styles.fact}>
             <Icon name="clock" size={17} />
             {tour.duration}

@@ -28,8 +28,7 @@
 .scrim {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(0deg, rgba(8, 7, 6, 0.95) 0%, rgba(8, 7, 6, 0.25) 55%, rgba(8, 7, 6, 0.5) 100%);
+  background: linear-gradient(0deg, rgba(8, 7, 6, 0.95) 0%, rgba(8, 7, 6, 0.25) 55%, rgba(8, 7, 6, 0.5) 100%);
 }
 
 .inner {
@@ -39,13 +38,13 @@
   max-width: 1240px;
   margin-inline: auto;
   padding: 8rem clamp(1.25rem, 5vw, 3.5rem) clamp(2.5rem, 5vw, 4rem);
-  transition:
-    opacity 0.45s ease,
-    transform 0.45s ease;
+  transition: opacity 0.45s ease,
+  transform 0.45s ease;
 
   @include down($bp-md) {
     padding-top: 5rem;
   }
+
 }
 
 // While the visitor flips through the hero slideshow, fade the title/facts out
@@ -67,6 +66,7 @@
   // The scrim thins out toward the middle of the hero, so a bright sky can
   // wash this out. A soft shadow keeps it legible over any photo.
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+
 
   a {
     transition: color 0.25s ease;
@@ -114,6 +114,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem 1.75rem;
+
 
   // On phones the "Photos" pill floats over this same bottom-right corner.
   // Reserving its width here means .facts wraps earlier and never runs under
