@@ -41,7 +41,13 @@ export const metadata: Metadata = {
     ],
     openGraph: {
         siteName: "WanderGeorgia",
-        images: ["/assets/icons/gramp-image.png"],
+        images: [
+            {
+                url: "/assets/icons/gramp-image.png",
+                width: 1200,
+                height: 630,
+            },
+        ],
     },
 };
 
