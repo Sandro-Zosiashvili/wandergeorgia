@@ -126,6 +126,9 @@ video {
   display: block;
   max-width: 100%;
 }
+svg[width][height] {
+  max-width: none;
+}
 
 button,
 input,

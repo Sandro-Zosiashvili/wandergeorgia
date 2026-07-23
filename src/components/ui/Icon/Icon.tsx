@@ -33,7 +33,14 @@ export default function Icon({
       // unrelated class-based CSS rule can silently override them and the
       // `size` prop stops having any visible effect. Inline style always
       // wins short of `!important`, so this can't happen again.
-      style={{ flexShrink: 0, width: size, height: size }}
+      style={{
+        flexShrink: 0,
+        width: size,
+        height: size,
+        minWidth: size,
+        minHeight: size,
+        maxWidth: 'none',
+      }}
       width={size}
       height={size}
       viewBox="0 0 24 24"
