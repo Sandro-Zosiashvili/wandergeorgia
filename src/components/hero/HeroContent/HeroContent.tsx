@@ -20,7 +20,7 @@ export default function HeroContent() {
         <h1 className={styles.title}>
           The Caucasus,
           <br />
-          <em>unhurried</em> &amp; yours alone.
+          <em>unhurried </em> &amp; yours alone.
         </h1>
       </Reveal>
 
