@@ -40,11 +40,8 @@ export const metadata: Metadata = {
         'Caucasus travel',
     ],
     openGraph: {
-        title: `${site.name} — ${site.tagline}`,
-        description: site.description,
-        type: 'website',
-        locale: 'en',
-        siteName: site.name,
+        siteName: "WanderGeorgia",
+        images: ["/assets/icons/gramp-image-2.png"],
     },
 };
 
