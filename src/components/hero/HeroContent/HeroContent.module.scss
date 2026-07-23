@@ -44,13 +44,39 @@
   line-height: 1.55;
   max-width: 42ch;
   margin-bottom: 1.85rem;
+
+  // Four lines of supporting copy is a lot to read before reaching a button
+  // on a phone screen. Clamp to two — full text stays for desktop and for
+  // anyone reading via assistive tech, which ignores the visual clamp.
+  @include down($bp-md) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin-bottom: 1.4rem;
+  }
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 1rem;
   margin-bottom: 2rem;
+}
+
+.packagesDesktop {
+  @include down($bp-md) {
+    display: none;
+  }
+}
+
+.packagesMobile {
+  display: none;
+
+  @include down($bp-md) {
+    display: inline-flex;
+  }
 }
 
 .trust {
@@ -69,6 +95,16 @@
   svg {
     color: var(--accent);
     flex-shrink: 0;
+  }
+
+  // Airport transfers and the private guide are already named in the
+  // subhead — repeating them as their own wrapped lines is what makes this
+  // stack feel long on a phone. The rating is the one fact that isn't
+  // stated elsewhere, so it's what stays.
+  @include down($bp-md) {
+    &:not(:first-child) {
+      display: none;
+    }
   }
 }
 

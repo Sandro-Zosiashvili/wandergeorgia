@@ -37,7 +37,24 @@ export default function HeroContent() {
           <Button href="/#day-tours" size="lg" icon="arrow-right">
             Explore tours
           </Button>
-          <Button href="/#packages" size="lg" variant="outline">
+          {/* Same link, two weights — a full outline pill reads as a second
+              equally-important choice on phones, adding real height to an
+              already tall stack. A quieter ghost link keeps it reachable
+              without competing with the primary CTA. Desktop is untouched. */}
+          <Button
+            href="/#packages"
+            size="lg"
+            variant="outline"
+            className={styles.packagesDesktop}
+          >
+            Multi-day packages
+          </Button>
+          <Button
+            href="/#packages"
+            size="sm"
+            variant="ghost"
+            className={styles.packagesMobile}
+          >
             Multi-day packages
           </Button>
         </div>
