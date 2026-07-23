@@ -28,7 +28,12 @@ export default function Icon({
   return (
     <svg
       className={className}
-      style={{ flexShrink: 0 }}
+      // Inline style, not just the width/height attributes below: SVG
+      // presentation attributes carry almost no cascade weight, so any
+      // unrelated class-based CSS rule can silently override them and the
+      // `size` prop stops having any visible effect. Inline style always
+      // wins short of `!important`, so this can't happen again.
+      style={{ flexShrink: 0, width: size, height: size }}
       width={size}
       height={size}
       viewBox="0 0 24 24"
