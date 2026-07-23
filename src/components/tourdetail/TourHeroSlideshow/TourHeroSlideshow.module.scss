@@ -108,9 +108,13 @@
     background: rgba(10, 9, 8, 0.7);
   }
 
-  // Centre the arrows over the photo on phones.
+  // On phones the hero is a tall 4:5 crop and the title block grows upward
+  // from the bottom (it can reach ~32% down for a two-line title), so a
+  // vertically-centred arrow collides with the breadcrumb. Anchor the arrows
+  // to a fixed spot in the open sky instead — just below the fixed header
+  // and safely above the tallest realistic title block.
   @include down($bp-md) {
-    top: 47%;
+    top: 6rem;
   }
 
   @include up($bp-md) {
