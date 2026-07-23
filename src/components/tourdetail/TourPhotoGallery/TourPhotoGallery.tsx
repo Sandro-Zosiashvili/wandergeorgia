@@ -163,7 +163,7 @@ export default function TourPhotoGallery({
                   onClick={onClose}
                   aria-label="Close gallery"
                 >
-                  <Icon name="close" size={20} />
+                  <Icon name="close" size={22} />
                 </button>
               </div>
 
@@ -194,7 +194,7 @@ export default function TourPhotoGallery({
                       onClick={() => go(index - 1)}
                       aria-label="Previous photo"
                     >
-                      <Icon name="chevron-right" size={22} stroke={2.2} />
+                      <Icon name="chevron-right" size={26} stroke={2.2} />
                     </button>
                     <button
                       type="button"
@@ -202,7 +202,7 @@ export default function TourPhotoGallery({
                       onClick={() => go(index + 1)}
                       aria-label="Next photo"
                     >
-                      <Icon name="chevron-right" size={22} stroke={2.2} />
+                      <Icon name="chevron-right" size={26} stroke={2.2} />
                     </button>
                   </>
                 ) : null}
