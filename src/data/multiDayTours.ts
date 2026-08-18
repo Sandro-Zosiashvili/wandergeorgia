@@ -374,4 +374,150 @@ export const multiDayTours: Tour[] = [
     ],
     included: [privateGuide, privateVehicle, accommodation, wineTasting, meals, ...airportTransfers],
   },
+  {
+    slug: 'best-of-georgia-13-day',
+    type: 'multi-day',
+    title: 'Ultimate Georgia Adventure — 13 Days',
+    city: 'Tbilisi · Kakheti · Tusheti · Shatili · Kazbegi · Kutaisi · Borjomi',
+    duration: '13 days / 12 nights',
+    days: 13,
+    price: 5950,
+    // Fallbacks — the hero itself is a slideshow of the day photos below.
+    heroImage: unsplash('photo-1720368450579-b182d14cb270'),
+    cardImage: unsplash('photo-1720368450579-b182d14cb270', 1400),
+    shortDescription:
+      'From ancient cities to the wild Caucasus — UNESCO heritage sites, world-famous wine, remote mountain villages and the untouched beauty of the Greater Caucasus, all in one unforgettable private journey.',
+    overview:
+      "Discover the very best of Georgia on this unforgettable thirteen-day journey. Explore UNESCO World Heritage Sites, taste world-famous Georgian wine, wander through charming mountain villages, and experience the untouched beauty of the Greater Caucasus. From the vibrant streets of Tbilisi to the remote regions of Tusheti and Shatili, this tour offers the perfect combination of culture, history, nature and adventure. Best travelled June to September, when the high mountain passes are open.",
+    highlights: [
+      'Private transportation throughout',
+      'English-speaking local driver-guide',
+      'Tusheti — 2 nights',
+      'Shatili — 1 night',
+      'Kazbegi & Gergeti Trinity Church',
+      'Kakheti wine region & wine tasting',
+      'Tbilisi city tour',
+      'Borjomi National Park',
+      'Prometheus Cave & Martvili Canyon',
+      'UNESCO World Heritage Sites',
+    ],
+    // Kept for older UI paths; the day-by-day plan lives in `itinerary`.
+    locations: [],
+    itinerary: [
+      {
+        day: 'Day 1',
+        title: 'Welcome to Georgia',
+        highlights: ['Airport pickup', 'Hotel check-in', 'Evening walk in Old Tbilisi'],
+        description:
+          'Arrive in Tbilisi, where your private guide meets you at the airport. After checking into your hotel, enjoy a relaxing evening exploring the charming streets of Old Tbilisi, filled with colorful balconies, cozy cafés and breathtaking city views.',
+        image: PHOTO.tbilisi,
+      },
+      {
+        day: 'Day 2',
+        title: 'Discover Tbilisi',
+        highlights: [
+          'Chronicles of Georgia',
+          'Holy Trinity Cathedral',
+          'Metekhi Church',
+          'Narikala Fortress',
+          'Mother of Georgia',
+          'Sulfur Baths District',
+          'Leghvtakhevi Waterfall',
+        ],
+        description:
+          "Explore Georgia's fascinating capital — the monumental Chronicles of Georgia, Holy Trinity Cathedral, Metekhi Church, Narikala Fortress and the iconic Mother of Georgia statue above the rooftops, then down into the Sulfur Baths district and the hidden Leghvtakhevi Waterfall.",
+        image: unsplash(photos.tbilisiAerial, 2000),
+      },
+      {
+        day: 'Day 3',
+        title: 'Kakheti Wine Region',
+        highlights: ['Bodbe Monastery', 'Sighnaghi', 'Traditional wine tasting'],
+        description:
+          "Head east into Kakheti, Georgia's wine heartland — the peaceful Bodbe Monastery, the hilltop town of Sighnaghi over the Alazani Valley, and a traditional qvevri wine tasting. Overnight in Telavi.",
+        image: unsplash('photo-1704278189296-b9bc26f49ceb', 2000),
+      },
+      {
+        day: 'Day 4',
+        title: 'Into the Wild Tusheti',
+        highlights: ['Scenic drive via Abano Pass', 'Omalo village', 'Medieval defensive towers'],
+        description:
+          'One of the most scenic drives in the Caucasus, crossing the breathtaking Abano Pass. Reach Omalo, the heart of Tusheti, surrounded by dramatic mountains and medieval defensive towers. Overnight in Omalo.',
+        image: unsplash('photo-1616761304764-fea127be45d8', 2000),
+      },
+      {
+        day: 'Day 5',
+        title: 'Hidden Villages of Tusheti',
+        highlights: ['Dartlo village', 'Kvavlo village', 'Parsma village', 'Traditional Tushetian architecture'],
+        description:
+          'Spend the day exploring the untouched villages of Dartlo, Kvavlo and Parsma. Discover ancient stone towers, traditional Tushetian architecture and some of the most spectacular mountain landscapes in Georgia. Overnight in Omalo.',
+        image: unsplash('photo-1746472603844-b5282b3c9c45', 2000),
+      },
+      {
+        day: 'Day 6',
+        title: 'Return to Tbilisi',
+        highlights: ['Scenic drive back from Tusheti', 'Free evening in Tbilisi'],
+        description:
+          'Leave the mountains behind and enjoy another spectacular drive back to Tbilisi. Spend the evening relaxing, exploring the city at your own pace, or enjoying traditional Georgian cuisine.',
+        image: PHOTO.tbilisi,
+      },
+      {
+        day: 'Day 7',
+        title: 'Journey to Shatili',
+        highlights: ['Datvisjvari Pass', 'Anatori Necropolis', 'Shatili Medieval Fortress'],
+        description:
+          "Travel deep into the Khevsureti region via the dramatic Datvisjvari Pass. Visit the mysterious Anatori Necropolis before arriving at the medieval fortress village of Shatili, one of Georgia's most unique mountain settlements. Overnight in Shatili.",
+        image: unsplash('photo-1720368450579-b182d14cb270', 2000),
+      },
+      {
+        day: 'Day 8',
+        title: 'Scenic Drive to Kazbegi',
+        highlights: ['Georgian Military Highway', 'Gudauri Panorama', 'Arrival in Stepantsminda'],
+        description:
+          'Drive along the legendary Georgian Military Highway. Stop at the spectacular Gudauri Panorama and enjoy magnificent mountain scenery before arriving in the picturesque town of Stepantsminda (Kazbegi).',
+        image: PHOTO.kazbegi,
+      },
+      {
+        day: 'Day 9',
+        title: 'Explore Kazbegi',
+        highlights: ['Gergeti Trinity Church', 'Gveleti Waterfall', 'Dariali Gorge'],
+        description:
+          'Visit the iconic Gergeti Trinity Church, standing proudly beneath Mount Kazbek. Continue to the beautiful Gveleti Waterfall and the dramatic Dariali Gorge near the Georgian–Russian border.',
+        image: unsplash('photo-1594766722982-fb4cd139ee7c', 2000),
+      },
+      {
+        day: 'Day 10',
+        title: 'From Mountains to Western Georgia',
+        highlights: ['Jinvali Reservoir', 'Ananuri Fortress', 'Drive to Kutaisi'],
+        description:
+          'Stop at the turquoise waters of the Jinvali Reservoir and explore the historic Ananuri Fortress before continuing west to Kutaisi, one of the oldest continuously inhabited cities in Europe.',
+        image: unsplash('photo-1715170081310-4f4abb261117', 2000),
+      },
+      {
+        day: 'Day 11',
+        title: 'Natural Wonders',
+        highlights: ['Prometheus Cave', 'Martvili Canyon'],
+        description:
+          "Discover two of western Georgia's greatest natural attractions: the magical Prometheus Cave, filled with colorful underground formations, and Martvili Canyon, where emerald waters flow through stunning limestone cliffs.",
+        image: PHOTO.canyon,
+      },
+      {
+        day: 'Day 12',
+        title: 'Borjomi & Mtskheta',
+        highlights: ['Borjomi National Park', 'Jvari Monastery', 'Svetitskhoveli Cathedral'],
+        description:
+          'Visit Borjomi, famous for its mineral springs and beautiful national park. On the way back to Tbilisi, explore the ancient capital of Mtskheta, including the UNESCO-listed Jvari Monastery and Svetitskhoveli Cathedral.',
+        image: unsplash('photo-1585790638503-b783783bc94c', 2000),
+      },
+      {
+        day: 'Day 13',
+        title: 'Departure',
+        highlights: ['Airport transfer'],
+        description:
+          'After an unforgettable journey across Georgia, enjoy your airport transfer and depart with incredible memories of the Caucasus.',
+        image: unsplash(photos.tbilisiAerial, 2000),
+      },
+    ],
+    included: HIGHLIGHTS_INCLUDED,
+    notIncluded: HIGHLIGHTS_NOT_INCLUDED,
+  },
 ];
