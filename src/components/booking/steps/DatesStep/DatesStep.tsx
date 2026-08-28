@@ -37,10 +37,12 @@ export default function DatesStep({ data, errors, update }: StepProps) {
         label="Flight details"
         multiline
         rows={3}
+        required
         value={data.flightDetails}
         onChange={(v) => update('flightDetails', v)}
-        placeholder="e.g. TK378 arriving 14:20, departing TK379 06:40 (optional)"
-        hint="Optional — share your flight numbers and times so we can be at the gate."
+        placeholder="e.g. TK378 arriving 14:20, departing TK379 06:40"
+        hint="Share your flight numbers and times so we can be at the gate."
+        error={errors.flightDetails}
       />
 
       <p className={styles.note}>

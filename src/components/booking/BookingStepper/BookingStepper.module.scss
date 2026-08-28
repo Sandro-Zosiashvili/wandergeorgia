@@ -12,6 +12,10 @@
   &::-webkit-scrollbar {
     display: none;
   }
+
+  @include down($bp-sm) {
+    gap: 0;
+  }
 }
 
 .step {
@@ -47,6 +51,13 @@
   color: var(--text-muted);
   background: var(--ink-800);
   transition: all 0.3s ease;
+
+  // Shrink the dots on small screens so all five steps fit without scrolling.
+  @include down($bp-sm) {
+    width: 26px;
+    height: 26px;
+    font-size: 0.8rem;
+  }
 }
 
 .label {
@@ -66,6 +77,11 @@
   min-width: 16px;
   margin-inline: 0.5rem;
   background: var(--hairline);
+
+  @include down($bp-sm) {
+    min-width: 8px;
+    margin-inline: 0.2rem;
+  }
 }
 
 /* States */

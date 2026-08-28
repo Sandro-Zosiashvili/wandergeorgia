@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import Icon, { type IconName } from '../Icon/Icon';
 import styles from './TextField.module.scss';
 
@@ -33,6 +33,16 @@ export default function TextField(props: Props) {
   const errorId = `${id}-error`;
   const hintId = `${id}-hint`;
 
+  // Auto-grow the textarea to fit its content (no manual resize handle).
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (!props.multiline) return;
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, [value, props.multiline]);
+
   const describedBy = [error ? errorId : null, hint ? hintId : null]
     .filter(Boolean)
     .join(' ') || undefined;
@@ -52,11 +62,13 @@ export default function TextField(props: Props) {
         {props.multiline ? (
           <textarea
             id={id}
+            ref={textareaRef}
             className={[styles.input, styles.textarea].join(' ')}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             rows={props.rows ?? 3}
+            required={required}
             aria-invalid={!!error}
             aria-describedby={describedBy}
           />

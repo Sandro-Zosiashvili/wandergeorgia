@@ -1,6 +1,7 @@
 @use '../../../styles/mixins' as *;
 
 .summary {
+  min-width: 0;
   border-radius: $radius-lg;
   overflow: hidden;
   background: var(--surface-raised);

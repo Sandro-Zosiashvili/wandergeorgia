@@ -58,6 +58,9 @@ function validateStep(step: BookingStepId, data: BookingData): BookingErrors {
     ) {
       errors.departureDate = 'Departure must be on or after arrival.';
     }
+    if (!data.flightDetails.trim()) {
+      errors.flightDetails = 'Please share your flight details.';
+    }
   }
 
   if (step === 'details') {

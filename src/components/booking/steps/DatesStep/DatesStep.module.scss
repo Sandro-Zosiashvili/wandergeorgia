@@ -5,7 +5,9 @@
   gap: 1.25rem;
   grid-template-columns: 1fr;
 
-  @include up($bp-sm) {
+  // Two columns only once there's real room — a native date input (icon +
+  // "dd.mm.yyyy" + picker) gets cramped in a half-width column on phones.
+  @include up($bp-md) {
     grid-template-columns: 1fr 1fr;
   }
 }
