@@ -1,31 +1,103 @@
 @use '../../../styles/mixins' as *;
 
-.filter {
+.wrap {
+  position: relative;
+
+  // Edge fades hint that the rail scrolls — shown only when there's overflow
+  // in that direction (toggled from JS).
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2.75rem;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(to right, var(--ink-900), transparent);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(to left, var(--ink-900), transparent);
+  }
+
+  &.fadeStart::before {
+    opacity: 1;
+  }
+
+  &.fadeEnd::after {
+    opacity: 1;
+  }
+}
+
+.rail {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.55rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 0.25rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-block: 0.15rem; // breathing room so focus rings aren't clipped
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  // Desktop has room — let the chips wrap and sit to the right, no scrolling.
+  @include up($bp-lg) {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    overflow: visible;
+  }
 }
 
 .pill {
-  padding: 0.6rem 1.25rem;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.05rem;
   border-radius: $radius-pill;
   font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 600;
+  white-space: nowrap;
   color: var(--text-muted);
-  background: transparent;
+  background: var(--surface-raised);
   border: 1px solid var(--hairline-soft);
   transition:
-    color 0.3s ease,
-    border-color 0.3s ease,
-    background-color 0.3s ease,
-    transform 0.3s $ease-out;
+    color 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.25s $ease-out;
   @include focus-ring;
+
+  .pin {
+    color: var(--accent);
+    opacity: 0.7;
+    transition:
+      color 0.25s ease,
+      opacity 0.25s ease;
+  }
 
   &:hover {
     color: var(--text);
-    border-color: var(--hairline);
-    transform: translateY(-2px);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+
+    .pin {
+      opacity: 1;
+    }
   }
 }
 
@@ -35,7 +107,16 @@
   border-color: transparent;
   box-shadow: var(--shadow-gold);
 
+  .pin {
+    color: var(--ink-900);
+    opacity: 0.85;
+  }
+
   &:hover {
     color: var(--ink-900);
+
+    .pin {
+      color: var(--ink-900);
+    }
   }
 }
