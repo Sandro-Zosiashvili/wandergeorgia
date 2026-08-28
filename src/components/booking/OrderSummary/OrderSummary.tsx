@@ -16,7 +16,6 @@ interface OrderSummaryProps {
 /** Sticky order summary shown beside the booking steps. */
 export default function OrderSummary({ tour, data, total }: OrderSummaryProps) {
   const isMultiDay = tour.type === 'multi-day';
-  const unitLabel = isMultiDay ? 'per person' : 'group price';
 
   return (
     <aside className={styles.summary} aria-label="Order summary">
@@ -37,8 +36,8 @@ export default function OrderSummary({ tour, data, total }: OrderSummaryProps) {
 
         <dl className={styles.lines}>
           <div className={styles.line}>
-            <dt>{formatGEL(tour.price)} · {unitLabel}</dt>
-            <dd>{isMultiDay ? `× ${data.travelers}` : formatGEL(tour.price)}</dd>
+            <dt>Tour price</dt>
+            <dd>{formatGEL(tour.price)}</dd>
           </div>
           <div className={styles.line}>
             <dt>Travelers</dt>

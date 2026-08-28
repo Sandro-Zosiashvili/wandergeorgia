@@ -89,6 +89,24 @@
   }
 }
 
+.error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: $radius-sm;
+  background: color-mix(in srgb, crimson 12%, transparent);
+  border: 1px solid color-mix(in srgb, crimson 35%, transparent);
+  color: var(--text);
+  font-size: 0.88rem;
+  line-height: 1.5;
+
+  svg {
+    color: crimson;
+    flex-shrink: 0;
+  }
+}
+
 /* ── Success state ── */
 .success {
   display: flex;

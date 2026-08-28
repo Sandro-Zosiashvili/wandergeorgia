@@ -8,14 +8,22 @@ import styles from './PaymentStep.module.scss';
 interface PaymentStepProps {
   total: number;
   isComplete: boolean;
-  onComplete: () => void;
+  isSubmitting: boolean;
+  submitError: string | null;
+  onSubmit: () => void;
 }
 
 /**
- * Final step — UI stops here on purpose. "Continue to payment" simulates the
- * hand-off to a real gateway (Stripe / Georgian bank), which is wired up later.
+ * Final step — no online payment. Submitting sends the request to our backend,
+ * which emails the team (full details) and the traveler (a confirmation copy).
  */
-export default function PaymentStep({ total, isComplete, onComplete }: PaymentStepProps) {
+export default function PaymentStep({
+  total,
+  isComplete,
+  isSubmitting,
+  submitError,
+  onSubmit,
+}: PaymentStepProps) {
   if (isComplete) {
     return (
       <StepShell title="Request received">
@@ -23,11 +31,11 @@ export default function PaymentStep({ total, isComplete, onComplete }: PaymentSt
           <span className={styles.successIcon} aria-hidden="true">
             <Icon name="check" size={34} />
           </span>
-          <h3 className={styles.successTitle}>Thank you — your dates are reserved.</h3>
+          <h3 className={styles.successTitle}>Thank you — your request is on its way.</h3>
           <p className={styles.successText}>
-            This is a demo checkout, so no payment was taken. In the live site
-            you&apos;ll continue to a secure payment provider here. Our team would
-            confirm your private tour within 24 hours.
+            We&apos;ve emailed you a confirmation and our team will get back to you
+            within 24 hours to finalise your private tour. No payment is taken now —
+            you&apos;ll arrange it directly with us.
           </p>
           <div className={styles.successActions}>
             <Button href="/" variant="outline" icon="arrow-right">
@@ -44,34 +52,34 @@ export default function PaymentStep({ total, isComplete, onComplete }: PaymentSt
 
   return (
     <StepShell
-      title="Payment"
-      description="Secure checkout is the final step. Card processing will be handled by a trusted payment provider."
+      title="Confirm your request"
+      description="Send us your trip details and we'll reply within 24 hours to confirm everything. No payment is required now."
     >
       <div className={styles.totalBox}>
-        <span className={styles.totalLabel}>Amount due</span>
+        <span className={styles.totalLabel}>Estimated total</span>
         <span className={styles.totalValue}>{formatGEL(total)}</span>
       </div>
 
-      <div className={styles.placeholder} aria-hidden="true">
-        <div className={styles.cardRow}>
-          <Icon name="shield" size={18} />
-          <span>Card details</span>
-          <span className={styles.badge}>Secured</span>
-        </div>
-        <div className={styles.fakeInput} />
-        <div className={styles.fakeInputRow}>
-          <div className={styles.fakeInput} />
-          <div className={styles.fakeInput} />
-        </div>
-      </div>
+      {submitError ? (
+        <p className={styles.error} role="alert">
+          <Icon name="shield" size={16} />
+          {submitError}
+        </p>
+      ) : null}
 
-      <Button size="lg" icon="arrow-right" fullWidth onClick={onComplete}>
-        Continue to payment
+      <Button
+        size="lg"
+        icon="arrow-right"
+        fullWidth
+        onClick={onSubmit}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Sending…' : 'Send booking request'}
       </Button>
 
       <p className={styles.fine}>
         <Icon name="shield" size={15} />
-        Demo only — no card is processed. Questions? Call {site.contact.phone}.
+        We only use your details to arrange this tour. Questions? Call {site.contact.phone}.
       </p>
     </StepShell>
   );
