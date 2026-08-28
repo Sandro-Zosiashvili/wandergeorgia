@@ -20,6 +20,11 @@
   background: var(--surface-raised);
   border: 1px solid var(--hairline-soft);
 
+  // Grid items default to min-width:auto and refuse to shrink below their
+  // content — which pushes the whole page wider on narrow screens. Allow it
+  // to shrink to the track so nothing overflows horizontally.
+  min-width: 0;
+
   // Summary appears above the form on mobile for context.
   order: 1;
 
