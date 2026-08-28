@@ -76,7 +76,13 @@ export default function TextField(props: Props) {
           <input
             id={id}
             type={props.type ?? 'text'}
-            className={[styles.input, icon ? styles.withIcon : ''].filter(Boolean).join(' ')}
+            className={[
+              styles.input,
+              icon ? styles.withIcon : '',
+              props.type === 'date' && !value ? styles.dateEmpty : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
@@ -86,6 +92,19 @@ export default function TextField(props: Props) {
             aria-describedby={describedBy}
           />
         )}
+
+        {/* Native date inputs show no placeholder on iOS Safari, so we render
+            our own visible one while the field is empty. */}
+        {!props.multiline && props.type === 'date' && !value ? (
+          <span
+            className={[styles.datePlaceholder, icon ? styles.datePlaceholderIcon : '']
+              .filter(Boolean)
+              .join(' ')}
+            aria-hidden="true"
+          >
+            {placeholder ?? 'Select a date'}
+          </span>
+        ) : null}
       </div>
 
       {hint && !error ? (

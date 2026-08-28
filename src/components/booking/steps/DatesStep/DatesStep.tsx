@@ -17,6 +17,7 @@ export default function DatesStep({ data, errors, update }: StepProps) {
           type="date"
           icon="calendar"
           required
+          placeholder="Select arrival date"
           value={data.arrivalDate}
           onChange={(v) => update('arrivalDate', v)}
           error={errors.arrivalDate}
@@ -26,6 +27,7 @@ export default function DatesStep({ data, errors, update }: StepProps) {
           type="date"
           icon="calendar"
           required
+          placeholder="Select departure date"
           value={data.departureDate}
           onChange={(v) => update('departureDate', v)}
           error={errors.departureDate}

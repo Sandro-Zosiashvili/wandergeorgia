@@ -89,6 +89,30 @@
   }
 }
 
+// While empty, hide the browser's native format text (e.g. Chrome's
+// "dd.mm.yyyy") so it doesn't clash with our own placeholder overlay below.
+.input.dateEmpty {
+  &::-webkit-datetime-edit {
+    color: transparent;
+  }
+}
+
+// Our own placeholder, shown over an empty date input (works on iOS too).
+.datePlaceholder {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: var(--text-faint);
+  font-size: 0.98rem;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.datePlaceholderIcon {
+  left: 2.7rem;
+}
+
 .withIcon {
   padding-left: 2.7rem;
 }
