@@ -63,6 +63,32 @@
   }
 }
 
+/**
+ * Native date inputs render very differently on iOS Safari vs desktop Chrome.
+ * On iOS the empty "mm/dd/yyyy" hint is drawn in a system colour that's
+ * invisible on our dark field, so the input looks blank. Force the internal
+ * date-edit text to our light colour, keep it left-aligned, and give the field
+ * a consistent height so it matches the other inputs and never collapses.
+ */
+.input[type='date'] {
+  min-height: 3.05rem;
+  // Ensure the value/placeholder sits at the start, not centred.
+  &::-webkit-date-and-time-value {
+    text-align: left;
+    margin: 0;
+  }
+
+  &::-webkit-datetime-edit,
+  &::-webkit-datetime-edit-fields-wrapper,
+  &::-webkit-datetime-edit-text,
+  &::-webkit-datetime-edit-month-field,
+  &::-webkit-datetime-edit-day-field,
+  &::-webkit-datetime-edit-year-field {
+    color: var(--text);
+    padding: 0;
+  }
+}
+
 .withIcon {
   padding-left: 2.7rem;
 }
