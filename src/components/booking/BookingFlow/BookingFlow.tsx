@@ -20,7 +20,19 @@ interface BookingFlowProps {
 /** Orchestrates the multi-step booking UI: stepper, animated steps, summary. */
 export default function BookingFlow({ tour }: BookingFlowProps) {
   const booking = useBooking(tour);
-  const { data, errors, step, stepIndex, isFirst, isLast, isComplete, total, update } = booking;
+  const {
+    data,
+    errors,
+    step,
+    stepIndex,
+    isFirst,
+    isLast,
+    isComplete,
+    isSubmitting,
+    submitError,
+    total,
+    update,
+  } = booking;
 
   const stepProps = { tour, data, errors, update };
 
@@ -34,9 +46,15 @@ export default function BookingFlow({ tour }: BookingFlowProps) {
         return <DetailsStep {...stepProps} />;
       case 'review':
         return <ReviewStep {...stepProps} />;
-      case 'payment':
+      case 'confirm':
         return (
-          <PaymentStep total={total} isComplete={isComplete} onComplete={booking.complete} />
+          <PaymentStep
+            total={total}
+            isComplete={isComplete}
+            isSubmitting={isSubmitting}
+            submitError={submitError}
+            onSubmit={booking.submit}
+          />
         );
     }
   };

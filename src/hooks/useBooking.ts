@@ -3,15 +3,18 @@
 import { useCallback, useMemo, useState } from 'react';
 import type { Tour } from '@/types/tour';
 
-export type BookingStepId = 'travelers' | 'dates' | 'details' | 'review' | 'payment';
+export type BookingStepId = 'travelers' | 'dates' | 'details' | 'review' | 'confirm';
 
 export const bookingSteps: { id: BookingStepId; label: string }[] = [
   { id: 'travelers', label: 'Travelers' },
   { id: 'dates', label: 'Dates' },
   { id: 'details', label: 'Your details' },
   { id: 'review', label: 'Review' },
-  { id: 'payment', label: 'Payment' },
+  { id: 'confirm', label: 'Confirm' },
 ];
+
+/** Base URL of the NestJS booking API. Override per environment. */
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 export interface BookingData {
   travelers: number;
@@ -75,12 +78,17 @@ export interface UseBookingResult {
   isFirst: boolean;
   isLast: boolean;
   isComplete: boolean;
+  /** True while the request is in flight to the backend. */
+  isSubmitting: boolean;
+  /** User-facing error message if the submission failed, else null. */
+  submitError: string | null;
   total: number;
   update: <K extends keyof BookingData>(key: K, value: BookingData[K]) => void;
   next: () => void;
   back: () => void;
   goTo: (index: number) => void;
-  complete: () => void;
+  /** Send the booking to the backend, which emails the admin + customer. */
+  submit: () => Promise<void>;
 }
 
 /**
@@ -92,6 +100,8 @@ export function useBooking(tour: Tour): UseBookingResult {
   const [stepIndex, setStepIndex] = useState(0);
   const [errors, setErrors] = useState<BookingErrors>({});
   const [isComplete, setIsComplete] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const step = bookingSteps[stepIndex]!.id;
 
@@ -127,13 +137,41 @@ export function useBooking(tour: Tour): UseBookingResult {
     [stepIndex],
   );
 
-  const complete = useCallback(() => setIsComplete(true), []);
+  // Flat price — the same regardless of how many travelers are added.
+  // (A per-person / group pricing model can be layered in here later.)
+  const total = useMemo(() => tour.price, [tour.price]);
 
-  // Price model: multi-day is per person, one-day is a flat group price.
-  const total = useMemo(() => {
-    if (tour.type === 'multi-day') return tour.price * Math.max(1, data.travelers);
-    return tour.price;
-  }, [tour.type, tour.price, data.travelers]);
+  const submit = useCallback(async () => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+    try {
+      const res = await fetch(`${API_URL}/booking`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tourTitle: tour.title,
+          tourSlug: tour.slug,
+          tourType: tour.type,
+          travelers: data.travelers,
+          arrivalDate: data.arrivalDate,
+          departureDate: data.departureDate,
+          flightDetails: data.flightDetails,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          total,
+        }),
+      });
+      if (!res.ok) throw new Error(`Request failed (${res.status})`);
+      setIsComplete(true);
+    } catch {
+      setSubmitError(
+        'We couldn’t send your request just now. Please try again, or reach us on WhatsApp.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [tour, data, total]);
 
   return {
     data,
@@ -143,11 +181,13 @@ export function useBooking(tour: Tour): UseBookingResult {
     isFirst: stepIndex === 0,
     isLast: stepIndex === bookingSteps.length - 1,
     isComplete,
+    isSubmitting,
+    submitError,
     total,
     update,
     next,
     back,
     goTo,
-    complete,
+    submit,
   };
 }
