@@ -90,6 +90,19 @@ export default function TextField(props: Props) {
             required={required}
             aria-invalid={!!error}
             aria-describedby={describedBy}
+            // We hide the browser's native calendar button (we show our own
+            // icon on the left), so open the picker when the field is clicked.
+            onClick={
+              props.type === 'date'
+                ? (e) => {
+                    try {
+                      e.currentTarget.showPicker();
+                    } catch {
+                      /* not supported / already open — ignore */
+                    }
+                  }
+                : undefined
+            }
           />
         )}
 
@@ -104,6 +117,14 @@ export default function TextField(props: Props) {
           >
             {placeholder ?? 'Select a date'}
           </span>
+        ) : null}
+
+        {/* Our own gold calendar affordance on the right. The browser's native
+            indicator only renders on desktop (iOS hides it), so we draw our own
+            for a consistent look on every device; the field opens the picker on
+            click. */}
+        {!props.multiline && props.type === 'date' ? (
+          <Icon name="calendar" size={18} className={styles.dateIndicator} />
         ) : null}
       </div>
 

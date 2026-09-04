@@ -56,10 +56,13 @@
     background: var(--ink-700);
   }
 
-  // Native date picker indicator — nudge it toward the accent on dark bg.
+  // Hide the browser's native calendar button — we show our own icon on the
+  // left and open the picker on click (see TextField.tsx). Removes the
+  // duplicate gold square that sat on the right of date fields.
   &::-webkit-calendar-picker-indicator {
-    filter: invert(0.7) sepia(1) saturate(3) hue-rotate(3deg);
-    cursor: pointer;
+    display: none;
+    -webkit-appearance: none;
+    appearance: none;
   }
 }
 
@@ -105,6 +108,21 @@
 
 .datePlaceholderIcon {
   left: 2.7rem;
+}
+
+// Our gold calendar affordance on the right of date fields — shown on every
+// device (unlike the native indicator, which iOS omits). Clicks pass through
+// to the input, which opens the picker.
+.dateIndicator {
+  position: absolute;
+  right: 1rem;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+// Keep the date value/placeholder clear of the gold icon on the right.
+.input[type='date'] {
+  padding-right: 2.7rem;
 }
 
 .withIcon {
