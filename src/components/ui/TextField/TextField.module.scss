@@ -67,6 +67,14 @@
 // and let the native text simply inherit `color` from `.input` above (that one
 // declaration covers the value in every browser — no per-field overrides).
 .input[type='date'] {
+  // iOS Safari gives date inputs an intrinsic, content-sized width and ignores
+  // `width: 100%` until the native appearance is reset — which is why the field
+  // looked full-width on desktop Chrome but shrank to a narrow, cramped pill on
+  // an actual iPhone. Resetting the appearance lets it fill the column like
+  // every other input. (Chrome keeps its calendar-picker indicator regardless.)
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
   min-height: 3.05rem;
 
   // iOS centres the value; keep it left-aligned like every other field.
