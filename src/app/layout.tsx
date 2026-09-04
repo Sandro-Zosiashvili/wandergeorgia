@@ -4,6 +4,7 @@ import {site} from '@/config/site';
 import Header from '@/components/layout/Header/Header';
 import Footer from '@/components/layout/Footer/Footer';
 import WhatsAppButton from '@/components/whatsapp/WhatsAppButton/WhatsAppButton';
+import ScrollManager from '@/components/layout/ScrollManager/ScrollManager';
 import './globals.scss';
 
 
@@ -63,6 +64,7 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${display.variable} ${sans.variable}`}>
         <body>
+        <ScrollManager/>
         <Header/>
         <main id="main">{children}</main>
         <Footer/>

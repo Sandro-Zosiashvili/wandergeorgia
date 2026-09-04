@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import type { Tour } from '@/types/tour';
 import { useBooking } from '@/hooks/useBooking';
@@ -36,6 +37,25 @@ export default function BookingFlow({ tour }: BookingFlowProps) {
 
   const stepProps = { tour, data, errors, update };
 
+  // When the step changes, bring the top of the form panel back under the
+  // header. Without this the scroll position carried over from a long step
+  // (or a scrolled-down mobile view), leaving the next step opening partway
+  // down. Skip the very first render so arriving at the page doesn't yank the
+  // view around.
+  const panelRef = useRef<HTMLDivElement>(null);
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    // No explicit `behavior`: it inherits the page's CSS scroll-behavior
+    // (smooth), so it animates on browsers that support it and falls back to an
+    // instant jump elsewhere (older iOS Safari) or when the visitor prefers
+    // reduced motion — never a no-op that leaves the step mis-scrolled.
+    panelRef.current?.scrollIntoView({ block: 'start' });
+  }, [stepIndex, isComplete]);
+
   const renderStep = () => {
     switch (step) {
       case 'travelers':
@@ -61,7 +81,7 @@ export default function BookingFlow({ tour }: BookingFlowProps) {
 
   return (
     <div className={styles.flow}>
-      <div className={styles.panel}>
+      <div className={styles.panel} ref={panelRef}>
         {!isComplete ? (
           <BookingStepper currentIndex={stepIndex} onStepClick={booking.goTo} />
         ) : null}

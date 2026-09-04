@@ -20,6 +20,10 @@
   background: var(--surface-raised);
   border: 1px solid var(--hairline-soft);
 
+  // Clear the fixed header when we scroll a new step into view (see
+  // BookingFlow.tsx) so its top isn't tucked behind the navbar.
+  scroll-margin-top: 90px;
+
   // Grid items default to min-width:auto and refuse to shrink below their
   // content — which pushes the whole page wider on narrow screens. Allow it
   // to shrink to the track so nothing overflows horizontally.
