@@ -63,45 +63,24 @@
   }
 }
 
-/**
- * Native date inputs render very differently on iOS Safari vs desktop Chrome.
- * On iOS the empty "mm/dd/yyyy" hint is drawn in a system colour that's
- * invisible on our dark field, so the input looks blank. Force the internal
- * date-edit text to our light colour, keep it left-aligned, and give the field
- * a consistent height so it matches the other inputs and never collapses.
- */
+// Date inputs render differently across browsers, so keep the styling minimal
+// and let the native text simply inherit `color` from `.input` above (that one
+// declaration covers the value in every browser — no per-field overrides).
 .input[type='date'] {
   min-height: 3.05rem;
-  // Ensure the value/placeholder sits at the start, not centred.
+
+  // iOS centres the value; keep it left-aligned like every other field.
   &::-webkit-date-and-time-value {
     text-align: left;
     margin: 0;
   }
-
-  &::-webkit-datetime-edit,
-  &::-webkit-datetime-edit-fields-wrapper,
-  &::-webkit-datetime-edit-text,
-  &::-webkit-datetime-edit-month-field,
-  &::-webkit-datetime-edit-day-field,
-  &::-webkit-datetime-edit-year-field {
-    color: var(--text);
-    padding: 0;
-  }
 }
 
-// While empty, hide the browser's native format text (e.g. Chrome's
-// "dd.mm.yyyy") entirely — container AND every sub-field — so it never shows
-// through and clashes with our own placeholder overlay below. (The rule above
-// colours each sub-field individually, so the container alone isn't enough.)
+// While empty, hide the native format text ("dd.mm.yyyy") so only our own
+// placeholder (below) shows. Because the value inherits the input's colour,
+// making the whole field transparent hides every sub-field at once.
 .input.dateEmpty {
-  &::-webkit-datetime-edit,
-  &::-webkit-datetime-edit-fields-wrapper,
-  &::-webkit-datetime-edit-text,
-  &::-webkit-datetime-edit-month-field,
-  &::-webkit-datetime-edit-day-field,
-  &::-webkit-datetime-edit-year-field {
-    color: transparent;
-  }
+  color: transparent;
 }
 
 // Our own placeholder, shown over an empty date input (works on iOS too).
