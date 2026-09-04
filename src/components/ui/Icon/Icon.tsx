@@ -28,6 +28,8 @@ export default function Icon({
   return (
     <svg
       className={className}
+      // Most icons live on a 24×24 grid; a few brand marks ship on their own
+      // grid and declare it via `viewBox`.
       // Inline style, not just the width/height attributes below: SVG
       // presentation attributes carry almost no cascade weight, so any
       // unrelated class-based CSS rule can silently override them and the
@@ -43,7 +45,7 @@ export default function Icon({
       }}
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox={def.viewBox ?? '0 0 24 24'}
       fill={filled ? 'currentColor' : 'none'}
       stroke={filled ? 'none' : 'currentColor'}
       strokeWidth={filled ? undefined : stroke}
