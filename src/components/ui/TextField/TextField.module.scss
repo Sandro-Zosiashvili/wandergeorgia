@@ -90,9 +90,16 @@
 }
 
 // While empty, hide the browser's native format text (e.g. Chrome's
-// "dd.mm.yyyy") so it doesn't clash with our own placeholder overlay below.
+// "dd.mm.yyyy") entirely — container AND every sub-field — so it never shows
+// through and clashes with our own placeholder overlay below. (The rule above
+// colours each sub-field individually, so the container alone isn't enough.)
 .input.dateEmpty {
-  &::-webkit-datetime-edit {
+  &::-webkit-datetime-edit,
+  &::-webkit-datetime-edit-fields-wrapper,
+  &::-webkit-datetime-edit-text,
+  &::-webkit-datetime-edit-month-field,
+  &::-webkit-datetime-edit-day-field,
+  &::-webkit-datetime-edit-year-field {
     color: transparent;
   }
 }
