@@ -43,8 +43,16 @@ export default function CityFilter({ cities, active, onChange }: CityFilterProps
     };
   }, [syncEdges]);
 
-  // Keep the selected chip in view when it changes.
+  // Keep the selected chip in view when the visitor changes filters. Skip the
+  // first run: on mount the chip is below the fold, and scrolling it into view
+  // would drag the whole page down a little on load. We only want this to react
+  // to a real selection change, not the initial render.
+  const didMountRef = useRef(false);
   useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
     const el = railRef.current?.querySelector('[aria-selected="true"]');
     el?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
   }, [active]);
