@@ -40,6 +40,9 @@ export const metadata: Metadata = {
         'Kakheti wine tours',
         'Caucasus travel',
     ],
+    verification: {
+        google: "jZb3DC8tTWQpZP0AsTPbFX5rxW1X2jB2GyQQQ17oYrQ",
+    },
     openGraph: {
         siteName: "WanderKartli",
         images: [
