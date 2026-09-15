@@ -5,7 +5,7 @@ interface WMarkProps {
 }
 
 /**
- * The Wander Georgia "W" brand mark — a serif W holding a Georgian mountain
+ * The Wander Kartli "W" brand mark — a serif W holding a Georgian mountain
  * landscape (snow peaks, pines, a hilltop church) with a gold river winding
  * down its centre. Transparent background, so it sits on any dark surface;
  * the river uses the brand gold gradient.

@@ -1,5 +1,5 @@
 /**
- * Shared domain types for WanderGeorgia tours.
+ * Shared domain types for WanderKartli tours.
  * English-only content.
  */
 

@@ -1,18 +1,18 @@
 /**
- * Central brand configuration for WanderGeorgia.
+ * Central brand configuration for WanderKartli.
  * Edit contact details, socials and the WhatsApp number here.
  */
 
 export const site = {
-  name: 'WanderGeorgia',
+  name: 'WanderKartli',
   tagline: 'Private journeys through the Caucasus',
   description:
     'Premium private tours across Georgia — hand-crafted itineraries, expert local guides, and airport transfers included with every trip.',
-  url: 'https://wandergeorgia.com',
+  url: 'https://wanderkartli.com',
 
   contact: {
     phone: '+995 591 90 69 05',
-    email: 'hello@wandergeorgia.com',
+    email: 'hello@wanderkartli.com',
     address: 'Rustaveli Ave, Tbilisi, Georgia',
   },
 
@@ -20,12 +20,12 @@ export const site = {
   whatsapp: {
     number: '995591906905',
     href: 'https://wa.me/995591906905',
-    prefill: "Hello WanderGeorgia, I'd like to plan a private tour.",
+    prefill: "Hello WanderKartli, I'd like to plan a private tour.",
   },
 
   socials: {
-    instagram: 'https://instagram.com/wandergeorgia',
-    facebook: 'https://facebook.com/wandergeorgia',
+    instagram: 'https://instagram.com/wanderkartli',
+    facebook: 'https://facebook.com/wanderkartli',
     tripadvisor: 'https://tripadvisor.com',
     youtube: 'https://youtube.com',
   },

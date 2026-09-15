@@ -12,7 +12,7 @@ export default function WhyChooseUs() {
     <section id="why-us" className={styles.section} aria-labelledby="why-us-title">
       <Container>
         <SectionHeading
-          eyebrow="Why WanderGeorgia"
+          eyebrow="Why WanderKartli"
           title={
             <span id="why-us-title">
               Premium, personal, <em>and effortless</em>

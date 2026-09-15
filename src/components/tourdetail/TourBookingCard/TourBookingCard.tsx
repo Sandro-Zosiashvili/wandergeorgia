@@ -53,7 +53,7 @@ export default function TourBookingCard({ tour }: TourBookingCardProps) {
       </Button>
 
       <Button
-        href={whatsappLink(`Hi WanderGeorgia, I'm interested in the "${tour.title}" tour.`)}
+        href={whatsappLink(`Hi WanderKartli, I'm interested in the "${tour.title}" tour.`)}
         external
         variant="outline"
         icon="whatsapp"

@@ -23,7 +23,7 @@ export default function Logo({ compact = false, onClick }: LogoProps) {
       </span>
       <span className={styles.word}>
         <span className={styles.wander}>Wander</span>
-        <span className={styles.georgia}>Georgia</span>
+        <span className={styles.kartli}>Kartli</span>
       </span>
     </Link>
   );

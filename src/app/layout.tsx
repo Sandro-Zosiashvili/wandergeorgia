@@ -25,7 +25,7 @@ const sans = Manrope({
 });
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://wandergeorgia-eight.vercel.app"),
+    metadataBase: new URL("https://wanderkartli.com"),
     title: {
         default: `${site.name} — ${site.tagline}`,
         template: `%s · ${site.name}`,
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
         'Caucasus travel',
     ],
     openGraph: {
-        siteName: "WanderGeorgia",
+        siteName: "WanderKartli",
         images: [
             {
                 url: "/assets/icons/gramp-image.png",
