@@ -44,7 +44,7 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
     type: 'one-day',
     title: 'Kazbegi Day Tour from Tbilisi',
     city: 'Kazbegi',
-    duration: '10–12 hours',
+    duration: '8-10 hours',
     tourType: 'Private tour with an English-speaking driver',
     price: 420,
     image:
@@ -97,7 +97,7 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
     type: 'one-day',
     title: 'Borjomi Day Tour from Tbilisi',
     city: 'Borjomi',
-    duration: '10–11 hours',
+    duration: '8-10 hours',
     tourType: 'Private tour with an English-speaking driver',
     price: 360,
     image:
@@ -141,7 +141,7 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
     type: 'one-day',
     title: 'Dashbashi Canyon Day Tour',
     city: 'Dashbashi',
-    duration: '1 day',
+    duration: '6-8 hours',
     tourType: 'Private tour',
     price: 300,
     image:
@@ -176,7 +176,7 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
     type: 'one-day',
     title: 'Martvili Canyon & Prometheus Cave Day Tour',
     city: 'Martvili',
-    duration: '1 day (long-distance tour)',
+    duration: '10-12 hours (long-distance tour)',
     tourType: 'Private tour',
     price: 380,
     image:
@@ -207,7 +207,7 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
     type: 'one-day',
     title: 'Kakheti Wine Day Tour',
     city: 'Kakheti',
-    duration: '1 day',
+    duration: '8-10 hours',
     tourType: 'Private tour',
     price: 350,
     image:
@@ -254,7 +254,7 @@ const tours: Array<Omit<Tour, 'heroImage' | 'cardImage'> & { image: string }> = 
     type: 'one-day',
     title: 'Tbilisi & Mtskheta Day Tour',
     city: 'Tbilisi',
-    duration: '1 day',
+    duration: '7-9 hours',
     tourType: 'Private tour',
     price: 280,
     image:
