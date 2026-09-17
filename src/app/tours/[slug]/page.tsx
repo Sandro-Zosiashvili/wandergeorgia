@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllTourSlugs, getTourBySlug } from '@/data/tours';
 import { formatGEL } from '@/lib/format';
+import { tourJsonLd } from '@/lib/structuredData';
 import TourDetail from '@/components/tourdetail/TourDetail/TourDetail';
 
 interface PageProps {
@@ -21,7 +22,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: tour.title,
     description: tour.shortDescription,
+    alternates: {
+      canonical: `/tours/${tour.slug}`,
+    },
     openGraph: {
+      type: 'article',
+      url: `/tours/${tour.slug}`,
       title: tour.title,
       description: `${tour.duration} · ${tour.city} · from ${formatGEL(tour.price)}`,
       images: [{ url: tour.heroImage }],
@@ -35,5 +41,13 @@ export default async function TourPage({ params }: PageProps) {
 
   if (!tour) notFound();
 
-  return <TourDetail tour={tour} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(tourJsonLd(tour)) }}
+      />
+      <TourDetail tour={tour} />
+    </>
+  );
 }

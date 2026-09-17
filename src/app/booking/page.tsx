@@ -9,6 +9,9 @@ import styles from './page.module.scss';
 export const metadata: Metadata = {
   title: 'Book your tour',
   description: 'Reserve your private Georgian tour — airport transfers included.',
+  alternates: {
+    canonical: '/booking',
+  },
 };
 
 interface PageProps {
