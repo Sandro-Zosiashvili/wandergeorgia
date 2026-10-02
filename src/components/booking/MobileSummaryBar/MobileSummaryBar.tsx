@@ -22,6 +22,17 @@ interface MobileSummaryBarProps {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+// Applied inline so the CSS minifier can't strip the standard property and
+// leave only the -webkit- form (which modern Android Chrome doesn't support).
+const BAR_BLUR = {
+  backdropFilter: 'blur(20px) saturate(160%)',
+  WebkitBackdropFilter: 'blur(20px) saturate(160%)',
+} as const;
+const BACKDROP_BLUR = {
+  backdropFilter: 'blur(2px)',
+  WebkitBackdropFilter: 'blur(2px)',
+} as const;
+
 /**
  * Mobile-only sticky summary. Keeps the live grand total (and the Continue
  * action) pinned to the bottom of the viewport so it's always visible while the
@@ -72,6 +83,7 @@ export default function MobileSummaryBar({
           <>
             <motion.div
               className={styles.backdrop}
+              style={BACKDROP_BLUR}
               onClick={() => setOpen(false)}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -167,7 +179,7 @@ export default function MobileSummaryBar({
         ) : null}
       </AnimatePresence>
 
-      <div className={styles.bar}>
+      <div className={styles.bar} style={BAR_BLUR}>
         <button
           type="button"
           className={styles.toggle}

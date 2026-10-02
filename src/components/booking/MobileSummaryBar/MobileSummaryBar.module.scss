@@ -12,16 +12,26 @@
 .bar {
   position: fixed;
   inset: auto 0 0 0;
+  // Strictly above all page content, footer and floating buttons.
   z-index: $z-float;
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  padding: 0.7rem clamp(1rem, 4vw, 1.4rem);
-  // Respect the iPhone home-indicator safe area.
-  padding-bottom: calc(0.7rem + env(safe-area-inset-bottom));
-  background: var(--surface-raised);
-  border-top: 1px solid var(--hairline);
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.35);
+  padding: 0.8rem clamp(1rem, 4vw, 1.4rem);
+  // Respect the iPhone home-indicator safe area (min 12px of breathing room).
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+
+  // Glassmorphism: translucent ink + blur (the blur itself is applied via an
+  // inline style in the component, so the CSS minifier can't drop the standard
+  // `backdrop-filter` and leave only the -webkit- form). Hairline light top
+  // edge + soft lift shadow. Falls back to a solid surface where blur is off.
+  background: rgba(18, 16, 14, 0.72);
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 -12px 34px rgba(0, 0, 0, 0.45);
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: var(--surface-raised);
+  }
 }
 
 .toggle {
@@ -79,7 +89,7 @@
   inset: 0;
   z-index: $z-overlay;
   background: rgba(6, 6, 5, 0.55);
-  backdrop-filter: blur(2px);
+  // blur applied inline in the component (see note on .bar).
 }
 
 .sheet {

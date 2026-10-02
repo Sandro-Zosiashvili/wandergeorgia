@@ -58,6 +58,15 @@ export default function BookingFlow({ tour }: BookingFlowProps) {
     panelRef.current?.scrollIntoView({ block: 'start' });
   }, [stepIndex, isComplete]);
 
+  // While the sticky mobile summary bar is on screen, mark the body so global
+  // CSS can reserve bottom space (keeping the footer clear of the fixed bar).
+  const showMobileBar = !isComplete && !isLast;
+  useEffect(() => {
+    if (!showMobileBar) return;
+    document.body.classList.add('has-booking-bar');
+    return () => document.body.classList.remove('has-booking-bar');
+  }, [showMobileBar]);
+
   const renderStep = () => {
     switch (step) {
       case 'travelers':

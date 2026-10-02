@@ -38,7 +38,9 @@
   background: var(--ink-800);
   border: 1px solid var(--hairline-soft);
   color: var(--text);
-  font-size: 0.98rem;
+  // >=16px so iOS Safari never zooms the viewport on focus (max() keeps it at
+  // the design size on larger roots).
+  font-size: max(16px, 1rem);
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 
   &::placeholder {
@@ -101,7 +103,7 @@
   left: 1rem;
   transform: translateY(-50%);
   color: var(--text-faint);
-  font-size: 0.98rem;
+  font-size: max(16px, 1rem);
   pointer-events: none;
   white-space: nowrap;
 }
