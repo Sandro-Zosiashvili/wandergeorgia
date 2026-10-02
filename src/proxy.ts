@@ -6,22 +6,23 @@ import type { NextRequest } from 'next/server';
  * convention to "proxy" — same capabilities, runs at the edge in front of the
  * app.)
  *
- * We serve the site on ONE hostname — `www.wanderkartli.com` — so Google
- * doesn't index the apex and WWW versions as separate, duplicate pages.
- * Any request that arrives on the bare apex (`wanderkartli.com`) is sent to
- * the WWW host with a 301 (permanent) redirect, keeping the exact path and
- * query string. Localhost, LAN and preview hosts are left untouched so local
- * dev and Vercel previews keep working.
+ * We serve the site on ONE hostname — the bare apex `wanderkartli.com` (the
+ * domain configured in Vercel) — so Google doesn't index the apex and WWW
+ * versions as separate, duplicate pages. Any request that arrives on the WWW
+ * host (`www.wanderkartli.com`) is sent to the apex with a 301 (permanent)
+ * redirect, keeping the exact path and query string. Localhost, LAN and
+ * preview hosts are left untouched so local dev and Vercel previews keep
+ * working.
  */
 
-const APEX_HOST = 'wanderkartli.com';
-const CANONICAL_HOST = 'www.wanderkartli.com';
+const WWW_HOST = 'www.wanderkartli.com';
+const CANONICAL_HOST = 'wanderkartli.com';
 
 export function proxy(request: NextRequest): NextResponse {
   // `host` is the hostname the visitor actually typed (minus any port).
   const host = request.headers.get('host')?.split(':')[0] ?? '';
 
-  if (host === APEX_HOST) {
+  if (host === WWW_HOST) {
     const url = request.nextUrl.clone();
     url.protocol = 'https:';
     url.host = CANONICAL_HOST;
