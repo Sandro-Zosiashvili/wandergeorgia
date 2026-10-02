@@ -83,9 +83,20 @@
   font-size: 0.9rem;
   color: var(--text-muted);
 
+  dt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    svg {
+      color: var(--accent);
+    }
+  }
+
   dd {
     color: var(--text);
     font-weight: 500;
+    text-align: right;
   }
 }
 
@@ -120,4 +131,10 @@
   font-family: var(--font-display);
   font-size: 1.7rem;
   color: var(--accent-bright);
+}
+
+.fine {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-faint);
 }

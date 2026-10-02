@@ -8,7 +8,10 @@ export const site = {
   tagline: 'Private journeys through the Caucasus',
   description:
     'Premium private tours across Georgia — hand-crafted itineraries, expert local guides, and airport transfers included with every trip.',
-  url: 'https://wanderkartli.com',
+  // Canonical domain — WWW is primary. Everything SEO-related (metadataBase,
+  // canonicals, sitemap, robots, JSON-LD @ids) derives from this single value,
+  // and middleware.ts 301-redirects the apex (non-WWW) host here.
+  url: 'https://www.wanderkartli.com',
 
   contact: {
     phone: '+995 591 90 69 05',

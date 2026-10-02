@@ -1,5 +1,6 @@
 import { site } from '@/config/site';
 import type { Tour } from '@/types/tour';
+import { fromPriceUSD } from '@/lib/pricing';
 
 const BASE = site.url.replace(/\/$/, '');
 
@@ -15,7 +16,8 @@ export function organizationJsonLd() {
     '@id': `${BASE}/#organization`,
     name: site.name,
     url: BASE,
-    logo: `${BASE}/icon.svg`,
+    // Google's logo guidelines want a crawlable raster (PNG/JPG), not an SVG.
+    logo: `${BASE}/favicon.png`,
     image: `${BASE}/assets/icons/gramp-image.png`,
     description: site.description,
     email: site.contact.email,
@@ -77,8 +79,8 @@ export function tourJsonLd(tour: Tour) {
     brand: { '@type': 'Brand', name: site.name },
     offers: {
       '@type': 'Offer',
-      price: tour.price,
-      priceCurrency: 'GEL',
+      price: fromPriceUSD(tour),
+      priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
       url,
       seller: { '@id': `${BASE}/#organization` },

@@ -1,12 +1,12 @@
 /** Formatting helpers. */
 
-const gelFormatter = new Intl.NumberFormat('en-US', {
+const usdFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 0,
 });
 
-/** Format a GEL price with the lari symbol, e.g. "₾1,450". */
-export function formatGEL(amount: number): string {
-  return `₾${gelFormatter.format(amount)}`;
+/** Format a USD price with the dollar symbol, e.g. "$1,360". */
+export function formatUSD(amount: number): string {
+  return `$${usdFormatter.format(amount)}`;
 }
 
 /** Human date, e.g. "12 Aug 2026". Returns "" for empty input. */

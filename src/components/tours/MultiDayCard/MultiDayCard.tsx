@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Tour } from '@/types/tour';
-import { formatGEL } from '@/lib/format';
+import { formatUSD } from '@/lib/format';
+import { fromPriceUSD } from '@/lib/pricing';
 import Icon from '@/components/ui/Icon/Icon';
 import Button from '@/components/ui/Button/Button';
 import styles from './MultiDayCard.module.scss';
@@ -59,8 +60,8 @@ export default function MultiDayCard({ tour, reversed = false }: MultiDayCardPro
         <div className={styles.footer}>
           <div className={styles.priceBlock}>
             <span className={styles.priceFrom}>from</span>
-            <span className={styles.price}>{formatGEL(tour.price)}</span>
-            <span className={styles.perPerson}>/ person</span>
+            <span className={styles.price}>{formatUSD(fromPriceUSD(tour))}</span>
+            <span className={styles.perPerson}>/ group</span>
           </div>
           <Button href={`/tours/${tour.slug}`} icon="arrow-right" size="sm">
             View package

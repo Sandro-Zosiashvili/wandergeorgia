@@ -1,5 +1,18 @@
 @use '../../../../styles/mixins' as *;
 
+.fieldError {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: -0.4rem;
+  font-size: 0.85rem;
+  color: #d9534f;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
 .note {
   display: flex;
   align-items: flex-start;

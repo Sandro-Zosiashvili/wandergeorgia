@@ -77,7 +77,10 @@ export interface Tour {
   duration: string;
   /** Free-text tour format, e.g. "Private tour with an English-speaking driver". */
   tourType?: string;
-  /** Price in Georgian Lari (GEL). */
+  /**
+   * Legacy placeholder price. NOT used for display — all shown prices come
+   * from `src/lib/pricing.ts` (USD, per-vehicle, per-day), keyed by `slug`.
+   */
   price: number;
   /**
    * Single source-of-truth photo. In the one-day data this is the only image

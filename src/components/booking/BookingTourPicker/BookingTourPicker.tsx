@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { allTours } from '@/data/tours';
-import { formatGEL } from '@/lib/format';
+import { formatUSD } from '@/lib/format';
+import { fromPriceUSD } from '@/lib/pricing';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './BookingTourPicker.module.scss';
 
@@ -27,7 +28,7 @@ export default function BookingTourPicker() {
               <span className={styles.info}>
                 <span className={styles.cardTitle}>{tour.title}</span>
                 <span className={styles.meta}>
-                  {tour.city} · {tour.duration} · from {formatGEL(tour.price)}
+                  {tour.city} · {tour.duration} · from {formatUSD(fromPriceUSD(tour))}
                 </span>
               </span>
               <Icon name="arrow-right" size={18} className={styles.arrow} />

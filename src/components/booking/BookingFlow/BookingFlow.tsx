@@ -32,6 +32,7 @@ export default function BookingFlow({ tour }: BookingFlowProps) {
     isSubmitting,
     submitError,
     total,
+    breakdown,
     update,
   } = booking;
 
@@ -121,7 +122,7 @@ export default function BookingFlow({ tour }: BookingFlowProps) {
         ) : null}
       </div>
 
-      <OrderSummary tour={tour} data={data} total={total} />
+      <OrderSummary tour={tour} data={data} total={total} breakdown={breakdown} />
     </div>
   );
 }

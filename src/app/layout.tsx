@@ -26,7 +26,9 @@ const sans = Manrope({
 });
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://wanderkartli.com"),
+    // Resolves every relative URL below (canonical, OG, Twitter, icons) against
+    // the canonical WWW domain — single source of truth in config/site.ts.
+    metadataBase: new URL(site.url),
     title: {
         default: `${site.name} — ${site.tagline}`,
         template: `%s · ${site.name}`,
@@ -35,6 +37,19 @@ export const metadata: Metadata = {
     applicationName: site.name,
     alternates: {
         canonical: '/',
+    },
+    // Site favicon. The SVG gives browser tabs a crisp icon, but Google Search
+    // does NOT support SVG favicons in results — it needs a raster — so we also
+    // ship a PNG. Both are referenced on every page via these <link> tags.
+    // (A file named favicon.svg in app/ is NOT auto-detected by Next; only
+    // favicon.ico / icon.svg are, so everything is declared explicitly here.)
+    icons: {
+        icon: [
+            { url: '/favicon.svg', type: 'image/svg+xml' },
+            { url: '/favicon.png', type: 'image/png', sizes: '256x256' },
+        ],
+        shortcut: '/favicon.png',
+        apple: '/apple-touch-icon.png',
     },
     keywords: [
         'Georgia tours',

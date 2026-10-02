@@ -1,5 +1,6 @@
 import type { Tour } from '@/types/tour';
-import { formatGEL } from '@/lib/format';
+import { formatUSD } from '@/lib/format';
+import { fromPriceUSD, getFixedPackage } from '@/lib/pricing';
 import { whatsappLink } from '@/config/site';
 import Button from '@/components/ui/Button/Button';
 import Icon from '@/components/ui/Icon/Icon';
@@ -11,14 +12,15 @@ interface TourBookingCardProps {
 
 /** Sticky price + booking panel shown alongside the tour content. */
 export default function TourBookingCard({ tour }: TourBookingCardProps) {
-  const perLabel = tour.type === 'multi-day' ? 'per person' : 'per group';
+  const isFixed = getFixedPackage(tour) !== null;
+  const perLabel = isFixed ? 'package · Jeep 4x4' : 'per group';
 
   return (
     <aside className={styles.card} aria-label="Book this tour">
       <div className={styles.priceRow}>
         <div>
-          <span className={styles.from}>from</span>
-          <span className={styles.price}>{formatGEL(tour.price)}</span>
+          {isFixed ? null : <span className={styles.from}>from</span>}
+          <span className={styles.price}>{formatUSD(fromPriceUSD(tour))}</span>
         </div>
         <span className={styles.per}>{perLabel}</span>
       </div>

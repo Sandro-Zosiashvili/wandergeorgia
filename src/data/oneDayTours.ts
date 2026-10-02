@@ -15,7 +15,9 @@ import type { Tour, TourInclusion } from '@/types/tour';
  *  • `included` / `notIncluded` are shared by every tour (see below) — change
  *    them once and every tour updates.
  *
- *  Prices are in GEL (₾) and are PLACEHOLDERS — set the real numbers.
+ *  NOTE: displayed prices are NOT set here — all pricing (USD, per-vehicle,
+ *  per-day) lives in `src/lib/pricing.ts`, keyed by tour `slug`. The `price`
+ *  field below is a legacy placeholder and is no longer shown anywhere.
  * ────────────────────────────────────────────────────────────────────────────
  */
 

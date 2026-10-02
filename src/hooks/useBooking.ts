@@ -1,7 +1,18 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Tour } from '@/types/tour';
+import {
+  type PriceBreakdown,
+  type VehicleId,
+  allowedVehicles,
+  computeBreakdown,
+  defaultVehicle,
+  exceedsCapacity,
+  getFixedPackage,
+  getVehicle,
+  MAX_PRIVATE_PAX,
+} from '@/lib/pricing';
 
 export type BookingStepId = 'travelers' | 'dates' | 'details' | 'review' | 'confirm';
 
@@ -18,6 +29,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 export interface BookingData {
   travelers: number;
+  vehicle: VehicleId;
   arrivalDate: string;
   departureDate: string;
   flightDetails: string;
@@ -28,7 +40,8 @@ export interface BookingData {
 
 export type BookingErrors = Partial<Record<keyof BookingData, string>>;
 
-const initialData: BookingData = {
+/** Tour-independent defaults; `vehicle` is seeded per-tour in the hook. */
+const baseInitialData: Omit<BookingData, 'vehicle'> = {
   travelers: 2,
   arrivalDate: '',
   departureDate: '',
@@ -45,7 +58,13 @@ function validateStep(step: BookingStepId, data: BookingData): BookingErrors {
   const errors: BookingErrors = {};
 
   if (step === 'travelers') {
-    if (data.travelers < 1) errors.travelers = 'At least one traveler is required.';
+    if (data.travelers < 1) {
+      errors.travelers = 'At least one traveler is required.';
+    } else if (data.travelers > MAX_PRIVATE_PAX) {
+      errors.travelers = `For groups larger than ${MAX_PRIVATE_PAX}, please contact us directly.`;
+    } else if (exceedsCapacity(data.vehicle, data.travelers)) {
+      errors.vehicle = 'Please choose a vehicle that fits your group.';
+    }
   }
 
   if (step === 'dates') {
@@ -86,6 +105,8 @@ export interface UseBookingResult {
   /** User-facing error message if the submission failed, else null. */
   submitError: string | null;
   total: number;
+  /** Live, transparent price breakdown for the current vehicle selection. */
+  breakdown: PriceBreakdown;
   update: <K extends keyof BookingData>(key: K, value: BookingData[K]) => void;
   next: () => void;
   back: () => void;
@@ -99,7 +120,10 @@ export interface UseBookingResult {
  * navigation and total price. UI-only — stops at the payment step.
  */
 export function useBooking(tour: Tour): UseBookingResult {
-  const [data, setData] = useState<BookingData>(initialData);
+  const [data, setData] = useState<BookingData>(() => ({
+    ...baseInitialData,
+    vehicle: defaultVehicle(tour),
+  }));
   const [stepIndex, setStepIndex] = useState(0);
   const [errors, setErrors] = useState<BookingErrors>({});
   const [isComplete, setIsComplete] = useState(false);
@@ -112,6 +136,22 @@ export function useBooking(tour: Tour): UseBookingResult {
     setData((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => ({ ...prev, [key]: undefined }));
   }, []);
+
+  // Keep the vehicle valid for the group size. Fixed-package tours (e.g. the
+  // 13-day Jeep tour) are locked to their vehicle and never auto-switched.
+  // When the current vehicle can't seat the group, fall back to the cheapest
+  // that can; if none can (group > max), leave the choice as-is so the
+  // "contact us" notice is what the traveler sees.
+  const isFixedTour = getFixedPackage(tour) !== null;
+  useEffect(() => {
+    if (isFixedTour) return;
+    if (!exceedsCapacity(data.vehicle, data.travelers)) return;
+    const [fallback] = allowedVehicles(data.travelers);
+    if (fallback) {
+      setData((prev) => ({ ...prev, vehicle: fallback }));
+      setErrors((prev) => ({ ...prev, vehicle: undefined }));
+    }
+  }, [data.travelers, data.vehicle, isFixedTour]);
 
   const next = useCallback(() => {
     const currentStep = bookingSteps[stepIndex]!.id;
@@ -140,9 +180,14 @@ export function useBooking(tour: Tour): UseBookingResult {
     [stepIndex],
   );
 
-  // Flat price — the same regardless of how many travelers are added.
-  // (A per-person / group pricing model can be layered in here later.)
-  const total = useMemo(() => tour.price, [tour.price]);
+  // Price is driven by the chosen vehicle and the tour's day count:
+  //   total = (sedan base/day + vehicle upgrade/day) × days
+  // (or a flat package price for fixed tours). See lib/pricing.
+  const breakdown = useMemo(
+    () => computeBreakdown(tour, data.vehicle),
+    [tour, data.vehicle],
+  );
+  const total = breakdown.total;
 
   const submit = useCallback(async () => {
     setIsSubmitting(true);
@@ -156,6 +201,9 @@ export function useBooking(tour: Tour): UseBookingResult {
           tourSlug: tour.slug,
           tourType: tour.type,
           travelers: data.travelers,
+          vehicle: getVehicle(data.vehicle).label,
+          days: breakdown.days,
+          currency: 'USD',
           arrivalDate: data.arrivalDate,
           departureDate: data.departureDate,
           flightDetails: data.flightDetails,
@@ -174,7 +222,7 @@ export function useBooking(tour: Tour): UseBookingResult {
     } finally {
       setIsSubmitting(false);
     }
-  }, [tour, data, total]);
+  }, [tour, data, total, breakdown.days]);
 
   return {
     data,
@@ -187,6 +235,7 @@ export function useBooking(tour: Tour): UseBookingResult {
     isSubmitting,
     submitError,
     total,
+    breakdown,
     update,
     next,
     back,

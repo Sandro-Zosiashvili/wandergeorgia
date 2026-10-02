@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import type { Tour } from '@/types/tour';
 import type { BookingData } from '@/hooks/useBooking';
-import { formatGEL, formatDate } from '@/lib/format';
+import { type PriceBreakdown, getVehicle } from '@/lib/pricing';
+import { formatUSD, formatDate } from '@/lib/format';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './OrderSummary.module.scss';
 
@@ -11,14 +12,18 @@ interface OrderSummaryProps {
   tour: Tour;
   data: BookingData;
   total: number;
+  breakdown: PriceBreakdown;
 }
 
-/** Sticky order summary shown beside the booking steps. */
-export default function OrderSummary({ tour, data, total }: OrderSummaryProps) {
+/** Sticky, live price breakdown shown beside the booking steps. */
+export default function OrderSummary({ tour, data, total, breakdown }: OrderSummaryProps) {
   const isMultiDay = tour.type === 'multi-day';
+  const vehicle = getVehicle(breakdown.vehicle);
+  const { days, baseRatePerDay, upgradePerDay, isFixed } = breakdown;
+  const perDayLabel = isMultiDay || days > 1 ? ' / day' : '';
 
   return (
-    <aside className={styles.summary} aria-label="Order summary">
+    <aside className={styles.summary} aria-label="Price summary">
       <div className={styles.media}>
         <Image src={tour.cardImage} alt={tour.title} fill sizes="360px" className={styles.image} />
         <div className={styles.mediaScrim} aria-hidden="true" />
@@ -36,25 +41,53 @@ export default function OrderSummary({ tour, data, total }: OrderSummaryProps) {
 
         <dl className={styles.lines}>
           <div className={styles.line}>
-            <dt>Tour price</dt>
-            <dd>{formatGEL(tour.price)}</dd>
+            <dt>
+              <Icon name={vehicle.icon} size={15} /> Vehicle
+            </dt>
+            <dd>{vehicle.label}</dd>
           </div>
           <div className={styles.line}>
             <dt>Travelers</dt>
             <dd>{data.travelers}</dd>
           </div>
+
+          {isFixed ? (
+            <div className={styles.line}>
+              <dt>Package price</dt>
+              <dd>{formatUSD(baseRatePerDay)}</dd>
+            </div>
+          ) : (
+            <>
+              <div className={styles.line}>
+                <dt>Base price</dt>
+                <dd>
+                  {formatUSD(baseRatePerDay)}
+                  {perDayLabel}
+                </dd>
+              </div>
+              <div className={styles.line}>
+                <dt>Vehicle upgrade</dt>
+                <dd className={upgradePerDay > 0 ? undefined : styles.free}>
+                  {upgradePerDay > 0 ? `+${formatUSD(upgradePerDay)}${perDayLabel}` : 'Included'}
+                </dd>
+              </div>
+            </>
+          )}
+
+          <div className={styles.line}>
+            <dt>Duration</dt>
+            <dd>
+              {days} {days === 1 ? 'day' : 'days'}
+            </dd>
+          </div>
+
           {data.arrivalDate ? (
             <div className={styles.line}>
               <dt>Arrival</dt>
               <dd>{formatDate(data.arrivalDate)}</dd>
             </div>
           ) : null}
-          {data.departureDate ? (
-            <div className={styles.line}>
-              <dt>Departure</dt>
-              <dd>{formatDate(data.departureDate)}</dd>
-            </div>
-          ) : null}
+
           <div className={styles.line}>
             <dt className={styles.included}>
               <Icon name="check" size={14} /> Airport transfers
@@ -64,9 +97,10 @@ export default function OrderSummary({ tour, data, total }: OrderSummaryProps) {
         </dl>
 
         <div className={styles.totalRow}>
-          <span>Total</span>
-          <span className={styles.total}>{formatGEL(total)}</span>
+          <span>Grand total</span>
+          <span className={styles.total}>{formatUSD(total)}</span>
         </div>
+        <p className={styles.fine}>Private tour · all prices in USD</p>
       </div>
     </aside>
   );

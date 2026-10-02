@@ -1,4 +1,4 @@
-import { formatGEL } from '@/lib/format';
+import { formatUSD } from '@/lib/format';
 import StepShell from '../../StepShell/StepShell';
 import Button from '@/components/ui/Button/Button';
 import Icon from '@/components/ui/Icon/Icon';
@@ -57,7 +57,7 @@ export default function PaymentStep({
     >
       <div className={styles.totalBox}>
         <span className={styles.totalLabel}>Estimated total</span>
-        <span className={styles.totalValue}>{formatGEL(total)}</span>
+        <span className={styles.totalValue}>{formatUSD(total)}</span>
       </div>
 
       {submitError ? (

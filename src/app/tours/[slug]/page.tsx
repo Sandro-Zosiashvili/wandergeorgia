@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllTourSlugs, getTourBySlug } from '@/data/tours';
-import { formatGEL } from '@/lib/format';
+import { formatUSD } from '@/lib/format';
+import { fromPriceUSD } from '@/lib/pricing';
 import { tourJsonLd } from '@/lib/structuredData';
 import TourDetail from '@/components/tourdetail/TourDetail/TourDetail';
 
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'article',
       url: `/tours/${tour.slug}`,
       title: tour.title,
-      description: `${tour.duration} · ${tour.city} · from ${formatGEL(tour.price)}`,
+      description: `${tour.duration} · ${tour.city} · from ${formatUSD(fromPriceUSD(tour))}`,
       images: [{ url: tour.heroImage }],
     },
   };

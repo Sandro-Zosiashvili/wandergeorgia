@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Tour } from '@/types/tour';
-import { formatGEL } from '@/lib/format';
+import { formatUSD } from '@/lib/format';
+import { fromPriceUSD } from '@/lib/pricing';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './TourCard.module.scss';
 
@@ -41,7 +42,7 @@ export default function TourCard({ tour, featured = false }: TourCardProps) {
             {tour.duration}
           </span>
           <span className={styles.price}>
-            <span className={styles.priceFrom}>from</span> {formatGEL(tour.price)}
+            <span className={styles.priceFrom}>from</span> {formatUSD(fromPriceUSD(tour))}
           </span>
         </div>
 

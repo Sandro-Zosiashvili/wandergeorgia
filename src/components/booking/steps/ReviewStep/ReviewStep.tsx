@@ -1,5 +1,6 @@
 import type { StepProps } from '../stepProps';
 import StepShell from '../../StepShell/StepShell';
+import { getVehicle } from '@/lib/pricing';
 import { formatDate, nightsBetween } from '@/lib/format';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './ReviewStep.module.scss';
@@ -7,10 +8,12 @@ import styles from './ReviewStep.module.scss';
 /** Step 4 — confirm everything before the payment step. */
 export default function ReviewStep({ tour, data }: StepProps) {
   const nights = nightsBetween(data.arrivalDate, data.departureDate);
+  const vehicle = getVehicle(data.vehicle);
 
   const rows: { icon: Parameters<typeof Icon>[0]['name']; label: string; value: string }[] = [
     { icon: 'compass', label: 'Tour', value: tour.title },
     { icon: 'users', label: 'Travelers', value: `${data.travelers}` },
+    { icon: vehicle.icon, label: 'Vehicle', value: vehicle.label },
     {
       icon: 'calendar',
       label: 'In Georgia',

@@ -1,15 +1,16 @@
 import type { StepProps } from '../stepProps';
 import StepShell from '../../StepShell/StepShell';
 import NumberStepper from '@/components/ui/NumberStepper/NumberStepper';
+import VehicleSelector from '../../VehicleSelector/VehicleSelector';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './TravelersStep.module.scss';
 
-/** Step 1 — how many travelers. */
-export default function TravelersStep({ data, update }: StepProps) {
+/** Step 1 — group size and the vehicle that carries them. */
+export default function TravelersStep({ tour, data, errors, update }: StepProps) {
   return (
     <StepShell
-      title="How many travelers?"
-      description="Your tour is entirely private — the group is only ever you and yours."
+      title="Your group & vehicle"
+      description="Your tour is entirely private — pick your group size and the vehicle you'd like, and the price updates instantly."
     >
       <NumberStepper
         label="Travelers"
@@ -17,14 +18,22 @@ export default function TravelersStep({ data, update }: StepProps) {
         onChange={(v) => update('travelers', v)}
         min={1}
         max={16}
-        hint="Traveling with a larger group? Let us know and we'll tailor the vehicle."
+        hint="Infants and children count toward the group — mention ages later."
       />
+      {errors.travelers ? (
+        <p className={styles.fieldError} role="alert">
+          <Icon name="shield" size={15} />
+          {errors.travelers}
+        </p>
+      ) : null}
 
-      <p className={styles.note}>
-        <Icon name="users" size={17} />
-        Infants and children are welcome — just add them to the count and mention
-        ages later.
-      </p>
+      <VehicleSelector
+        tour={tour}
+        pax={data.travelers}
+        value={data.vehicle}
+        onChange={(v) => update('vehicle', v)}
+        error={errors.vehicle}
+      />
     </StepShell>
   );
 }

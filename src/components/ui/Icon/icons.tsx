@@ -46,6 +46,30 @@ export const iconRegistry = {
       </>
     ),
   },
+  suv: {
+    node: (
+      <>
+        <path d="M4 17H2.5v-5l1.8-4.5h14.4L21 12v5h-1.5" />
+        <path d="M4 12h16" />
+        <path d="M9 7.5V12" />
+        <path d="M14.5 7.5V12" />
+        <circle cx="7.3" cy="17" r="1.8" />
+        <circle cx="16.7" cy="17" r="1.8" />
+      </>
+    ),
+  },
+  minivan: {
+    node: (
+      <>
+        <path d="M3 17V8.5a1 1 0 0 1 1-1h12.3a1 1 0 0 1 .78.38L21 12v5h-1.5" />
+        <path d="M3 12.5h18" />
+        <path d="M8 7.5v5" />
+        <path d="M13 7.5v5" />
+        <circle cx="7.3" cy="17" r="1.8" />
+        <circle cx="16.7" cy="17" r="1.8" />
+      </>
+    ),
+  },
   'map-pin': {
     node: (
       <>
