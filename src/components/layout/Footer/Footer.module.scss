@@ -2,7 +2,6 @@
 
 .footer {
   position: relative;
-  //z-index: $z-base;
   margin-top: var(--section-y);
   padding-top: clamp(3.5rem, 7vw, 5.5rem);
   background: linear-gradient(180deg, var(--ink-900), #060504);
