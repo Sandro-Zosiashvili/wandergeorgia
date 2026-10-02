@@ -6,6 +6,12 @@
   grid-template-columns: 1fr;
   align-items: start;
 
+  // Leave room so the last vehicle card isn't hidden behind the fixed mobile
+  // summary bar (bar height + home-indicator safe area).
+  @include down($bp-lg) {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+
   @include up($bp-lg) {
     grid-template-columns: minmax(0, 1fr) 360px;
   }
@@ -54,4 +60,11 @@
 
 .navSpacer {
   display: inline-block;
+}
+
+// The in-flow Continue is replaced by the sticky MobileSummaryBar below lg.
+.navContinue {
+  @include down($bp-lg) {
+    display: none;
+  }
 }

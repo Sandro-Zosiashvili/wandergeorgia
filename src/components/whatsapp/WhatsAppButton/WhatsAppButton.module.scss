@@ -72,3 +72,11 @@
     opacity: 0;
   }
 }
+
+// Hidden on the booking flow below lg, where the sticky summary bar sits at the
+// bottom of the viewport; still shown on desktop booking (no sticky bar there).
+.bookingHideMobile {
+  @include down($bp-lg) {
+    display: none;
+  }
+}

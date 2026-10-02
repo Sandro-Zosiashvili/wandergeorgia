@@ -6,6 +6,7 @@ import type { Tour } from '@/types/tour';
 import { useBooking } from '@/hooks/useBooking';
 import BookingStepper from '../BookingStepper/BookingStepper';
 import OrderSummary from '../OrderSummary/OrderSummary';
+import MobileSummaryBar from '../MobileSummaryBar/MobileSummaryBar';
 import TravelersStep from '../steps/TravelersStep/TravelersStep';
 import DatesStep from '../steps/DatesStep/DatesStep';
 import DetailsStep from '../steps/DetailsStep/DetailsStep';
@@ -112,7 +113,9 @@ export default function BookingFlow({ tour }: BookingFlowProps) {
             </Button>
 
             {!isLast ? (
-              <Button onClick={booking.next} icon="arrow-right">
+              // On mobile the Continue action lives in the sticky bottom bar,
+              // so this in-flow one is hidden there to avoid duplication.
+              <Button onClick={booking.next} icon="arrow-right" className={styles.navContinue}>
                 Continue
               </Button>
             ) : (
@@ -123,6 +126,18 @@ export default function BookingFlow({ tour }: BookingFlowProps) {
       </div>
 
       <OrderSummary tour={tour} data={data} total={total} breakdown={breakdown} />
+
+      {/* Mobile-only sticky total + Continue; hidden at lg+ where the side
+          OrderSummary card is shown instead. */}
+      {!isComplete && !isLast ? (
+        <MobileSummaryBar
+          tour={tour}
+          data={data}
+          total={total}
+          breakdown={breakdown}
+          onContinue={booking.next}
+        />
+      ) : null}
     </div>
   );
 }

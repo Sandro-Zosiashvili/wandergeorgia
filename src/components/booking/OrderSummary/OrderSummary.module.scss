@@ -8,7 +8,12 @@
   border: 1px solid var(--hairline);
   box-shadow: var(--shadow-md);
 
+  // Below lg the live total lives in the sticky MobileSummaryBar instead, so
+  // this card is hidden to keep the vehicle options above the fold.
+  display: none;
+
   @include up($bp-lg) {
+    display: block;
     position: sticky;
     top: 100px;
   }
