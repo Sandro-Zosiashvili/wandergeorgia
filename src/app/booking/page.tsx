@@ -7,10 +7,24 @@ import BookingTourPicker from '@/components/booking/BookingTourPicker/BookingTou
 import styles from './page.module.scss';
 
 export const metadata: Metadata = {
-  title: 'Book your tour',
-  description: 'Reserve your private Georgian tour — airport transfers included.',
+  title: 'Book a Private Georgia Tour',
+  description:
+    'Reserve your private Georgia tour online. Choose your dates, group size and vehicle — English-speaking driver-guide and airport transfers included. Book today.',
+  keywords: [
+    'book Georgia tour',
+    'private Georgia tour booking',
+    'reserve Georgia day tour',
+    'Georgia tour with driver',
+  ],
   alternates: {
     canonical: '/booking',
+  },
+  openGraph: {
+    type: 'website',
+    url: '/booking',
+    title: 'Book a Private Georgia Tour · WanderKartli',
+    description:
+      'Reserve your private Georgia tour — pick your dates, group size and vehicle. Driver-guide and airport transfers included.',
   },
 };
 

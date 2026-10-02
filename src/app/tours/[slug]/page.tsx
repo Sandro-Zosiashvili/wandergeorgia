@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAllTourSlugs, getTourBySlug } from '@/data/tours';
 import { formatUSD } from '@/lib/format';
 import { fromPriceUSD } from '@/lib/pricing';
+import { getTourSeo } from '@/data/tourSeo';
 import { tourJsonLd } from '@/lib/structuredData';
 import TourDetail from '@/components/tourdetail/TourDetail/TourDetail';
 
@@ -20,18 +21,33 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const tour = getTourBySlug(slug);
   if (!tour) return { title: 'Tour not found' };
 
+  // Curated SEO copy where we have it; fall back to on-page content otherwise.
+  const seo = getTourSeo(tour.slug);
+  const metaTitle = seo?.title ?? tour.title;
+  const metaDescription = seo?.description ?? tour.shortDescription;
+  const canonical = `/tours/${tour.slug}`;
+  // Short, scannable social subtitle — price + place + length at a glance.
+  const social = `${tour.duration} · ${tour.city} · from ${formatUSD(fromPriceUSD(tour))}`;
+
   return {
-    title: tour.title,
-    description: tour.shortDescription,
-    alternates: {
-      canonical: `/tours/${tour.slug}`,
-    },
+    // Absolute title bypasses the "%s · WanderKartli" template so the curated,
+    // length-controlled title is exactly what Google shows.
+    title: seo ? { absolute: seo.title } : tour.title,
+    description: metaDescription,
+    keywords: seo?.keywords,
+    alternates: { canonical },
     openGraph: {
       type: 'article',
-      url: `/tours/${tour.slug}`,
-      title: tour.title,
-      description: `${tour.duration} · ${tour.city} · from ${formatUSD(fromPriceUSD(tour))}`,
-      images: [{ url: tour.heroImage }],
+      url: canonical,
+      title: metaTitle,
+      description: social,
+      images: [{ url: tour.heroImage, alt: tour.title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: metaTitle,
+      description: social,
+      images: [tour.heroImage],
     },
   };
 }
