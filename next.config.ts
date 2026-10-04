@@ -25,6 +25,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  // Proxy /api/* to the NestJS backend so admin auth is SAME-ORIGIN: the
+  // backend's HttpOnly access_token cookie is then set on this site's own
+  // domain, which lets proxy.ts read it and keeps SameSite=Lax working in
+  // production (a cross-domain cookie would be invisible to middleware).
+  // Only /api/* is proxied — /booking is a frontend page, so it's untouched.
+  async rewrites() {
+    const backend = (process.env.NEXT_PUBLIC_API_URL ?? 'https://wandergeorgia-backend.vercel.app').replace(/\/$/, '');
+    return [{ source: '/api/:path*', destination: `${backend}/api/:path*` }];
+  },
 };
 
 export default nextConfig;
