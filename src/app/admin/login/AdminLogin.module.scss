@@ -1,0 +1,226 @@
+@use '../../../styles/mixins' as *;
+
+.page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: clamp(1.25rem, 5vw, 2.5rem);
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(201, 162, 75, 0.12), transparent 55%),
+    radial-gradient(90% 70% at 100% 110%, rgba(31, 95, 82, 0.12), transparent 60%),
+    var(--ink-900);
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.6rem, 5vw, 2.4rem);
+  border-radius: $radius-lg;
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-lg);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.4rem;
+}
+
+.mark {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+  font-family: var(--font-display);
+}
+
+.brandName {
+  font-size: 1.2rem;
+  color: var(--text);
+}
+
+.brandSub {
+  font-size: 0.7rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--accent-bright);
+  padding-left: 0.15em;
+}
+
+.title {
+  font-size: 1.7rem;
+  line-height: 1.1;
+}
+
+.subtitle {
+  margin-top: -0.4rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: $radius-md;
+  font-size: 0.88rem;
+  color: #f0b4a8;
+  background: rgba(233, 138, 122, 0.12);
+  border: 1px solid rgba(233, 138, 122, 0.35);
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: $radius-md;
+  background: var(--ink-800);
+  border: 1px solid var(--hairline-soft);
+  color: var(--text);
+  // >=16px so iOS Safari never zooms on focus.
+  font-size: max(16px, 1rem);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+
+  &::placeholder {
+    color: var(--text-faint);
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--hairline);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+    background: var(--ink-700);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.passwordWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .input {
+    padding-right: 3rem;
+  }
+}
+
+.toggle {
+  position: absolute;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: $radius-sm;
+  color: var(--text-faint);
+  transition: color 0.2s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--accent-bright);
+  }
+}
+
+.submit {
+  margin-top: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.95rem 1.2rem;
+  border-radius: $radius-pill;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink-900);
+  background: var(--grad-gold);
+  box-shadow: var(--shadow-gold);
+  transition:
+    transform 0.2s $ease-out,
+    box-shadow 0.2s $ease-out,
+    opacity 0.2s ease;
+  @include focus-ring;
+
+  @include motion-safe {
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    &:hover:not(:disabled) svg {
+      transform: translateX(3px);
+    }
+  }
+
+  svg {
+    transition: transform 0.25s $ease-out;
+  }
+
+  &:disabled {
+    opacity: 0.75;
+    cursor: progress;
+  }
+}
+
+.spinner {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 2px solid rgba(12, 11, 10, 0.3);
+  border-top-color: var(--ink-900);
+  animation: adminspin 0.7s linear infinite;
+}
+
+@keyframes adminspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.footnote {
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  text-align: center;
+}

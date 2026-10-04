@@ -13,9 +13,12 @@ import styles from './WhatsAppButton.module.scss';
  */
 export default function WhatsAppButton() {
   const [hovered, setHovered] = useState(false);
+  const pathname = usePathname();
+  // Never show the public chat button inside the /admin area.
+  if (pathname?.startsWith('/admin')) return null;
   // On the booking flow the sticky mobile summary bar owns the bottom edge, so
   // this fixed button is hidden there on small screens to avoid overlapping it.
-  const onBooking = usePathname()?.startsWith('/booking') ?? false;
+  const onBooking = pathname?.startsWith('/booking') ?? false;
 
   return (
     <a

@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { site } from '@/config/site';
 import { navItems } from '@/config/navigation';
 import { oneDayTours } from '@/data/tours';
@@ -17,6 +20,10 @@ const socialLinks: { name: string; icon: IconName; href: string }[] = [
 export default function Footer() {
   const year = new Date().getFullYear();
   const popular = oneDayTours.slice(0, 4);
+  const pathname = usePathname();
+
+  // The /admin area has its own chrome — no public footer there.
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <footer className={styles.footer}>

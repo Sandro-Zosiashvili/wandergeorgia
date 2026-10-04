@@ -123,6 +123,43 @@ export const iconRegistry = {
   check: {
     node: <path d="M5 12.5 10 17.5 19.5 7" />,
   },
+  eye: {
+    node: (
+      <>
+        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+        <circle cx="12" cy="12" r="3" />
+      </>
+    ),
+  },
+  'eye-off': {
+    node: (
+      <>
+        <path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19" />
+        <path d="M6.6 6.6A18.3 18.3 0 0 0 2 12s3.5 7 10 7a10.9 10.9 0 0 0 4.9-1.14" />
+        <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+        <path d="m2 2 20 20" />
+      </>
+    ),
+  },
+  logout: {
+    node: (
+      <>
+        <path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" />
+        <path d="M16 17l5-5-5-5" />
+        <path d="M21 12H9" />
+      </>
+    ),
+  },
+  dashboard: {
+    node: (
+      <>
+        <rect x="3" y="3" width="7" height="9" rx="1.5" />
+        <rect x="14" y="3" width="7" height="5" rx="1.5" />
+        <rect x="14" y="12" width="7" height="9" rx="1.5" />
+        <rect x="3" y="16" width="7" height="5" rx="1.5" />
+      </>
+    ),
+  },
   'arrow-right': {
     node: (
       <>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { useScrolled } from '@/hooks/useScrolled';
 import Logo from '../Logo/Logo';
 import NavLinks from '../NavLinks/NavLinks';
@@ -20,6 +21,10 @@ const GLASS = {
 export default function Header() {
   const scrolled = useScrolled(40);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // The /admin area has its own chrome — hide the public site header there.
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <>

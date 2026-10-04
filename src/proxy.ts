@@ -30,6 +30,24 @@ export function proxy(request: NextRequest): NextResponse {
     return NextResponse.redirect(url, 301);
   }
 
+  // Admin gate: the private dashboard under /admin requires the backend's
+  // `access_token` cookie. (Works when the cookie is on this host — i.e. local
+  // dev, or a backend served same-site in production; see the note below.)
+  const { pathname } = request.nextUrl;
+  if (pathname.startsWith('/admin')) {
+    const hasToken = Boolean(request.cookies.get('access_token')?.value);
+    const isLoginPage = pathname === '/admin/login';
+
+    // Not signed in → send any admin route (except the login page) to login.
+    if (!hasToken && !isLoginPage) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+    // Already signed in → keep them out of the login page.
+    if (hasToken && isLoginPage) {
+      return NextResponse.redirect(new URL('/admin', request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
