@@ -53,6 +53,7 @@ export default function HeroContent() {
             href="/#packages"
             size="sm"
             variant="ghost"
+            icon="arrow-right"
             className={styles.packagesMobile}
           >
             Multi-day packages

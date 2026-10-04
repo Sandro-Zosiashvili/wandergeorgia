@@ -24,6 +24,12 @@
   svg {
     color: var(--accent-bright);
   }
+
+  @include down($bp-md) {
+    margin-bottom: 1rem;
+    font-size: 0.72rem;
+    padding: 0.4rem 0.85rem;
+  }
 }
 
 .title {
@@ -35,6 +41,14 @@
   em {
     font-style: italic;
     color: var(--accent-bright);
+  }
+
+  // Smaller + tighter on phones so the whole hero stack breathes and never
+  // clips at the bottom of a short screen.
+  @include down($bp-md) {
+    font-size: clamp(1.95rem, 8.5vw, 2.5rem);
+    line-height: 1.06;
+    margin-bottom: 0.85rem;
   }
 }
 
@@ -53,7 +67,9 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
-    margin-bottom: 1.4rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
   }
 }
 
@@ -63,6 +79,15 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 2rem;
+
+  // Stack cleanly on phones: a prominent primary, then a quiet sub-action
+  // beneath it — both flush-left and tightly spaced.
+  @include down($bp-md) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+    margin-bottom: 1.5rem;
+  }
 }
 
 .packagesDesktop {
@@ -76,6 +101,10 @@
 
   @include down($bp-md) {
     display: inline-flex;
+    // Read as an elegant text link, not a competing button: no fill, flush
+    // left with the primary above it, gold label + arrow.
+    padding-inline: 0.15rem;
+    color: var(--accent-bright);
   }
 }
 

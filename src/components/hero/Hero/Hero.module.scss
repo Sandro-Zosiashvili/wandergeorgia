@@ -20,6 +20,14 @@
   // Clear the fixed header; content is vertically centred within the hero.
   padding: 6rem clamp(1.25rem, 5vw, 3.5rem) 4rem;
 
+  // On phones, pull the stack up a little and reserve bottom space so the
+  // "500+ five-star reviews" row never sits under the floating WhatsApp
+  // button (which anchors bottom-left). Respects the home-indicator safe area.
+  @include down($bp-md) {
+    padding-top: 5.25rem;
+    padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));
+  }
+
   @include up($bp-md) {
     padding-block: 7rem 5rem;
   }

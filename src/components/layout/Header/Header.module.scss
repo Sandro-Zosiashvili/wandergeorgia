@@ -64,6 +64,14 @@
   }
 }
 
+// Hide the gold "Book a trip" CTA on phones so it doesn't sit beside the hero's
+// own gold "Explore tours" button — only the logo + burger remain on mobile.
+.bookCta {
+  @include down($bp-md) {
+    display: none;
+  }
+}
+
 .burger {
   display: inline-flex;
   align-items: center;

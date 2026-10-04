@@ -2,8 +2,11 @@
 
 .button {
   position: fixed;
-  left: clamp(1rem, 3vw, 1.75rem);
-  bottom: clamp(1.25rem, 4vw, 2.25rem);
+  // Base offset plus the device safe-area insets, so on phones it keeps a
+  // comfortable gap from the edges (and the home indicator) and never sits on
+  // top of content.
+  left: calc(clamp(1rem, 3vw, 1.75rem) + env(safe-area-inset-left));
+  bottom: calc(clamp(1.5rem, 4vw, 2.25rem) + env(safe-area-inset-bottom));
   z-index: $z-float;
   display: inline-flex;
   align-items: center;

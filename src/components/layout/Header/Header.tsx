@@ -28,7 +28,13 @@ export default function Header() {
             <Button href="/#day-tours" variant="ghost" size="sm" className={styles.exploreLink}>
               Explore tours
             </Button>
-            <Button href="/#packages" variant="primary" size="sm" icon="arrow-right">
+            <Button
+              href="/#packages"
+              variant="primary"
+              size="sm"
+              icon="arrow-right"
+              className={styles.bookCta}
+            >
               Book a trip
             </Button>
             <button
