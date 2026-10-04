@@ -8,7 +8,7 @@ $c-cancelled: #ef4444;
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
 }
 
 .head {
@@ -29,6 +29,123 @@ $c-cancelled: #ef4444;
   color: var(--text-muted);
 }
 
+// ── View switcher tabs (Month / Week / List) ─────────────────────────────────
+.viewTabs {
+  display: inline-flex;
+  padding: 0.25rem;
+  gap: 0.2rem;
+  border-radius: $radius-pill;
+  background: var(--ink-800);
+  border: 1px solid var(--hairline);
+}
+
+.viewTab {
+  padding: 0.4rem 0.95rem;
+  border-radius: $radius-pill;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: color 0.18s ease, background-color 0.18s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.viewTabActive {
+  color: var(--ink-900);
+  background: var(--grad-gold);
+
+  &:hover {
+    color: var(--ink-900);
+  }
+}
+
+// ── Quick filters ─────────────────────────────────────────────────────────────
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem 1rem;
+  flex-wrap: wrap;
+}
+
+.statusPills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.8rem;
+  border-radius: $radius-pill;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  @include focus-ring;
+
+  i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--c, var(--accent));
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    color: var(--text);
+    border-color: var(--hairline-strong, var(--accent));
+  }
+}
+
+.pillActive {
+  color: var(--text);
+  background: var(--accent-tint);
+  border-color: var(--accent);
+}
+
+.pillPending   { --c: #{$c-pending}; }
+.pillConfirmed { --c: #{$c-confirmed}; }
+.pillCompleted { --c: #{$c-completed}; }
+.pillCancelled { --c: #{$c-cancelled}; }
+
+.driverFilter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding-left: 0.7rem;
+  border-radius: $radius-md;
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
+  color: var(--text-faint);
+
+  &:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+  }
+}
+
+.driverSelect {
+  @include admin-select;
+  border: none;
+  background-color: transparent;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 2rem 0.5rem 0.2rem;
+
+  &:focus {
+    outline: none;
+  }
+}
+
 // ── FullCalendar container + dark/gold theme overrides ───────────────────────
 .fcWrap {
   border-radius: $radius-lg;
@@ -47,8 +164,7 @@ $c-cancelled: #ef4444;
     --fc-event-text-color: var(--text);
     --fc-more-link-bg-color: transparent;
     --fc-more-link-text-color: var(--accent-bright);
-    --fc-popover-bg-color: var(--surface-raised);
-    --fc-popover-border-color: var(--hairline);
+    --fc-list-event-hover-bg-color: var(--ink-800);
     color: var(--text);
     font-family: var(--font-sans);
   }
@@ -63,7 +179,7 @@ $c-cancelled: #ef4444;
   }
   :global(.fc .fc-toolbar-title) {
     font-family: var(--font-display);
-    font-size: clamp(1.15rem, 3vw, 1.5rem);
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
     color: var(--text);
   }
   :global(.fc .fc-button) {
@@ -73,7 +189,7 @@ $c-cancelled: #ef4444;
     text-transform: capitalize;
     font-weight: 600;
     font-size: 0.82rem;
-    padding: 0.45rem 0.8rem;
+    padding: 0.42rem 0.75rem;
     box-shadow: none;
     border-radius: $radius-sm;
     transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
@@ -114,7 +230,7 @@ $c-cancelled: #ef4444;
 
   // Day cells + numbers (top-right)
   :global(.fc .fc-daygrid-day-frame) {
-    min-height: 112px;
+    min-height: 116px;
   }
   :global(.fc .fc-daygrid-day-top) {
     flex-direction: row;
@@ -143,77 +259,147 @@ $c-cancelled: #ef4444;
     margin: 0.2rem;
   }
 
-  // Events — rounded pills with a 3px status accent border
+  // ── Minimal event badges: a colored dot + "[time] Tour · Driver" ──────────
   :global(.fc .fc-daygrid-event) {
-    border-radius: 6px;
-    padding: 2px 7px;
+    background: transparent;
+    border: none;
+    border-radius: $radius-sm;
+    padding: 1px 4px;
     margin: 1px 2px;
-    font-size: 0.74rem;
-    font-weight: 600;
-    border-left: 3px solid var(--c, var(--accent));
-    background: var(--bg, var(--accent-tint));
-    transition: filter 0.15s ease;
+    transition: background-color 0.15s ease;
   }
   :global(.fc .fc-daygrid-event:hover) {
-    filter: brightness(1.18);
+    background: var(--ink-800);
   }
-  :global(.fc .fc-event-title),
-  :global(.fc .fc-event-title-container) {
+  :global(.fc .fc-daygrid-event .fc-event-main) {
     color: var(--text);
+  }
+
+  .evtInner {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+  .evtDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--c, var(--accent));
+    flex-shrink: 0;
+  }
+  .evtTime {
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  // The tour name keeps its space; the driver yields first when a cell is tight.
+  .evtName {
+    flex: 0 1 auto;
+    min-width: 0;
+    color: var(--text);
+    font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  :global(.fc .fc-h-event .fc-event-main) {
-    color: var(--text);
+  .evtDriver {
+    flex: 0 9999 auto;
+    min-width: 0;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   // Status colour variables for the (global) event classes
-  :global(.evt-pending) {
-    --c: #{$c-pending};
-    --bg: rgba(245, 158, 11, 0.22);
-  }
-  :global(.evt-confirmed) {
-    --c: #{$c-confirmed};
-    --bg: rgba(59, 130, 246, 0.22);
-  }
-  :global(.evt-completed) {
-    --c: #{$c-completed};
-    --bg: rgba(16, 185, 129, 0.22);
-  }
+  :global(.evt-pending)   { --c: #{$c-pending}; }
+  :global(.evt-confirmed) { --c: #{$c-confirmed}; }
+  :global(.evt-completed) { --c: #{$c-completed}; }
   :global(.evt-cancelled) {
     --c: #{$c-cancelled};
-    --bg: rgba(239, 68, 68, 0.2);
+    .evtName { color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--text-faint); }
   }
 
-  // "+ more" link + popover
+  // "+ more" link
   :global(.fc .fc-daygrid-more-link) {
     font-size: 0.72rem;
     font-weight: 600;
     color: var(--accent-bright);
-  }
-  :global(.fc .fc-popover) {
-    background: var(--surface-raised);
-    border: 1px solid var(--hairline);
-    border-radius: $radius-md;
-    box-shadow: var(--shadow-lg);
-  }
-  :global(.fc .fc-popover-header) {
-    background: var(--ink-800);
-    color: var(--text);
-    padding: 0.5rem 0.75rem;
-  }
-  :global(.fc .fc-popover-close) {
-    color: var(--text-muted);
-    opacity: 0.85;
+    padding: 0 4px;
   }
 
-  // Week (timeGrid) view axis labels
-  :global(.fc .fc-timegrid-slot-label-cushion),
-  :global(.fc .fc-timegrid-axis-cushion),
-  :global(.fc .fc-list-day-text) {
+  // ── List / agenda view ─────────────────────────────────────────────────────
+  :global(.fc .fc-list) {
+    border: none;
+  }
+  :global(.fc .fc-list-day-cushion) {
+    background: var(--ink-800);
+    color: var(--text);
+    padding: 0.55rem 0.9rem;
+  }
+  :global(.fc .fc-list-day-cushion .fc-list-day-text),
+  :global(.fc .fc-list-day-cushion .fc-list-day-side-text) {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+  }
+  :global(.fc .fc-list-event),
+  :global(.fc .fc-list-event:hover td) {
+    cursor: pointer;
+  }
+  :global(.fc .fc-list-event td) {
+    border-color: var(--hairline);
+    padding: 0.6rem 0.9rem;
+  }
+  // Hide the native time + dot columns; our badge carries that info.
+  :global(.fc .fc-list-event-time),
+  :global(.fc .fc-list-event-graphic) {
+    display: none;
+  }
+  :global(.fc .fc-list-empty) {
+    background: transparent;
     color: var(--text-faint);
-    font-size: 0.72rem;
+  }
+  // In the list, let the badge read as a roomy row.
+  &.listMode .evtInner {
+    font-size: 0.9rem;
+    gap: 0.6rem;
+  }
+  &.listMode .evtDriver {
+    flex: 0 1 auto;
+  }
+
+  // Week view has tall rows but narrow columns — wrap the text onto multiple
+  // lines so full titles and driver names are visible per day.
+  &.weekMode {
+    :global(.fc .fc-daygrid-event) {
+      white-space: normal;
+      padding: 3px 5px;
+    }
+    .evtInner {
+      flex-wrap: wrap;
+      align-items: baseline;
+      overflow: visible;
+    }
+    .evtDot {
+      align-self: center;
+    }
+    .evtName {
+      flex: 1 1 100%;
+      white-space: normal;
+      overflow: visible;
+    }
+    .evtDriver {
+      flex: 1 1 100%;
+      white-space: normal;
+      overflow: visible;
+    }
   }
 }
 
@@ -243,7 +429,6 @@ $c-cancelled: #ef4444;
   display: flex;
   flex-wrap: wrap;
   gap: 1.2rem;
-  margin-top: 0.5rem;
 }
 
 .legendItem {
@@ -254,25 +439,83 @@ $c-cancelled: #ef4444;
   color: var(--text-muted);
 
   i {
-    width: 11px;
-    height: 11px;
-    border-radius: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
     background: var(--c);
     flex-shrink: 0;
   }
 }
 
-.sPending {
-  --c: #{$c-pending};
+.sPending   { --c: #{$c-pending}; }
+.sConfirmed { --c: #{$c-confirmed}; }
+.sCompleted { --c: #{$c-completed}; }
+.sCancelled { --c: #{$c-cancelled}; }
+
+// ── Day agenda drawer (from "+X more") ───────────────────────────────────────
+.agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.sConfirmed {
-  --c: #{$c-confirmed};
+
+.agendaRow {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: left;
+  padding: 0.7rem 0.85rem;
+  border-radius: $radius-md;
+  background: var(--ink-800);
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--c, var(--accent));
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-raised);
+  }
 }
-.sCompleted {
-  --c: #{$c-completed};
+
+.rowPending   { --c: #{$c-pending}; }
+.rowConfirmed { --c: #{$c-confirmed}; }
+.rowCompleted { --c: #{$c-completed}; }
+.rowCancelled { --c: #{$c-cancelled}; }
+
+.agendaTime {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-bright);
+  font-variant-numeric: tabular-nums;
 }
-.sCancelled {
-  --c: #{$c-cancelled};
+
+.agendaBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.agendaName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agendaMeta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 // ── Modal content ────────────────────────────────────────────────────────────
