@@ -1,0 +1,341 @@
+@use '../../../../styles/mixins' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  line-height: 1.1;
+}
+
+.sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.export {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: $radius-pill;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  border: 1px solid var(--hairline);
+  background: var(--surface-raised);
+  transition: color 0.2s ease, border-color 0.2s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--accent-bright);
+    border-color: var(--accent);
+  }
+}
+
+// ── Toolbar ──────────────────────────────────────────────────────────────────
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.searchWrap {
+  position: relative;
+  flex: 1 1 240px;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.85rem;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.search,
+.select {
+  background: var(--ink-800);
+  border: 1px solid var(--hairline-soft);
+  color: var(--text);
+  border-radius: $radius-md;
+  font-size: max(16px, 0.95rem);
+  padding: 0.65rem 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+  }
+}
+
+.search {
+  width: 100%;
+  padding-left: 2.5rem;
+
+  &::placeholder {
+    color: var(--text-faint);
+  }
+}
+
+.select {
+  cursor: pointer;
+}
+
+// ── Table ────────────────────────────────────────────────────────────────────
+.tableScroll {
+  overflow-x: auto;
+  border-radius: $radius-lg;
+  border: 1px solid var(--hairline);
+  background: var(--surface-raised);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  min-width: 920px;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    text-align: left;
+    padding: 0.85rem 0.9rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    background: var(--ink-800);
+    @include hairline(bottom);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.8rem 0.9rem;
+    vertical-align: middle;
+    color: var(--text);
+    @include hairline(bottom);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.025);
+  }
+}
+
+.client {
+  display: block;
+  font-weight: 600;
+}
+
+.bookingId {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-faint);
+}
+
+.nowrap {
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.tourCell {
+  min-width: 190px;
+  color: var(--text-muted);
+}
+
+.price {
+  font-weight: 600;
+  color: var(--accent-bright);
+  white-space: nowrap;
+}
+
+.wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  @include focus-ring;
+
+  svg {
+    color: #25d366;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.waPhone {
+  @include down($bp-lg) {
+    display: none;
+  }
+}
+
+.driverSelect {
+  background: var(--ink-700);
+  border: 1px solid var(--hairline);
+  color: var(--text);
+  border-radius: $radius-sm;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.5rem;
+  cursor: pointer;
+  max-width: 150px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+}
+
+.empty {
+  text-align: center;
+  padding: 2.5rem !important;
+  color: var(--text-muted);
+}
+
+// ── Details modal ────────────────────────────────────────────────────────────
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.detailBadges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1.2rem;
+
+  dt {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    margin-bottom: 0.2rem;
+  }
+
+  dd {
+    font-size: 0.92rem;
+    color: var(--text);
+
+    a {
+      color: var(--accent-bright);
+    }
+  }
+}
+
+.detailPrice {
+  color: var(--accent-bright) !important;
+  font-weight: 600;
+}
+
+.waInline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  svg {
+    color: #25d366;
+  }
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.blockLabel {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+}
+
+.blockText {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.notes {
+  width: 100%;
+  resize: vertical;
+  min-height: 72px;
+  padding: 0.75rem 0.9rem;
+  border-radius: $radius-md;
+  background: var(--ink-800);
+  border: 1px solid var(--hairline-soft);
+  color: var(--text);
+  font-size: max(16px, 0.95rem);
+  font-family: inherit;
+  line-height: 1.5;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+  }
+}
+
+// ── Modal buttons (shared pattern) ───────────────────────────────────────────
+.ghostBtn,
+.primaryBtn {
+  padding: 0.65rem 1.2rem;
+  border-radius: $radius-pill;
+  font-size: 0.9rem;
+  font-weight: 600;
+  @include focus-ring;
+}
+
+.ghostBtn {
+  color: var(--text-muted);
+  border: 1px solid var(--hairline);
+  background: transparent;
+
+  &:hover {
+    color: var(--text);
+    border-color: var(--hairline);
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+.primaryBtn {
+  color: var(--ink-900);
+  background: var(--grad-gold);
+  box-shadow: var(--shadow-gold);
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}

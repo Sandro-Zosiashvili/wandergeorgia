@@ -62,7 +62,12 @@ $sidebar-w: 248px;
 }
 
 .overlay {
+  // Only exists as the mobile drawer backdrop — must NOT take a grid cell on
+  // desktop (that would push the sidebar out of its column).
+  display: none;
+
   @include down($bp-lg) {
+    display: block;
     position: fixed;
     inset: 0;
     z-index: $z-overlay;

@@ -8,8 +8,11 @@ import Icon, { type IconName } from '@/components/ui/Icon/Icon';
 import styles from './AdminShell.module.scss';
 
 const NAV: { label: string; href: string; icon: IconName; soon?: boolean }[] = [
-  { label: 'Dashboard', href: '/admin', icon: 'dashboard' },
-  { label: 'Bookings', href: '/admin/bookings', icon: 'calendar', soon: true },
+  { label: 'Overview', href: '/admin', icon: 'dashboard' },
+  { label: 'Bookings', href: '/admin/bookings', icon: 'clipboard' },
+  { label: 'Drivers', href: '/admin/drivers', icon: 'car' },
+  { label: 'Calendar', href: '/admin/calendar', icon: 'calendar' },
+  { label: 'Tours', href: '/admin/tours', icon: 'compass' },
 ];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

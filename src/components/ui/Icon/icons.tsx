@@ -160,6 +160,56 @@ export const iconRegistry = {
       </>
     ),
   },
+  clipboard: {
+    node: (
+      <>
+        <rect x="5" y="4" width="14" height="17" rx="2" />
+        <path d="M9 4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v1H9Z" />
+        <path d="M8.5 11h7M8.5 15h5" />
+      </>
+    ),
+  },
+  search: {
+    node: (
+      <>
+        <circle cx="11" cy="11" r="6.5" />
+        <path d="m20 20-3.6-3.6" />
+      </>
+    ),
+  },
+  download: {
+    node: (
+      <>
+        <path d="M12 3v12" />
+        <path d="m7 11 5 5 5-5" />
+        <path d="M4 20h16" />
+      </>
+    ),
+  },
+  pencil: {
+    node: (
+      <>
+        <path d="M16.5 4.5l3 3L8 19l-4 1 1-4Z" />
+        <path d="M14.5 6.5l3 3" />
+      </>
+    ),
+  },
+  filter: {
+    node: <path d="M3 5h18l-7 8v6l-4 2v-8Z" />,
+  },
+  trash: {
+    node: (
+      <>
+        <path d="M4 7h16" />
+        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+        <path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13" />
+        <path d="M10 11v6M14 11v6" />
+      </>
+    ),
+  },
+  'chevron-left': {
+    node: <path d="M15 5l-7 7 7 7" />,
+  },
   'arrow-right': {
     node: (
       <>

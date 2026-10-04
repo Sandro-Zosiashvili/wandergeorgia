@@ -1,0 +1,58 @@
+@use '../../../styles/mixins' as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.65rem;
+  border-radius: $radius-pill;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.gold {
+  color: var(--accent-bright);
+  background: rgba(201, 162, 75, 0.12);
+  border-color: rgba(201, 162, 75, 0.3);
+}
+
+.green {
+  color: #6fd3a3;
+  background: rgba(47, 180, 120, 0.12);
+  border-color: rgba(47, 180, 120, 0.3);
+}
+
+.amber {
+  color: #e8b764;
+  background: rgba(232, 168, 60, 0.12);
+  border-color: rgba(232, 168, 60, 0.3);
+}
+
+.red {
+  color: #ef9a8c;
+  background: rgba(233, 120, 100, 0.12);
+  border-color: rgba(233, 120, 100, 0.32);
+}
+
+.blue {
+  color: #85b7e6;
+  background: rgba(100, 150, 220, 0.12);
+  border-color: rgba(100, 150, 220, 0.3);
+}
+
+.muted {
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--hairline);
+}

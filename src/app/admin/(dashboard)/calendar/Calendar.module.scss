@@ -1,0 +1,178 @@
+@use '../../../../styles/mixins' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  line-height: 1.1;
+}
+
+.sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-sm;
+    color: var(--text-muted);
+    border: 1px solid var(--hairline);
+    background: var(--surface-raised);
+    transition: color 0.2s ease, border-color 0.2s ease;
+    @include focus-ring;
+
+    &:hover {
+      color: var(--accent-bright);
+      border-color: var(--accent);
+    }
+  }
+}
+
+.month {
+  min-width: 150px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+// ── Grid ─────────────────────────────────────────────────────────────────────
+.calScroll {
+  overflow-x: auto;
+}
+
+.cal {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 720px;
+}
+
+.weekday {
+  padding: 0.4rem;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.cell {
+  min-height: 108px;
+  padding: 0.45rem;
+  border-radius: $radius-md;
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.blank {
+  background: transparent;
+  border-color: transparent;
+}
+
+.today {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+
+  .dayNum {
+    color: var(--accent-bright);
+    font-weight: 700;
+  }
+}
+
+.dayNum {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.event {
+  display: flex;
+  flex-direction: column;
+  padding: 0.3rem 0.4rem;
+  border-radius: $radius-sm;
+  border-left: 3px solid var(--evt, var(--accent));
+  background: rgba(255, 255, 255, 0.035);
+  overflow: hidden;
+}
+
+.eventTour {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eventDriver {
+  font-size: 0.66rem;
+  color: var(--evt, var(--accent-bright));
+}
+
+// Status colours — these classes only set the --evt variable.
+.pending {
+  --evt: #e8b764;
+}
+.confirmed {
+  --evt: var(--accent-bright);
+}
+.completed {
+  --evt: #6fd3a3;
+}
+.cancelled {
+  --evt: #ef9a8c;
+}
+
+// ── Legend ───────────────────────────────────────────────────────────────────
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+
+  i {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--evt);
+    flex-shrink: 0;
+  }
+}

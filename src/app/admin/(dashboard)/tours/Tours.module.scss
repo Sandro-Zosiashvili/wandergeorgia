@@ -1,0 +1,261 @@
+@use '../../../../styles/mixins' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  line-height: 1.1;
+}
+
+.sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: $radius-pill;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-900);
+  background: var(--grad-gold);
+  box-shadow: var(--shadow-gold);
+  transition: transform 0.2s $ease-out;
+  @include focus-ring;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+// ── List ─────────────────────────────────────────────────────────────────────
+.list {
+  border-radius: $radius-lg;
+  border: 1px solid var(--hairline);
+  background: var(--surface-raised);
+  overflow: hidden;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 0.8rem 1.4rem;
+  padding: 0.9rem 1.2rem;
+  @include hairline(bottom);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.headerRow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  background: var(--ink-800);
+
+  @include down($bp-md) {
+    display: none;
+  }
+}
+
+// On small screens, stack the controls under the tour name.
+@include down($bp-md) {
+  .row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'info active'
+      'meta meta';
+  }
+  .tourInfo {
+    grid-area: info;
+  }
+  .toggleCell {
+    grid-area: active;
+  }
+  .colType,
+  .colPrice {
+    grid-area: meta;
+    display: inline-flex;
+  }
+}
+
+.tourInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.tourName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tourCity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+
+  svg {
+    color: var(--accent);
+  }
+}
+
+.typeBadge {
+  padding: 0.28rem 0.65rem;
+  border-radius: $radius-pill;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border: 1px solid var(--hairline);
+  white-space: nowrap;
+}
+
+.priceEditor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: $radius-md;
+  background: var(--ink-800);
+  border: 1px solid var(--hairline-soft);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+  }
+}
+
+.currency {
+  color: var(--accent-bright);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.priceInput {
+  width: 70px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: max(16px, 0.92rem);
+  font-weight: 600;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.toggleCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  .on {
+    font-size: 0.82rem;
+    color: #6fd3a3;
+    font-weight: 600;
+  }
+  .off {
+    font-size: 0.82rem;
+    color: var(--text-faint);
+  }
+}
+
+// ── Form (add tour) ──────────────────────────────────────────────────────────
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  > span {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border-radius: $radius-md;
+  background: var(--ink-800);
+  border: 1px solid var(--hairline-soft);
+  color: var(--text);
+  font-size: max(16px, 0.95rem);
+  font-family: inherit;
+
+  &::placeholder {
+    color: var(--text-faint);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+  }
+}
+
+.ghostBtn,
+.primaryBtn {
+  padding: 0.65rem 1.2rem;
+  border-radius: $radius-pill;
+  font-size: 0.9rem;
+  font-weight: 600;
+  @include focus-ring;
+}
+
+.ghostBtn {
+  color: var(--text-muted);
+  border: 1px solid var(--hairline);
+  background: transparent;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.primaryBtn {
+  color: var(--ink-900);
+  background: var(--grad-gold);
+  box-shadow: var(--shadow-gold);
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}

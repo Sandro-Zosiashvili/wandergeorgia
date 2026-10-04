@@ -1,0 +1,35 @@
+@use '../../../styles/mixins' as *;
+
+.toggle {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: $radius-pill;
+  background: var(--ink-700);
+  border: 1px solid var(--hairline);
+  transition: background 0.25s $ease-out, border-color 0.25s $ease-out;
+  @include focus-ring;
+}
+
+.knob {
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transform: translateY(-50%);
+  transition: transform 0.25s $ease-spring, background 0.25s $ease-out;
+}
+
+.on {
+  background: var(--accent-deep, rgba(201, 162, 75, 0.35));
+  border-color: var(--accent);
+
+  .knob {
+    transform: translate(18px, -50%);
+    background: var(--accent-bright);
+  }
+}
