@@ -106,17 +106,18 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.88rem;
-  min-width: 920px;
+  font-size: 0.82rem;
+  // Compact enough to fit all 10 columns on a laptop; scrolls below this.
+  min-width: 820px;
 
   thead th {
     position: sticky;
     top: 0;
     text-align: left;
-    padding: 0.85rem 0.9rem;
-    font-size: 0.72rem;
+    padding: 0.55rem 0.45rem;
+    font-size: 0.68rem;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--text-faint);
     background: var(--ink-800);
@@ -125,7 +126,7 @@
   }
 
   td {
-    padding: 0.8rem 0.9rem;
+    padding: 0.55rem 0.45rem;
     vertical-align: middle;
     color: var(--text);
     @include hairline(bottom);
@@ -162,7 +163,18 @@
 }
 
 .tourCell {
-  min-width: 190px;
+  max-width: 134px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-muted);
+}
+
+.vehicleCell {
+  max-width: 96px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: var(--text-muted);
 }
 
@@ -191,9 +203,12 @@
   }
 }
 
+// Icon-only contact to save width; full number lives in the details modal.
 .waPhone {
-  @include down($bp-lg) {
-    display: none;
+  display: none;
+
+  @include up($bp-2xl) {
+    display: inline;
   }
 }
 
@@ -202,10 +217,10 @@
   border: 1px solid var(--hairline);
   color: var(--text);
   border-radius: $radius-sm;
-  font-size: 0.82rem;
-  padding: 0.4rem 0.5rem;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.4rem;
   cursor: pointer;
-  max-width: 150px;
+  max-width: 118px;
 
   &:focus {
     outline: none;

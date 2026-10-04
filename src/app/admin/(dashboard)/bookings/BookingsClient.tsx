@@ -3,12 +3,14 @@
 import { useMemo, useState } from 'react';
 import Icon from '@/components/ui/Icon/Icon';
 import StatusBadge from '@/components/admin/StatusBadge/StatusBadge';
+import StatusSelect from '@/components/admin/StatusSelect/StatusSelect';
 import AdminModal from '@/components/admin/AdminModal/AdminModal';
 import {
   mockBookings,
   mockDrivers,
   waLink,
   type AdminBooking,
+  type PaymentStatus,
   type TourStatus,
 } from '@/data/adminMock';
 import { formatUSD, formatDate } from '@/lib/format';
@@ -44,6 +46,22 @@ export default function BookingsClient() {
       prev.map((b) => (b.id === bookingId ? { ...b, driverId: driverId || null } : b)),
     );
   };
+
+  const setPayment = (bookingId: string, value: string) => {
+    setBookings((prev) =>
+      prev.map((b) => (b.id === bookingId ? { ...b, paymentStatus: value as PaymentStatus } : b)),
+    );
+  };
+
+  const setTourStatus = (bookingId: string, value: string) => {
+    setBookings((prev) =>
+      prev.map((b) => (b.id === bookingId ? { ...b, tourStatus: value as TourStatus } : b)),
+    );
+  };
+
+  // Only active drivers can be assigned (plus whoever is already on the booking).
+  const assignable = (currentId: string | null) =>
+    mockDrivers.filter((d) => d.status !== 'INACTIVE' || d.id === currentId);
 
   const openDetails = (b: AdminBooking) => {
     setSelected(b);
@@ -138,20 +156,24 @@ export default function BookingsClient() {
                   <span className={styles.bookingId}>#{b.id}</span>
                 </td>
                 <td onClick={(e) => e.stopPropagation()}>
-                  <a className={styles.wa} href={waLink(b.phone)} target="_blank" rel="noopener noreferrer" title="WhatsApp">
+                  <a className={styles.wa} href={waLink(b.phone)} target="_blank" rel="noopener noreferrer" title={`WhatsApp ${b.phone}`}>
                     <Icon name="whatsapp" size={16} />
                     <span className={styles.waPhone}>{b.phone}</span>
                   </a>
                 </td>
-                <td className={styles.tourCell}>{b.tourName}</td>
+                <td className={styles.tourCell} title={b.tourName}>{b.tourName}</td>
                 <td className={styles.nowrap}>
-                  {formatDate(b.startDate)} · {b.days}d
+                  {formatDate(b.startDate).replace(/,?\s*\d{4}$/, '')} · {b.days}d
                 </td>
                 <td>{b.passengers}</td>
-                <td className={styles.nowrap}>{b.vehicleType}</td>
+                <td className={styles.vehicleCell} title={b.vehicleType}>{b.vehicleType}</td>
                 <td className={styles.price}>{formatUSD(b.totalPrice)}</td>
-                <td><StatusBadge kind="payment" value={b.paymentStatus} /></td>
-                <td><StatusBadge kind="tour" value={b.tourStatus} /></td>
+                <td onClick={(e) => e.stopPropagation()}>
+                  <StatusSelect kind="payment" value={b.paymentStatus} onChange={(v) => setPayment(b.id, v)} />
+                </td>
+                <td onClick={(e) => e.stopPropagation()}>
+                  <StatusSelect kind="tour" value={b.tourStatus} onChange={(v) => setTourStatus(b.id, v)} />
+                </td>
                 <td onClick={(e) => e.stopPropagation()}>
                   <select
                     className={styles.driverSelect}
@@ -159,7 +181,7 @@ export default function BookingsClient() {
                     onChange={(e) => assignDriver(b.id, e.target.value)}
                   >
                     <option value="">Unassigned</option>
-                    {mockDrivers.map((d) => (
+                    {assignable(b.driverId).map((d) => (
                       <option key={d.id} value={d.id}>{d.name}</option>
                     ))}
                   </select>

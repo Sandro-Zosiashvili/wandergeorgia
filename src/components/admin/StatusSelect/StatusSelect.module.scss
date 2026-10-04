@@ -1,0 +1,81 @@
+@use '../../../styles/mixins' as *;
+
+.wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.5rem 0.2rem 0.55rem;
+  border-radius: $radius-pill;
+  border: 1px solid transparent;
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  color: currentColor;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.18rem 0.1rem;
+  padding-right: 0.9rem;
+  cursor: pointer;
+  max-width: 100%;
+  text-overflow: ellipsis;
+
+  &:focus {
+    outline: none;
+  }
+
+  // Native option list renders on a dark surface.
+  option {
+    color: var(--text);
+    background: var(--ink-800);
+    font-weight: 500;
+  }
+}
+
+.chev {
+  position: absolute;
+  right: 0.45rem;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.gold {
+  color: var(--accent-bright);
+  background: rgba(201, 162, 75, 0.12);
+  border-color: rgba(201, 162, 75, 0.32);
+}
+.green {
+  color: #6fd3a3;
+  background: rgba(47, 180, 120, 0.12);
+  border-color: rgba(47, 180, 120, 0.32);
+}
+.amber {
+  color: #e8b764;
+  background: rgba(232, 168, 60, 0.12);
+  border-color: rgba(232, 168, 60, 0.32);
+}
+.red {
+  color: #ef9a8c;
+  background: rgba(233, 120, 100, 0.12);
+  border-color: rgba(233, 120, 100, 0.34);
+}
+.muted {
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--hairline);
+}
