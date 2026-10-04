@@ -9,6 +9,13 @@ import Button from '@/components/ui/Button/Button';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './Header.module.scss';
 
+// Applied inline (not via CSS) so the minifier can't strip the standard
+// property and leave only the -webkit- form that Chrome/Android ignore.
+const GLASS = {
+  backdropFilter: 'blur(16px) saturate(150%)',
+  WebkitBackdropFilter: 'blur(16px) saturate(150%)',
+} as const;
+
 /** Sticky site header — transparent over the hero, frosted once scrolled. */
 export default function Header() {
   const scrolled = useScrolled(40);
@@ -16,7 +23,10 @@ export default function Header() {
 
   return (
     <>
-      <header className={[styles.header, scrolled ? styles.scrolled : ''].filter(Boolean).join(' ')}>
+      <header
+        className={[styles.header, scrolled ? styles.scrolled : ''].filter(Boolean).join(' ')}
+        style={scrolled ? GLASS : undefined}
+      >
         <div className={styles.bar}>
           <Logo compact={scrolled} />
 

@@ -5,7 +5,7 @@
   inset: 0;
   z-index: $z-modal;
   background: rgba(6, 5, 4, 0.55);
-  backdrop-filter: blur(6px);
+  // blur applied inline in the component (minifier strips the standard prop).
 
   @include up($bp-lg) {
     display: none;
@@ -54,6 +54,10 @@
   gap: 1rem;
   padding-top: 1.5rem;
   @include hairline(top);
+}
+
+.ctaWrap {
+  display: block;
 }
 
 .phone {

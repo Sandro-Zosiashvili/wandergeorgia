@@ -2,8 +2,10 @@ import Link from 'next/link';
 import { site } from '@/config/site';
 import styles from './Logo.module.scss';
 
-/** Brand mark asset — the "W" landscape logo in /public. */
-const MARK_SRC = '/assets/icons/W-icon.svg';
+// Brand mark asset. The source SVG wraps a 1024px raster in a tiny 30x23
+// canvas, so it rasterises blurry on hi-DPI screens; a pre-rendered 240px PNG
+// (transparent) stays crisp at the small size the logo is shown, on any DPR.
+const MARK_SRC = '/assets/icons/W-icon.png';
 
 interface LogoProps {
   /** Shrinks the wordmark on compact bars. */

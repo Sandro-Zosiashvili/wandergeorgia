@@ -20,6 +20,12 @@ const panel = {
   exit: { x: '100%', transition: { duration: 0.35, ease: [0.65, 0, 0.35, 1] } },
 } as const;
 
+// Inline so the CSS minifier can't drop the standard backdrop-filter.
+const OVERLAY_BLUR = {
+  backdropFilter: 'blur(6px)',
+  WebkitBackdropFilter: 'blur(6px)',
+} as const;
+
 /** Full-height slide-in navigation drawer for small screens. */
 export default function MobileMenu({ open, onClose }: MobileMenuProps) {
   useLockBodyScroll(open);
@@ -38,6 +44,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
       {open ? (
         <motion.div
           className={styles.overlay}
+          style={OVERLAY_BLUR}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -64,10 +71,18 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             </div>
 
             <div className={styles.footer}>
+              {/* Primary action, prominent at the bottom of the drawer. The
+                  wrapper closes the menu on tap so the hash scroll isn't blocked
+                  by the scroll lock (Button-as-link can't take onClick). */}
+              <span className={styles.ctaWrap} onClick={onClose}>
+                <Button href="/#packages" variant="primary" icon="arrow-right" fullWidth>
+                  Book a trip
+                </Button>
+              </span>
               <Button
                 href={whatsappLink()}
                 external
-                variant="primary"
+                variant="outline"
                 icon="whatsapp"
                 iconLeading
                 fullWidth

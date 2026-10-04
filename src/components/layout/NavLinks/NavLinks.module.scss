@@ -48,6 +48,15 @@
   }
 }
 
+// Current section / page: gold label with the underline held open.
+.link.active {
+  color: var(--accent-bright);
+
+  &::after {
+    transform: scaleX(1);
+  }
+}
+
 .inline .link {
   font-size: 0.95rem;
 }

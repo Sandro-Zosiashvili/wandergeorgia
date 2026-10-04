@@ -15,9 +15,10 @@
 }
 
 .scrolled {
+  // Translucent base; the blur is applied inline in Header.tsx (only while
+  // scrolled) because the CSS minifier strips the standard `backdrop-filter`
+  // and leaves only the -webkit- form, which Chrome/Android ignore.
   background: rgba(10, 9, 8, 0.72);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
   border-bottom-color: var(--hairline);
   box-shadow: var(--shadow-sm);
 }
@@ -69,6 +70,16 @@
 .bookCta {
   @include down($bp-md) {
     display: none;
+  }
+
+  // Micro-interaction: the arrow nudges right on hover/focus.
+  svg {
+    transition: transform 0.3s $ease-out;
+  }
+
+  &:hover svg,
+  &:focus-visible svg {
+    transform: translateX(3px);
   }
 }
 
