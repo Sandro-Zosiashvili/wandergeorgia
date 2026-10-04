@@ -133,7 +133,7 @@ export default function DriversClient() {
           </div>
           <label className={styles.field}>
             <span>Status</span>
-            <select className={styles.input} value={form.status} onChange={(e) => set('status', e.target.value as DriverStatus)}>
+            <select className={[styles.input, styles.selectField].join(' ')} value={form.status} onChange={(e) => set('status', e.target.value as DriverStatus)}>
               {STATUSES.map((s) => (
                 <option key={s} value={s}>{s.replace('_', ' ')}</option>
               ))}

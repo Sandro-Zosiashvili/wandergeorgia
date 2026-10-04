@@ -213,7 +213,7 @@
   width: 100%;
   padding: 0.75rem 0.9rem;
   border-radius: $radius-md;
-  background: var(--ink-800);
+  background-color: var(--ink-800);
   border: 1px solid var(--hairline-soft);
   color: var(--text);
   font-size: max(16px, 0.95rem);
@@ -228,6 +228,11 @@
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-tint);
   }
+}
+
+// Applied alongside .input on <select> elements for the custom chevron.
+.selectField {
+  @include admin-select;
 }
 
 .ghostBtn,

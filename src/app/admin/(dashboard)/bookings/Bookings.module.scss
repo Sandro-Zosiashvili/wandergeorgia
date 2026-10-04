@@ -67,7 +67,7 @@
 
 .search,
 .select {
-  background: var(--ink-800);
+  background-color: var(--ink-800);
   border: 1px solid var(--hairline-soft);
   color: var(--text);
   border-radius: $radius-md;
@@ -92,7 +92,8 @@
 }
 
 .select {
-  cursor: pointer;
+  min-width: 150px;
+  @include admin-select;
 }
 
 // ── Table ────────────────────────────────────────────────────────────────────
@@ -213,14 +214,15 @@
 }
 
 .driverSelect {
-  background: var(--ink-700);
+  width: 100%;
+  min-width: 150px;
+  background-color: var(--ink-700);
   border: 1px solid var(--hairline);
   color: var(--text);
   border-radius: $radius-sm;
   font-size: 0.78rem;
-  padding: 0.35rem 0.4rem;
-  cursor: pointer;
-  max-width: 118px;
+  padding: 0.42rem 0.5rem;
+  @include admin-select;
 
   &:focus {
     outline: none;

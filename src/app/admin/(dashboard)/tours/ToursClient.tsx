@@ -120,7 +120,7 @@ export default function ToursClient() {
           <div className={styles.row2}>
             <label className={styles.field}>
               <span>Type</span>
-              <select className={styles.input} value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as AdminTour['type'] }))}>
+              <select className={[styles.input, styles.selectField].join(' ')} value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as AdminTour['type'] }))}>
                 <option value="one-day">Day tour</option>
                 <option value="multi-day">Multi-day</option>
               </select>
