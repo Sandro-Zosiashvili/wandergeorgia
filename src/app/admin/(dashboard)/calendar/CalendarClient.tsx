@@ -5,7 +5,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
-import type { EventClickArg, EventContentArg, EventInput, MoreLinkArg } from '@fullcalendar/core';
+import type { EventClickArg, EventContentArg, EventInput, EventMountArg } from '@fullcalendar/core';
 import Icon from '@/components/ui/Icon/Icon';
 import StatusBadge from '@/components/admin/StatusBadge/StatusBadge';
 import AdminModal from '@/components/admin/AdminModal/AdminModal';
@@ -42,15 +42,38 @@ function exclusiveEnd(startStr: string, days: number): string {
   return `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())}`;
 }
 
-/** True if the booking is running on the given 'YYYY-MM-DD' day (ISO strings sort lexically). */
-function occursOn(b: AdminBooking, dayKey: string): boolean {
-  return dayKey >= b.startDate && dayKey < exclusiveEnd(b.startDate, b.days);
+type ProgressState = 'upcoming' | 'active' | 'done';
+
+/** Where a tour sits relative to today — used for "Day X of Y" progress. */
+function tourProgress(b: AdminBooking): { x: number; total: number; state: ProgressState } {
+  const total = Math.max(1, b.days);
+  const todayKey = toKey(new Date());
+  if (todayKey < b.startDate) return { x: 0, total, state: 'upcoming' };
+  if (todayKey >= exclusiveEnd(b.startDate, b.days)) return { x: total, total, state: 'done' };
+  const start = new Date(`${b.startDate}T00:00:00`);
+  const today = new Date(`${todayKey}T00:00:00`);
+  const diff = Math.round((today.getTime() - start.getTime()) / 86_400_000);
+  return { x: diff + 1, total, state: 'active' };
+}
+
+/** Short progress label for tooltips, e.g. "Day 3 of 13". */
+function progressLabel(b: AdminBooking): string {
+  if (b.days <= 1) return '';
+  const p = tourProgress(b);
+  if (p.state === 'active') return `Day ${p.x} of ${p.total}`;
+  if (p.state === 'upcoming') return 'Upcoming';
+  return 'Completed';
+}
+
+/** Toggle a hover class on every segment of a multi-day event at once. */
+function highlightEvent(id: string, on: boolean): void {
+  if (typeof document === 'undefined') return;
+  document.querySelectorAll(`[data-eid="${id}"]`).forEach((el) => el.classList.toggle('fc-evt-hover', on));
 }
 
 export default function CalendarClient() {
   const calRef = useRef<FullCalendar>(null);
   const [selected, setSelected] = useState<AdminBooking | null>(null);
-  const [dayKey, setDayKey] = useState<string | null>(null);
   const [view, setView] = useState<CalView>('dayGridMonth');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
   const [driverFilter, setDriverFilter] = useState<DriverFilter>('ALL');
@@ -78,15 +101,10 @@ export default function CalendarClient() {
         start: b.startDate,
         end: exclusiveEnd(b.startDate, b.days),
         allDay: true,
-        classNames: ['evt', `evt-${b.tourStatus.toLowerCase()}`],
+        classNames: ['evt', `evt-${b.tourStatus.toLowerCase()}`, b.days > 1 ? 'evt-multi' : 'evt-single'],
         extendedProps: { booking: b },
       })),
     [filtered],
-  );
-
-  const dayBookings = useMemo(
-    () => (dayKey ? filtered.filter((b) => occursOn(b, dayKey)).sort((a, b) => (a.startTime ?? '').localeCompare(b.startTime ?? '')) : []),
-    [dayKey, filtered],
   );
 
   const changeView = (v: CalView) => {
@@ -95,28 +113,37 @@ export default function CalendarClient() {
   };
 
   const onEventClick = (arg: EventClickArg) => {
+    highlightEvent(arg.event.id, false);
     setSelected(arg.event.extendedProps.booking as AdminBooking);
   };
 
-  // Replace the native "+ more" popover with a clean day-agenda drawer.
-  // FullCalendar opens its own popover unless the handler returns a truthy,
-  // non-string value, so we return a marker object to suppress it.
-  const onMoreLinkClick = (arg: MoreLinkArg) => {
-    setDayKey(toKey(arg.date));
-    return { handled: true } as unknown as void;
-  };
-
+  // A continuous bar across the grid: the tour title + driver live inside it.
   const renderEvent = (arg: EventContentArg) => {
     const b = arg.event.extendedProps.booking as AdminBooking;
     const dn = driverName(b.driverId);
     return (
-      <div className={styles.evtInner}>
-        <span className={styles.evtDot} aria-hidden="true" />
-        {b.startTime ? <span className={styles.evtTime}>{b.startTime}</span> : null}
-        <span className={styles.evtName}>{b.tourName}</span>
-        {dn ? <span className={styles.evtDriver}>· {dn}</span> : null}
+      <div className={styles.barInner}>
+        <span className={styles.barTitle}>{b.tourName}</span>
+        {dn ? <span className={styles.barDriver}>· {dn}</span> : null}
+        {b.days > 1 ? <span className={styles.barDays}>{b.days}d</span> : null}
       </div>
     );
+  };
+
+  // Tag each segment with its event id (so hover can highlight the whole span)
+  // and give it a rich native tooltip.
+  const onEventDidMount = (arg: EventMountArg) => {
+    const b = arg.event.extendedProps.booking as AdminBooking;
+    arg.el.setAttribute('data-eid', arg.event.id);
+    const dn = driverName(b.driverId) || 'Unassigned';
+    const span =
+      b.days > 1
+        ? `${formatDate(b.startDate)} → ${formatDate(exclusiveEnd(b.startDate, b.days))} · ${b.days} days`
+        : formatDate(b.startDate);
+    const prog = progressLabel(b);
+    arg.el.title = [b.tourName, `${b.clientName} · ${dn} · ${b.passengers} pax`, span, prog, b.tourStatus]
+      .filter(Boolean)
+      .join('\n');
   };
 
   return (
@@ -176,13 +203,7 @@ export default function CalendarClient() {
         </label>
       </div>
 
-      <div
-        className={[
-          styles.fcWrap,
-          view === 'listMonth' ? styles.listMode : '',
-          view === 'dayGridWeek' ? styles.weekMode : '',
-        ].filter(Boolean).join(' ')}
-      >
+      <div className={[styles.fcWrap, view === 'listMonth' ? styles.listMode : ''].filter(Boolean).join(' ')}>
         {mounted ? (
           <FullCalendar
             ref={calRef}
@@ -193,15 +214,17 @@ export default function CalendarClient() {
             headerToolbar={{ left: 'prev,next today', center: 'title', right: '' }}
             buttonText={{ today: 'Today' }}
             height="auto"
-            dayMaxEvents={2}
-            moreLinkText={(n) => `+${n} more`}
-            moreLinkClick={onMoreLinkClick}
+            dayMaxEvents={false}
             displayEventTime={false}
+            eventDisplay="block"
             dayHeaderFormat={{ weekday: 'short' }}
             noEventsText="No tours match these filters"
             events={events}
             eventContent={renderEvent}
             eventClick={onEventClick}
+            eventDidMount={onEventDidMount}
+            eventMouseEnter={(arg) => highlightEvent(arg.event.id, true)}
+            eventMouseLeave={(arg) => highlightEvent(arg.event.id, false)}
           />
         ) : (
           <div className={styles.calLoading}>
@@ -216,34 +239,6 @@ export default function CalendarClient() {
         <span className={styles.legendItem}><i className={styles.sCompleted} />Completed</span>
         <span className={styles.legendItem}><i className={styles.sCancelled} />Cancelled</span>
       </div>
-
-      {/* Day agenda drawer (opened from "+X more") */}
-      <AdminModal
-        open={dayKey !== null}
-        onClose={() => setDayKey(null)}
-        title={dayKey ? formatDate(dayKey) : ''}
-        subtitle={dayKey ? `${dayBookings.length} tour${dayBookings.length === 1 ? '' : 's'} scheduled` : undefined}
-      >
-        <ul className={styles.agenda}>
-          {dayBookings.map((b) => (
-            <li key={b.id}>
-              <button
-                className={[styles.agendaRow, styles[`row${b.tourStatus[0]}${b.tourStatus.slice(1).toLowerCase()}`]].join(' ')}
-                onClick={() => { setDayKey(null); setSelected(b); }}
-              >
-                <span className={styles.agendaTime}>{b.startTime ?? '—'}</span>
-                <span className={styles.agendaBody}>
-                  <span className={styles.agendaName}>{b.tourName}</span>
-                  <span className={styles.agendaMeta}>
-                    {b.clientName} · {driverName(b.driverId) || 'Unassigned'} · {b.passengers} pax
-                  </span>
-                </span>
-                <StatusBadge kind="tour" value={b.tourStatus} />
-              </button>
-            </li>
-          ))}
-        </ul>
-      </AdminModal>
 
       {/* Booking detail */}
       <AdminModal
@@ -261,18 +256,39 @@ export default function CalendarClient() {
 
 function BookingDetail({ b }: { b: AdminBooking }) {
   const driver = mockDrivers.find((d) => d.id === b.driverId);
+  const multi = b.days > 1;
+  const p = multi ? tourProgress(b) : null;
+  const pct = p && p.state === 'active' ? Math.round((p.x / p.total) * 100) : p?.state === 'done' ? 100 : 0;
+
   return (
     <div className={styles.detail}>
       <div className={styles.detailBadges}>
         <StatusBadge kind="tour" value={b.tourStatus} />
         <StatusBadge kind="payment" value={b.paymentStatus} />
       </div>
+
+      {multi && p ? (
+        <div className={[styles.progress, styles[`prog${b.tourStatus[0]}${b.tourStatus.slice(1).toLowerCase()}`]].join(' ')}>
+          <div className={styles.progressTop}>
+            <span className={styles.progressLabel}>
+              {p.state === 'active' ? `Day ${p.x} of ${p.total}` : p.state === 'upcoming' ? 'Upcoming' : 'Completed'}
+            </span>
+            <span className={styles.progressRange}>
+              {formatDate(b.startDate)} → {formatDate(exclusiveEnd(b.startDate, b.days))}
+            </span>
+          </div>
+          <div className={styles.progressTrack}>
+            <span className={styles.progressFill} style={{ width: `${pct}%` }} />
+          </div>
+        </div>
+      ) : null}
+
       <dl className={styles.detailGrid}>
         <div><dt>Dates</dt><dd>{formatDate(b.startDate)}{b.startTime ? ` · ${b.startTime}` : ''} · {b.days} day{b.days === 1 ? '' : 's'}</dd></div>
         <div><dt>Passengers</dt><dd>{b.passengers}</dd></div>
         <div><dt>Vehicle</dt><dd>{b.vehicleType}</dd></div>
         <div><dt>Total</dt><dd className={styles.price}>{formatUSD(b.totalPrice)}</dd></div>
-        <div><dt>Driver</dt><dd>{driver ? driver.name : 'Unassigned'}</dd></div>
+        <div><dt>Driver / guide</dt><dd>{driver ? driver.name : 'Unassigned'}</dd></div>
         <div>
           <dt>Phone</dt>
           <dd>

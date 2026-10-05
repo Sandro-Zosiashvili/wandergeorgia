@@ -228,9 +228,13 @@ $c-cancelled: #ef4444;
     color: var(--text-faint);
   }
 
-  // Day cells + numbers (top-right)
+  // Day cells + numbers (top-right). Taller so every bar fits (no "+more").
   :global(.fc .fc-daygrid-day-frame) {
-    min-height: 116px;
+    min-height: 140px;
+  }
+  // Give the stacked bars a little breathing room from the day number.
+  :global(.fc .fc-daygrid-day-events) {
+    margin-top: 0.15rem;
   }
   :global(.fc .fc-daygrid-day-top) {
     flex-direction: row;
@@ -259,81 +263,118 @@ $c-cancelled: #ef4444;
     margin: 0.2rem;
   }
 
-  // ── Minimal event badges: a colored dot + "[time] Tour · Driver" ──────────
+  // ── Continuous multi-day span BARS (solid, rounded caps, white text) ───────
   :global(.fc .fc-daygrid-event) {
-    background: transparent;
+    background: var(--bar, var(--accent));
     border: none;
-    border-radius: $radius-sm;
-    padding: 1px 4px;
-    margin: 1px 2px;
-    transition: background-color 0.15s ease;
+    border-radius: 0; // flat by default so segments read as one continuous bar
+    padding: 0;
+    margin: 2px 0;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+    transition: filter 0.15s ease, box-shadow 0.15s ease;
   }
-  :global(.fc .fc-daygrid-event:hover) {
-    background: var(--ink-800);
+  // Rounded cap on the FIRST day, flat where it continues into the next week.
+  :global(.fc .fc-daygrid-event.fc-event-start) {
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+    margin-left: 2px;
   }
-  :global(.fc .fc-daygrid-event .fc-event-main) {
-    color: var(--text);
+  // Rounded cap on the LAST day.
+  :global(.fc .fc-daygrid-event.fc-event-end) {
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+    margin-right: 2px;
+  }
+  // A subtle brighter edge at the very start marks "day 1".
+  :global(.fc .fc-daygrid-event.fc-event-start)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 7px 0 0 7px;
+  }
+  :global(.fc .fc-daygrid-event) { position: relative; }
+  :global(.fc .fc-daygrid-event:hover),
+  :global(.fc-evt-hover) {
+    filter: brightness(1.12);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+    z-index: 6;
+    cursor: pointer;
   }
 
-  .evtInner {
+  .barInner {
     display: flex;
     align-items: center;
     gap: 0.35rem;
     min-width: 0;
     overflow: hidden;
-    font-size: 0.75rem;
-    line-height: 1.5;
+    padding: 3px 8px;
+    color: #fff;
+    font-size: 0.76rem;
+    line-height: 1.4;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   }
-  .evtDot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--c, var(--accent));
-    flex-shrink: 0;
-  }
-  .evtTime {
-    color: var(--text-faint);
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-  // The tour name keeps its space; the driver yields first when a cell is tight.
-  .evtName {
+  .barTitle {
     flex: 0 1 auto;
     min-width: 0;
-    color: var(--text);
-    font-weight: 600;
+    font-weight: 700;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .evtDriver {
+  .barDriver {
     flex: 0 9999 auto;
     min-width: 0;
-    color: var(--text-muted);
+    font-weight: 500;
+    opacity: 0.9;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  // "13d" pill pinned to the right of multi-day bars.
+  .barDays {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 0 0.4rem;
+    border-radius: $radius-pill;
+    font-size: 0.66rem;
+    font-weight: 700;
+    background: rgba(0, 0, 0, 0.28);
+  }
 
-  // Status colour variables for the (global) event classes
-  :global(.evt-pending)   { --c: #{$c-pending}; }
-  :global(.evt-confirmed) { --c: #{$c-confirmed}; }
-  :global(.evt-completed) { --c: #{$c-completed}; }
+  // Status bar colours (vibrant, high-contrast on the dark grid).
+  :global(.evt-pending)   { --bar: #{$c-pending}; }
+  :global(.evt-confirmed) { --bar: #{$c-confirmed}; }
+  :global(.evt-completed) { --bar: #{$c-completed}; }
   :global(.evt-cancelled) {
-    --c: #{$c-cancelled};
-    .evtName { color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--text-faint); }
+    --bar: #{$c-cancelled};
+    .barTitle { text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.7); }
   }
 
-  // "+ more" link
-  :global(.fc .fc-daygrid-more-link) {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--accent-bright);
-    padding: 0 4px;
+  // ── List / agenda view — plain rows with a status dot (not bars) ───────────
+  &.listMode {
+    :global(.fc .fc-daygrid-event),
+    :global(.fc .fc-list-event) {
+      background: transparent;
+      box-shadow: none;
+    }
+    .barInner {
+      color: var(--text);
+      text-shadow: none;
+      font-size: 0.9rem;
+      gap: 0.5rem;
+      padding: 0;
+    }
+    .barDriver { flex: 0 1 auto; opacity: 1; color: var(--text-muted); }
+    .barDays {
+      background: var(--accent-tint);
+      color: var(--accent-bright);
+      text-shadow: none;
+    }
   }
-
-  // ── List / agenda view ─────────────────────────────────────────────────────
   :global(.fc .fc-list) {
     border: none;
   }
@@ -349,57 +390,23 @@ $c-cancelled: #ef4444;
     color: var(--text);
     text-decoration: none;
   }
-  :global(.fc .fc-list-event),
-  :global(.fc .fc-list-event:hover td) {
+  :global(.fc .fc-list-event) {
     cursor: pointer;
   }
   :global(.fc .fc-list-event td) {
     border-color: var(--hairline);
     padding: 0.6rem 0.9rem;
   }
-  // Hide the native time + dot columns; our badge carries that info.
-  :global(.fc .fc-list-event-time),
-  :global(.fc .fc-list-event-graphic) {
+  :global(.fc .fc-list-event-time) {
     display: none;
+  }
+  // Colour the native list dot by status.
+  :global(.fc .fc-list-event-dot) {
+    border-color: var(--bar, var(--accent));
   }
   :global(.fc .fc-list-empty) {
     background: transparent;
     color: var(--text-faint);
-  }
-  // In the list, let the badge read as a roomy row.
-  &.listMode .evtInner {
-    font-size: 0.9rem;
-    gap: 0.6rem;
-  }
-  &.listMode .evtDriver {
-    flex: 0 1 auto;
-  }
-
-  // Week view has tall rows but narrow columns — wrap the text onto multiple
-  // lines so full titles and driver names are visible per day.
-  &.weekMode {
-    :global(.fc .fc-daygrid-event) {
-      white-space: normal;
-      padding: 3px 5px;
-    }
-    .evtInner {
-      flex-wrap: wrap;
-      align-items: baseline;
-      overflow: visible;
-    }
-    .evtDot {
-      align-self: center;
-    }
-    .evtName {
-      flex: 1 1 100%;
-      white-space: normal;
-      overflow: visible;
-    }
-    .evtDriver {
-      flex: 1 1 100%;
-      white-space: normal;
-      overflow: visible;
-    }
   }
 }
 
@@ -528,6 +535,57 @@ $c-cancelled: #ef4444;
 .detailBadges {
   display: flex;
   gap: 0.5rem;
+}
+
+// ── Multi-day progress ("Day X of Y" + bar) ──────────────────────────────────
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: $radius-md;
+  background: var(--ink-800);
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--c, var(--accent));
+}
+
+.progPending   { --c: #{$c-pending}; }
+.progConfirmed { --c: #{$c-confirmed}; }
+.progCompleted { --c: #{$c-completed}; }
+.progCancelled { --c: #{$c-cancelled}; }
+
+.progressTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.progressLabel {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.progressRange {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.progressTrack {
+  height: 7px;
+  border-radius: $radius-pill;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: $radius-pill;
+  background: var(--c, var(--accent));
+  transition: width 0.3s ease;
 }
 
 .detailGrid {
