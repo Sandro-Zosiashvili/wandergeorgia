@@ -229,8 +229,20 @@ export const iconRegistry = {
   'chevron-down': {
     node: <path d="M6 9l6 6 6-6" />,
   },
+  'chevron-up': {
+    node: <path d="M6 15l6-6 6 6" />,
+  },
   'chevron-right': {
     node: <path d="M9 6l6 6-6 6" />,
+  },
+  upload: {
+    node: (
+      <>
+        <path d="M12 15V4" />
+        <path d="M8 8l4-4 4 4" />
+        <path d="M5 15v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3" />
+      </>
+    ),
   },
   clock: {
     node: (

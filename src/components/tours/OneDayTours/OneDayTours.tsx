@@ -1,25 +1,29 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { oneDayTours } from '@/data/tours';
+import type { Tour } from '@/types/tour';
 import Container from '@/components/ui/Container/Container';
 import SectionHeading from '@/components/ui/SectionHeading/SectionHeading';
 import CityFilter, { ALL_CITIES } from '../CityFilter/CityFilter';
 import TourGrid from '../TourGrid/TourGrid';
 import styles from './OneDayTours.module.scss';
 
+interface OneDayToursProps {
+  tours: Tour[];
+}
+
 /** "One-Day Tours" home section — filterable grid organised by city. */
-export default function OneDayTours() {
+export default function OneDayTours({ tours }: OneDayToursProps) {
   const [city, setCity] = useState<string>(ALL_CITIES);
 
   const cities = useMemo(
-    () => Array.from(new Set(oneDayTours.map((t) => t.city))),
-    [],
+    () => Array.from(new Set(tours.map((t) => t.city))),
+    [tours],
   );
 
   const filtered = useMemo(
-    () => (city === ALL_CITIES ? oneDayTours : oneDayTours.filter((t) => t.city === city)),
-    [city],
+    () => (city === ALL_CITIES ? tours : tours.filter((t) => t.city === city)),
+    [city, tours],
   );
 
   return (

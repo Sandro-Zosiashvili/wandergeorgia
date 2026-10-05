@@ -1,13 +1,15 @@
 import type { MetadataRoute } from 'next';
 import { site } from '@/config/site';
-import { allTours } from '@/data/tours';
+import { loadTours } from '@/lib/publicToursApi';
 
 /**
  * XML sitemap served at /sitemap.xml — lists every public page so search
- * engines can discover and index them. Tour pages are generated from the
- * same data the site renders, so the sitemap stays in sync automatically.
+ * engines can discover and index them. Tour pages come from the live DB (with
+ * a static fallback), so the sitemap stays in sync with the catalog.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export const revalidate = 60;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = site.url.replace(/\/$/, '');
   const now = new Date();
 
@@ -16,7 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/booking`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
   ];
 
-  const tourPages: MetadataRoute.Sitemap = allTours.map((tour) => ({
+  const tours = await loadTours();
+  const tourPages: MetadataRoute.Sitemap = tours.map((tour) => ({
     url: `${base}/tours/${tour.slug}`,
     lastModified: now,
     changeFrequency: 'weekly',

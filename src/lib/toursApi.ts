@@ -7,6 +7,7 @@
 export interface ApiItineraryDay {
   title: string;
   description: string;
+  highlights: string[];
 }
 
 export interface ApiTour {

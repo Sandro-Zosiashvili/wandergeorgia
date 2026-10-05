@@ -189,5 +189,8 @@ export function computeBreakdown(tour: Tour, vehicle: VehicleId): PriceBreakdown
  * tour (sedan base × days), or the fixed package price.
  */
 export function fromPriceUSD(tour: Tour): number {
+  // DB-sourced tours carry an explicit admin-set price; honour it so edits in
+  // the admin drawer drive the headline price. Static tours compute from rates.
+  if (typeof tour.fromPrice === 'number') return tour.fromPrice;
   return computeBreakdown(tour, defaultVehicle(tour)).total;
 }

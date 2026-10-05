@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { site } from '@/config/site';
 import { navItems } from '@/config/navigation';
-import { oneDayTours } from '@/data/tours';
 import Logo from '../Logo/Logo';
 import Icon, { type IconName } from '@/components/ui/Icon/Icon';
 import styles from './Footer.module.scss';
@@ -16,10 +15,14 @@ const socialLinks: { name: string; icon: IconName; href: string }[] = [
   { name: 'YouTube', icon: 'youtube', href: site.socials.youtube },
 ];
 
+interface FooterProps {
+  /** Popular tours to link (slug + title) — provided from the DB by the layout. */
+  popular: { slug: string; title: string }[];
+}
+
 /** Site footer: brand, navigation, popular tours, contact and socials. */
-export default function Footer() {
+export default function Footer({ popular }: FooterProps) {
   const year = new Date().getFullYear();
-  const popular = oneDayTours.slice(0, 4);
   const pathname = usePathname();
 
   // The /admin area has its own chrome — no public footer there.

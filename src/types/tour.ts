@@ -83,6 +83,12 @@ export interface Tour {
    */
   price: number;
   /**
+   * Explicit "from" price (USD) when a tour is sourced from the database
+   * (admin `basePrice`). When set, it overrides the computed `fromPriceUSD`
+   * so admin edits drive the headline price. Static tours leave it unset.
+   */
+  fromPrice?: number;
+  /**
    * Single source-of-truth photo. In the one-day data this is the only image
    * you edit; card + hero images are derived from it automatically.
    */

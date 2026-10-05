@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getTourBySlug } from '@/data/tours';
+import { loadTourBySlug, loadTours } from '@/lib/publicToursApi';
 import Container from '@/components/ui/Container/Container';
 import BookingFlow from '@/components/booking/BookingFlow/BookingFlow';
 import BookingHeader from '@/components/booking/BookingHeader/BookingHeader';
@@ -34,7 +34,7 @@ interface PageProps {
 
 export default async function BookingPage({ searchParams }: PageProps) {
   const { tour: slug } = await searchParams;
-  const tour = slug ? getTourBySlug(slug) : undefined;
+  const tour = slug ? await loadTourBySlug(slug) : undefined;
 
   return (
     <div className={styles.page}>
@@ -45,7 +45,7 @@ export default async function BookingPage({ searchParams }: PageProps) {
             <BookingFlow tour={tour} />
           </>
         ) : (
-          <BookingTourPicker />
+          <BookingTourPicker tours={await loadTours()} />
         )}
       </Container>
     </div>

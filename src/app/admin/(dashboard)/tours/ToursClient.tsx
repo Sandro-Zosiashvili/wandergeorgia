@@ -16,6 +16,7 @@ import {
 } from '@/lib/toursApi';
 import TourFormDrawer, {
   blankTourForm,
+  toFormDay,
   toTourInput,
   type TourFormState,
 } from './TourFormDrawer';
@@ -32,7 +33,7 @@ const formFromTour = (t: ApiTour): TourFormState => ({
   highlights: [...t.highlights],
   included: [...t.included],
   excluded: [...t.excluded],
-  itinerary: t.itinerary.map((d) => ({ ...d })),
+  itinerary: t.itinerary.map((d) => toFormDay(d)),
   coverImage: t.coverImage,
   gallery: [...t.gallery],
   isActive: t.isActive,

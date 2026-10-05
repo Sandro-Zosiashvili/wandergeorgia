@@ -1,13 +1,17 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { allTours } from '@/data/tours';
+import type { Tour } from '@/types/tour';
 import { formatUSD } from '@/lib/format';
 import { fromPriceUSD } from '@/lib/pricing';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './BookingTourPicker.module.scss';
 
+interface BookingTourPickerProps {
+  tours: Tour[];
+}
+
 /** Shown when /booking is opened without a valid tour — pick one to begin. */
-export default function BookingTourPicker() {
+export default function BookingTourPicker({ tours }: BookingTourPickerProps) {
   return (
     <div className={styles.picker}>
       <div className={styles.intro}>
@@ -19,7 +23,7 @@ export default function BookingTourPicker() {
       </div>
 
       <ul className={styles.grid}>
-        {allTours.map((tour) => (
+        {tours.map((tour) => (
           <li key={tour.slug}>
             <Link href={`/booking?tour=${tour.slug}`} className={styles.card}>
               <span className={styles.media}>

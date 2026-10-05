@@ -2,12 +2,20 @@
 
 /* eslint-disable @next/next/no-img-element -- admin-only live URL previews; next/image can't optimize arbitrary external URLs here. */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Icon from '@/components/ui/Icon/Icon';
 import type { IconName } from '@/components/ui/Icon/Icon';
 import AdminDrawer from '@/components/admin/AdminDrawer/AdminDrawer';
-import type { ApiItineraryDay, TourInput } from '@/lib/toursApi';
+import type { TourInput } from '@/lib/toursApi';
 import styles from './TourFormDrawer.module.scss';
+
+/** An itinerary day in the editor. `uid` is a stable key for reorder/collapse. */
+export interface ItineraryFormDay {
+  uid: string;
+  title: string;
+  description: string;
+  highlights: string[];
+}
 
 export interface TourFormState {
   title: string;
@@ -20,11 +28,24 @@ export interface TourFormState {
   highlights: string[];
   included: string[];
   excluded: string[];
-  itinerary: ApiItineraryDay[];
+  itinerary: ItineraryFormDay[];
   coverImage: string;
   gallery: string[];
   isActive: boolean;
 }
+
+const uid = () =>
+  typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `d${Date.now()}${Math.random().toString(36).slice(2, 8)}`;
+
+/** Wrap a plain itinerary day (from the API) with a stable editor uid. */
+export const toFormDay = (d: { title: string; description: string; highlights?: string[] }): ItineraryFormDay => ({
+  uid: uid(),
+  title: d.title,
+  description: d.description,
+  highlights: d.highlights ?? [],
+});
 
 export const blankTourForm = (): TourFormState => ({
   title: '',
@@ -43,7 +64,7 @@ export const blankTourForm = (): TourFormState => ({
   isActive: true,
 });
 
-/** Convert the form to the API payload. */
+/** Convert the form to the API payload (strips editor-only `uid`). */
 export function toTourInput(f: TourFormState): TourInput {
   return {
     title: f.title.trim(),
@@ -57,8 +78,12 @@ export function toTourInput(f: TourFormState): TourInput {
     included: f.included.map((s) => s.trim()).filter(Boolean),
     excluded: f.excluded.map((s) => s.trim()).filter(Boolean),
     itinerary: f.itinerary
-      .map((d) => ({ title: d.title.trim(), description: d.description.trim() }))
-      .filter((d) => d.title || d.description),
+      .map((d) => ({
+        title: d.title.trim(),
+        description: d.description.trim(),
+        highlights: (d.highlights ?? []).map((h) => h.trim()).filter(Boolean),
+      }))
+      .filter((d) => d.title || d.description || d.highlights.length),
     coverImage: f.coverImage.trim(),
     gallery: f.gallery.map((s) => s.trim()).filter(Boolean),
     isActive: f.isActive,
@@ -69,6 +94,18 @@ const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+// Common presets so admins can one-click the usual Included / Excluded items.
+const INCLUDED_PRESETS = [
+  'English-speaking driver-guide',
+  'Comfortable private vehicle',
+  'Fuel',
+  'Parking fees',
+  'Bottled water',
+  'Hotel pick-up & drop-off',
+  'Drone photography (weather permitting)',
+];
+const EXCLUDED_PRESETS = ['Entrance fees', 'Meals', 'Personal expenses', 'Accommodation', 'Flights', 'Travel insurance'];
 
 type TabId = 'general' | 'details' | 'itinerary' | 'media';
 const TABS: { id: TabId; label: string; icon: IconName }[] = [
@@ -94,14 +131,14 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
   const [tab, setTab] = useState<TabId>('general');
   const [slugTouched, setSlugTouched] = useState(mode === 'edit');
   const [showErrors, setShowErrors] = useState(false);
+  const [openDays, setOpenDays] = useState<Set<string>>(new Set());
 
-  // Re-seed when a different editor target is opened (parent bumps the key too,
-  // but this keeps state correct if the instance is reused).
   useEffect(() => {
     setForm(initial);
     setTab('general');
     setSlugTouched(mode === 'edit');
     setShowErrors(false);
+    setOpenDays(new Set()); // long itineraries start collapsed
   }, [initial, mode]);
 
   const set = <K extends keyof TourFormState>(key: K, value: TourFormState[K]) =>
@@ -116,21 +153,69 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
 
   // ── Dynamic string-array helpers ──────────────────────────────────────────
   const addString = (key: StringKey) => setForm((f) => ({ ...f, [key]: [...f[key], ''] }));
+  const addStringValue = (key: StringKey, value: string) =>
+    setForm((f) => (f[key].includes(value) ? f : { ...f, [key]: [...f[key], value] }));
   const setString = (key: StringKey, i: number, v: string) =>
     setForm((f) => ({ ...f, [key]: f[key].map((x, idx) => (idx === i ? v : x)) }));
   const removeString = (key: StringKey, i: number) =>
     setForm((f) => ({ ...f, [key]: f[key].filter((_, idx) => idx !== i) }));
 
+  const moveGallery = (from: number, dir: -1 | 1) =>
+    setForm((f) => {
+      const to = from + dir;
+      if (to < 0 || to >= f.gallery.length) return f;
+      const arr = [...f.gallery];
+      const tmp = arr[from]!;
+      arr[from] = arr[to]!;
+      arr[to] = tmp;
+      return { ...f, gallery: arr };
+    });
+
   // ── Itinerary helpers ─────────────────────────────────────────────────────
-  const addDay = () =>
-    setForm((f) => ({ ...f, itinerary: [...f.itinerary, { title: '', description: '' }] }));
-  const setDay = (i: number, field: keyof ApiItineraryDay, v: string) =>
+  const addDay = () => {
+    const day: ItineraryFormDay = { uid: uid(), title: '', description: '', highlights: [] };
+    setForm((f) => ({ ...f, itinerary: [...f.itinerary, day] }));
+    setOpenDays((prev) => new Set(prev).add(day.uid)); // open the new day
+  };
+  const setDay = (i: number, field: 'title' | 'description', v: string) =>
     setForm((f) => ({
       ...f,
       itinerary: f.itinerary.map((d, idx) => (idx === i ? { ...d, [field]: v } : d)),
     }));
   const removeDay = (i: number) =>
     setForm((f) => ({ ...f, itinerary: f.itinerary.filter((_, idx) => idx !== i) }));
+  const moveDay = (from: number, dir: -1 | 1) =>
+    setForm((f) => {
+      const to = from + dir;
+      if (to < 0 || to >= f.itinerary.length) return f;
+      const arr = [...f.itinerary];
+      const tmp = arr[from]!;
+      arr[from] = arr[to]!;
+      arr[to] = tmp;
+      return { ...f, itinerary: arr };
+    });
+  const toggleDayOpen = (dayUid: string) =>
+    setOpenDays((prev) => {
+      const next = new Set(prev);
+      if (next.has(dayUid)) next.delete(dayUid);
+      else next.add(dayUid);
+      return next;
+    });
+
+  const addDayHighlight = (dayIdx: number, value: string) =>
+    setForm((f) => ({
+      ...f,
+      itinerary: f.itinerary.map((d, i) =>
+        i === dayIdx ? { ...d, highlights: [...(d.highlights ?? []), value] } : d,
+      ),
+    }));
+  const removeDayHighlight = (dayIdx: number, hi: number) =>
+    setForm((f) => ({
+      ...f,
+      itinerary: f.itinerary.map((d, i) =>
+        i === dayIdx ? { ...d, highlights: (d.highlights ?? []).filter((_, j) => j !== hi) } : d,
+      ),
+    }));
 
   const slugValid = SLUG_RE.test(form.slug.trim());
   const titleValid = form.title.trim().length > 0;
@@ -139,11 +224,13 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
   const handleSave = () => {
     if (!valid) {
       setShowErrors(true);
-      setTab('general'); // required fields live here
+      setTab('general');
       return;
     }
     onSubmit(form);
   };
+
+  const coverTrim = form.coverImage.trim();
 
   return (
     <AdminDrawer
@@ -301,6 +388,8 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
               onAdd={() => addString('included')}
               onChange={(i, v) => setString('included', i, v)}
               onRemove={(i) => removeString('included', i)}
+              presets={INCLUDED_PRESETS}
+              onAddPreset={(v) => addStringValue('included', v)}
             />
 
             <StringList
@@ -311,6 +400,8 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
               onAdd={() => addString('excluded')}
               onChange={(i, v) => setString('excluded', i, v)}
               onRemove={(i) => removeString('excluded', i)}
+              presets={EXCLUDED_PRESETS}
+              onAddPreset={(v) => addStringValue('excluded', v)}
             />
           </div>
         ) : null}
@@ -321,34 +412,80 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
             {form.itinerary.length === 0 ? (
               <p className={styles.emptyHint}>No days yet. Build the trip day by day.</p>
             ) : null}
-            {form.itinerary.map((day, i) => (
-              <div key={i} className={styles.dayCard}>
-                <div className={styles.dayHead}>
-                  <span className={styles.dayBadge}>Day {i + 1}</span>
-                  <button
-                    type="button"
-                    className={styles.iconBtn}
-                    onClick={() => removeDay(i)}
-                    aria-label={`Remove day ${i + 1}`}
-                  >
-                    <Icon name="trash" size={16} />
-                  </button>
+            {form.itinerary.map((day, i) => {
+              const isOpen = openDays.has(day.uid);
+              return (
+                <div key={day.uid} className={styles.dayCard}>
+                  <div className={styles.dayHead}>
+                    <button
+                      type="button"
+                      className={styles.dayToggle}
+                      onClick={() => toggleDayOpen(day.uid)}
+                      aria-expanded={isOpen}
+                    >
+                      <Icon
+                        name="chevron-down"
+                        size={16}
+                        className={[styles.chev, isOpen ? styles.chevOpen : ''].filter(Boolean).join(' ')}
+                      />
+                      <span className={styles.dayBadge}>Day {i + 1}</span>
+                      <span className={styles.dayTitlePreview}>{day.title.trim() || 'Untitled day'}</span>
+                    </button>
+                    <div className={styles.dayControls}>
+                      <button
+                        type="button"
+                        className={styles.iconBtnSm}
+                        onClick={() => moveDay(i, -1)}
+                        disabled={i === 0}
+                        aria-label={`Move day ${i + 1} up`}
+                      >
+                        <Icon name="chevron-up" size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.iconBtnSm}
+                        onClick={() => moveDay(i, 1)}
+                        disabled={i === form.itinerary.length - 1}
+                        aria-label={`Move day ${i + 1} down`}
+                      >
+                        <Icon name="chevron-down" size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        className={[styles.iconBtnSm, styles.iconBtnDanger].join(' ')}
+                        onClick={() => removeDay(i)}
+                        aria-label={`Remove day ${i + 1}`}
+                      >
+                        <Icon name="trash" size={16} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {isOpen ? (
+                    <div className={styles.dayBody}>
+                      <input
+                        className={styles.input}
+                        value={day.title}
+                        onChange={(e) => setDay(i, 'title', e.target.value)}
+                        placeholder="Day title — e.g. Tbilisi to Kazbegi"
+                      />
+                      <DayHighlights
+                        highlights={day.highlights ?? []}
+                        onAdd={(v) => addDayHighlight(i, v)}
+                        onRemove={(hi) => removeDayHighlight(i, hi)}
+                      />
+                      <textarea
+                        className={[styles.input, styles.textarea].join(' ')}
+                        rows={3}
+                        value={day.description}
+                        onChange={(e) => setDay(i, 'description', e.target.value)}
+                        placeholder="What happens on this day…"
+                      />
+                    </div>
+                  ) : null}
                 </div>
-                <input
-                  className={styles.input}
-                  value={day.title}
-                  onChange={(e) => setDay(i, 'title', e.target.value)}
-                  placeholder="Day title — e.g. Tbilisi to Kazbegi"
-                />
-                <textarea
-                  className={[styles.input, styles.textarea].join(' ')}
-                  rows={3}
-                  value={day.description}
-                  onChange={(e) => setDay(i, 'description', e.target.value)}
-                  placeholder="What happens on this day…"
-                />
-              </div>
-            ))}
+              );
+            })}
             <button type="button" className={styles.addBtn} onClick={addDay}>
               <Icon name="plus" size={16} /> Add day
             </button>
@@ -358,14 +495,21 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
         {/* ── Tab 4: Media ──────────────────────────────────────────────── */}
         {tab === 'media' ? (
           <div className={styles.fields}>
-            <Field label="Cover image URL">
-              <input
-                className={styles.input}
-                value={form.coverImage}
-                onChange={(e) => set('coverImage', e.target.value)}
-                placeholder="https://…"
-              />
-            </Field>
+            <div className={styles.field}>
+              <span className={styles.fieldLabel}>Cover image</span>
+              <div className={styles.inputRow}>
+                <input
+                  className={styles.input}
+                  value={form.coverImage}
+                  onChange={(e) => set('coverImage', e.target.value)}
+                  placeholder="https://…"
+                />
+                <UploadButton label="Upload image" onFile={(data) => set('coverImage', data)} />
+              </div>
+              <span className={styles.hint}>
+                Paste a hosted URL, or upload a file (embedded inline until file storage is wired up).
+              </span>
+            </div>
             <ImgPreview src={form.coverImage} className={styles.coverPreview} />
 
             <div className={styles.listHead}>
@@ -377,25 +521,62 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
             {form.gallery.length === 0 ? (
               <p className={styles.emptyHint}>No gallery images yet.</p>
             ) : null}
-            {form.gallery.map((url, i) => (
-              <div key={i} className={styles.galleryRow}>
-                <ImgPreview src={url} className={styles.thumb} />
-                <input
-                  className={styles.input}
-                  value={url}
-                  onChange={(e) => setString('gallery', i, e.target.value)}
-                  placeholder="https://…"
-                />
-                <button
-                  type="button"
-                  className={styles.iconBtn}
-                  onClick={() => removeString('gallery', i)}
-                  aria-label={`Remove gallery image ${i + 1}`}
-                >
-                  <Icon name="trash" size={16} />
-                </button>
-              </div>
-            ))}
+            {form.gallery.map((url, i) => {
+              const isCover = url.trim() !== '' && url.trim() === coverTrim;
+              return (
+                <div key={i} className={styles.galleryRow}>
+                  <div className={styles.thumbWrap}>
+                    <ImgPreview src={url} className={styles.thumb} />
+                    {isCover ? <span className={styles.coverBadge}>Cover</span> : null}
+                  </div>
+                  <input
+                    className={styles.input}
+                    value={url}
+                    onChange={(e) => setString('gallery', i, e.target.value)}
+                    placeholder="https://…"
+                  />
+                  <div className={styles.galleryControls}>
+                    <button
+                      type="button"
+                      className={styles.iconBtnSm}
+                      onClick={() => moveGallery(i, -1)}
+                      disabled={i === 0}
+                      aria-label={`Move image ${i + 1} up`}
+                    >
+                      <Icon name="chevron-up" size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.iconBtnSm}
+                      onClick={() => moveGallery(i, 1)}
+                      disabled={i === form.gallery.length - 1}
+                      aria-label={`Move image ${i + 1} down`}
+                    >
+                      <Icon name="chevron-down" size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      className={[styles.iconBtnSm, isCover ? styles.iconBtnActive : ''].filter(Boolean).join(' ')}
+                      onClick={() => set('coverImage', url)}
+                      disabled={isCover || !url.trim()}
+                      aria-label="Set as cover image"
+                      title={isCover ? 'Current cover' : 'Set as cover'}
+                    >
+                      <Icon name="star" size={16} />
+                    </button>
+                    <UploadButton compact label="Upload image" onFile={(data) => setString('gallery', i, data)} />
+                    <button
+                      type="button"
+                      className={[styles.iconBtnSm, styles.iconBtnDanger].join(' ')}
+                      onClick={() => removeString('gallery', i)}
+                      aria-label={`Remove gallery image ${i + 1}`}
+                    >
+                      <Icon name="trash" size={16} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         ) : null}
       </div>
@@ -428,6 +609,101 @@ function Field({
   );
 }
 
+function UploadButton({
+  onFile,
+  label,
+  compact,
+}: {
+  onFile: (dataUrl: string) => void;
+  label: string;
+  compact?: boolean;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === 'string') onFile(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+    e.target.value = ''; // let the same file be picked again
+  };
+  return (
+    <>
+      <input ref={ref} type="file" accept="image/*" className={styles.hiddenFile} onChange={onChange} />
+      <button
+        type="button"
+        className={compact ? styles.iconBtnSm : styles.uploadBtn}
+        onClick={() => ref.current?.click()}
+        aria-label={label}
+        title={label}
+      >
+        <Icon name="upload" size={compact ? 16 : 15} />
+        {compact ? null : <span>Upload</span>}
+      </button>
+    </>
+  );
+}
+
+function DayHighlights({
+  highlights,
+  onAdd,
+  onRemove,
+}: {
+  highlights: string[];
+  onAdd: (value: string) => void;
+  onRemove: (index: number) => void;
+}) {
+  const [draft, setDraft] = useState('');
+  const commit = () => {
+    const v = draft.trim();
+    if (!v) return;
+    onAdd(v);
+    setDraft('');
+  };
+  return (
+    <div className={styles.dayHl}>
+      <span className={styles.dayHlLabel}>Day highlights</span>
+      {highlights.length > 0 ? (
+        <div className={styles.pills}>
+          {highlights.map((h, i) => (
+            <span key={i} className={styles.pill}>
+              {h}
+              <button
+                type="button"
+                className={styles.pillX}
+                onClick={() => onRemove(i)}
+                aria-label={`Remove highlight ${h}`}
+              >
+                <Icon name="close" size={12} />
+              </button>
+            </span>
+          ))}
+        </div>
+      ) : null}
+      <div className={styles.pillAdd}>
+        <input
+          className={styles.input}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              commit();
+            }
+          }}
+          placeholder="e.g. Bridge of Peace"
+        />
+        <button type="button" className={styles.addBtnSm} onClick={commit}>
+          <Icon name="plus" size={15} /> Add highlight
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function StringList({
   label,
   addLabel,
@@ -436,6 +712,8 @@ function StringList({
   onAdd,
   onChange,
   onRemove,
+  presets,
+  onAddPreset,
 }: {
   label: string;
   addLabel: string;
@@ -444,7 +722,11 @@ function StringList({
   onAdd: () => void;
   onChange: (i: number, v: string) => void;
   onRemove: (i: number) => void;
+  presets?: string[];
+  onAddPreset?: (value: string) => void;
 }) {
+  const trimmed = items.map((x) => x.trim());
+  const available = presets?.filter((p) => !trimmed.includes(p)) ?? [];
   return (
     <div className={styles.listBlock}>
       <div className={styles.listHead}>
@@ -453,6 +735,18 @@ function StringList({
           <Icon name="plus" size={15} /> {addLabel}
         </button>
       </div>
+
+      {onAddPreset && available.length > 0 ? (
+        <div className={styles.presetRow}>
+          <span className={styles.presetLabel}>Quick add:</span>
+          {available.map((p) => (
+            <button key={p} type="button" className={styles.presetChip} onClick={() => onAddPreset(p)}>
+              <Icon name="plus" size={12} /> {p}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
       {items.length === 0 ? <p className={styles.emptyHint}>None added yet.</p> : null}
       {items.map((item, i) => (
         <div key={i} className={styles.listRow}>
