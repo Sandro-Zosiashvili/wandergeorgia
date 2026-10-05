@@ -53,7 +53,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto auto auto;
   align-items: center;
   gap: 0.8rem 1.4rem;
   padding: 0.9rem 1.2rem;
@@ -77,24 +77,39 @@
   }
 }
 
-// On small screens, stack the controls under the tour name.
+.colActions {
+  justify-self: end;
+}
+
+// Transparent on desktop so type + price sit in their own grid columns…
+.metaGroup {
+  display: contents;
+}
+
+// …and a single flex group on small screens, so they never overlap.
 @include down($bp-md) {
   .row {
     grid-template-columns: 1fr auto;
     grid-template-areas:
-      'info active'
-      'meta meta';
+      'info actions'
+      'meta meta'
+      'active active';
+    gap: 0.6rem 1rem;
   }
   .tourInfo {
     grid-area: info;
   }
+  .actions {
+    grid-area: actions;
+  }
+  .metaGroup {
+    grid-area: meta;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
   .toggleCell {
     grid-area: active;
-  }
-  .colType,
-  .colPrice {
-    grid-area: meta;
-    display: inline-flex;
   }
 }
 
@@ -133,39 +148,11 @@
   white-space: nowrap;
 }
 
-.priceEditor {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.15rem;
-  padding: 0.35rem 0.6rem;
-  border-radius: $radius-md;
-  background: var(--ink-800);
-  border: 1px solid var(--hairline-soft);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-  &:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-tint);
-  }
-}
-
-.currency {
+.price {
+  font-size: 0.92rem;
+  font-weight: 600;
   color: var(--accent-bright);
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.priceInput {
-  width: 70px;
-  background: transparent;
-  border: none;
-  color: var(--text);
-  font-size: max(16px, 0.92rem);
-  font-weight: 600;
-
-  &:focus {
-    outline: none;
-  }
+  white-space: nowrap;
 }
 
 .toggleCell {
@@ -184,64 +171,118 @@
   }
 }
 
-// ── Form (add tour) ──────────────────────────────────────────────────────────
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+// ── Row actions (edit / delete) ──────────────────────────────────────────────
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
-.row2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.9rem;
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-md;
+  color: var(--text-muted);
+  border: 1px solid var(--hairline);
+  background: var(--surface);
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--accent-bright);
+    border-color: var(--accent);
+    background: var(--accent-tint);
+  }
 }
 
-.field {
+.deleteBtn:hover {
+  color: #f98080;
+  border-color: #c0564a;
+  background: rgba(192, 86, 74, 0.1);
+}
+
+// ── Loading / error / empty states ───────────────────────────────────────────
+.stateBox {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 220px;
+  padding: 2rem;
+  border-radius: $radius-lg;
+  border: 1px solid var(--hairline);
+  background: var(--surface-raised);
+  text-align: center;
+}
 
-  > span {
-    font-size: 0.82rem;
-    font-weight: 600;
+.stateText {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  max-width: 420px;
+}
+
+.retryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: $radius-pill;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  border: 1px solid var(--hairline);
+  background: var(--surface);
+  transition: color 0.18s ease, border-color 0.18s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--accent-bright);
+    border-color: var(--accent);
+  }
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--hairline);
+  border-top-color: var(--accent-bright);
+  animation: toursspin 0.8s linear infinite;
+}
+
+@keyframes toursspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ── Delete confirm modal ─────────────────────────────────────────────────────
+.confirmText {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+
+  strong {
     color: var(--text);
   }
 }
 
-.input {
-  width: 100%;
-  padding: 0.75rem 0.9rem;
-  border-radius: $radius-md;
-  background-color: var(--ink-800);
-  border: 1px solid var(--hairline-soft);
-  color: var(--text);
-  font-size: max(16px, 0.95rem);
-  font-family: inherit;
-
-  &::placeholder {
-    color: var(--text-faint);
-  }
-
-  &:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-tint);
-  }
-}
-
-// Applied alongside .input on <select> elements for the custom chevron.
-.selectField {
-  @include admin-select;
-}
-
 .ghostBtn,
-.primaryBtn {
+.dangerBtn {
   padding: 0.65rem 1.2rem;
   border-radius: $radius-pill;
   font-size: 0.9rem;
   font-weight: 600;
   @include focus-ring;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
 }
 
 .ghostBtn {
@@ -249,18 +290,17 @@
   border: 1px solid var(--hairline);
   background: transparent;
 
-  &:hover {
+  &:hover:not(:disabled) {
     color: var(--text);
   }
 }
 
-.primaryBtn {
-  color: var(--ink-900);
-  background: var(--grad-gold);
-  box-shadow: var(--shadow-gold);
+.dangerBtn {
+  color: #fff;
+  background: #c0392b;
+  border: 1px solid #c0392b;
 
-  &:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
+  &:hover:not(:disabled) {
+    background: #a93226;
   }
 }

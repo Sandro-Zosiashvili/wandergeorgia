@@ -40,6 +40,12 @@ export interface Driver {
   status: DriverStatus;
 }
 
+/** One day of an itinerary as edited in the admin form. */
+export interface AdminItineraryDay {
+  title: string;
+  description: string;
+}
+
 export interface AdminTour {
   id: string;
   slug: string;
@@ -48,6 +54,15 @@ export interface AdminTour {
   type: 'one-day' | 'multi-day';
   price: number;
   active: boolean;
+  // ── Rich editor content (frontend-only until the backend is wired up) ──
+  duration?: string;
+  overview?: string;
+  highlights?: string[];
+  included?: string[];
+  excluded?: string[];
+  itinerary?: AdminItineraryDay[];
+  coverImage?: string;
+  gallery?: string[];
 }
 
 export const mockDrivers: Driver[] = [
@@ -79,6 +94,14 @@ export const mockTours: AdminTour[] = allTours.map((t, i) => ({
   type: t.type,
   price: fromPriceUSD(t),
   active: true,
+  duration: t.duration,
+  overview: t.overview ?? t.shortDescription,
+  highlights: t.highlights ?? t.locations.map((l) => l.name),
+  included: t.included.map((i2) => i2.label),
+  excluded: t.notIncluded ?? [],
+  itinerary: t.itinerary?.map((d) => ({ title: `${d.day} · ${d.title}`, description: d.description })) ?? [],
+  coverImage: t.heroImage ?? t.image ?? '',
+  gallery: t.itinerary?.map((d) => d.image).filter(Boolean) ?? (t.cardImage ? [t.cardImage] : []),
 }));
 
 /** Monthly tour-request counts for the trends chart. */
