@@ -43,25 +43,101 @@
   }
 }
 
+// ── Sections (Day Tours / Multi-day) ─────────────────────────────────────────
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.sectionTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sectionCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.5rem;
+  border-radius: $radius-pill;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent-bright);
+  background: var(--accent-tint);
+  border: 1px solid var(--accent);
+}
+
+.sectionEmpty {
+  padding: 1.2rem;
+  font-size: 0.88rem;
+  color: var(--text-faint);
+  font-style: italic;
+  text-align: center;
+}
+
 // ── List ─────────────────────────────────────────────────────────────────────
 .list {
   border-radius: $radius-lg;
   border: 1px solid var(--hairline);
   background: var(--surface-raised);
-  overflow: hidden;
+}
+
+.dropZone {
+  border-radius: 0 0 $radius-lg $radius-lg;
+  transition: background-color 0.18s ease;
+}
+
+.dropActive {
+  background: rgba(201, 162, 75, 0.05);
 }
 
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto auto;
   align-items: center;
   gap: 0.8rem 1.4rem;
   padding: 0.9rem 1.2rem;
   @include hairline(bottom);
+}
 
-  &:last-child {
-    border-bottom: none;
+// Each draggable row (not the header) gets its own separator; the drop zone's
+// last row drops the border for a clean edge.
+.dropZone > .draggableRow:last-child {
+  border-bottom: none;
+}
+
+.draggableRow {
+  background: var(--surface-raised);
+  transition: box-shadow 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
+
+  &:hover {
+    background: var(--ink-800);
   }
+}
+
+// Lifted item: elevated shadow, gold border accent, subtle scale.
+.rowDragging {
+  border: 1px solid var(--accent);
+  border-radius: $radius-md;
+  background: var(--ink-800);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--accent);
+  opacity: 0.97;
 }
 
 .headerRow {
@@ -81,6 +157,39 @@
   justify-self: end;
 }
 
+.colDrag {
+  width: 20px;
+}
+
+// Drag handle (⋮⋮) on the left of each row.
+.dragHandle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  color: var(--text-faint);
+  cursor: grab;
+  transition: color 0.15s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--accent-bright);
+  }
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+// Clean dashed placeholder where the lifted row came from (@hello-pangea sets
+// the element's size inline; we only paint it, using outline so the reserved
+// height doesn't shift).
+:global([data-rfd-placeholder-context-id]) {
+  background: var(--accent-tint) !important;
+  border-radius: $radius-md;
+  outline: 1.5px dashed var(--accent);
+  outline-offset: -3px;
+}
+
 // Transparent on desktop so type + price sit in their own grid columns…
 .metaGroup {
   display: contents;
@@ -89,12 +198,17 @@
 // …and a single flex group on small screens, so they never overlap.
 @include down($bp-md) {
   .row {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
     grid-template-areas:
-      'info actions'
-      'meta meta'
-      'active active';
+      'drag info   actions'
+      'drag meta   meta'
+      'drag active active';
     gap: 0.6rem 1rem;
+  }
+  .dragHandle {
+    grid-area: drag;
+    align-self: start;
+    margin-top: 0.15rem;
   }
   .tourInfo {
     grid-area: info;

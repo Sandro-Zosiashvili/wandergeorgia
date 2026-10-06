@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd';
 import Icon from '@/components/ui/Icon/Icon';
 import Toggle from '@/components/admin/Toggle/Toggle';
 import AdminModal from '@/components/admin/AdminModal/AdminModal';
@@ -11,6 +12,7 @@ import {
   createTour,
   deleteTour,
   listTours,
+  reorderTours,
   revalidateTours,
   updateTour,
   type ApiTour,
@@ -160,8 +162,136 @@ export default function ToursClient() {
     }
   };
 
+  const persistOrder = async (ids: string[]) => {
+    try {
+      await reorderTours(ids);
+      await revalidateTours();
+      showToast('Order updated.');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Reorder failed.', 'error');
+      void load(); // re-sync from the DB, reverting the optimistic move
+    }
+  };
+
+  const onDragEnd = (result: DropResult) => {
+    const { source, destination } = result;
+    if (!tours || !destination) return;
+    // Only reorder within the same category.
+    if (source.droppableId !== destination.droppableId || source.index === destination.index) return;
+
+    const type: ApiTour['type'] = source.droppableId === 'multi-day' ? 'multi-day' : 'one-day';
+    const category = tours.filter((t) => t.type === type);
+    const others = tours.filter((t) => t.type !== type);
+    const [moved] = category.splice(source.index, 1);
+    if (!moved) return;
+    category.splice(destination.index, 0, moved);
+
+    // Optimistic: update the list immediately, then persist + revalidate.
+    setTours(type === 'one-day' ? [...category, ...others] : [...others, ...category]);
+    void persistOrder(category.map((t) => t.id));
+  };
+
+  const dayTours = tours?.filter((t) => t.type === 'one-day') ?? [];
+  const multiTours = tours?.filter((t) => t.type === 'multi-day') ?? [];
   const activeCount = tours?.filter((t) => t.isActive).length ?? 0;
   const total = tours?.length ?? 0;
+
+  const renderRow = (t: ApiTour, index: number) => (
+    <Draggable key={t.id} draggableId={t.id} index={index}>
+      {(prov, snapshot) => (
+        <div
+          ref={prov.innerRef}
+          {...prov.draggableProps}
+          className={[styles.row, styles.draggableRow, snapshot.isDragging ? styles.rowDragging : '']
+            .filter(Boolean)
+            .join(' ')}
+        >
+          <span
+            className={styles.dragHandle}
+            {...prov.dragHandleProps}
+            aria-label={`Reorder ${t.title}`}
+            title="Drag to reorder"
+          >
+            <Icon name="grip" size={18} />
+          </span>
+
+          <div className={styles.tourInfo}>
+            <span className={styles.tourName}>{t.title}</span>
+            <span className={styles.tourCity}>
+              <Icon name="map-pin" size={13} /> {t.location || '—'}
+            </span>
+          </div>
+
+          <div className={styles.metaGroup}>
+            <span className={[styles.typeBadge, styles.colType].join(' ')}>
+              {t.type === 'multi-day' ? 'Multi-day' : 'Day tour'}
+            </span>
+            <span className={[styles.price, styles.colPrice].join(' ')}>{formatUSD(t.basePrice)}</span>
+          </div>
+
+          <div className={[styles.toggleCell, styles.colActive].join(' ')}>
+            <Toggle
+              checked={t.isActive}
+              onChange={(v) => void handleToggleActive(t, v)}
+              disabled={togglingId === t.id}
+              label={`Toggle ${t.title}`}
+            />
+            <span className={t.isActive ? styles.on : styles.off}>{t.isActive ? 'Active' : 'Hidden'}</span>
+          </div>
+
+          <div className={[styles.actions, styles.colActions].join(' ')}>
+            <button className={styles.actionBtn} onClick={() => openEdit(t)} aria-label={`Edit ${t.title}`} title="Edit">
+              <Icon name="pencil" size={16} />
+            </button>
+            <button
+              className={[styles.actionBtn, styles.deleteBtn].join(' ')}
+              onClick={() => setDeleteTarget(t)}
+              aria-label={`Delete ${t.title}`}
+              title="Delete"
+            >
+              <Icon name="trash" size={16} />
+            </button>
+          </div>
+        </div>
+      )}
+    </Draggable>
+  );
+
+  const renderSection = (title: string, droppableId: 'one-day' | 'multi-day', list: ApiTour[]) => (
+    <section className={styles.section}>
+      <div className={styles.sectionHead}>
+        <h2 className={styles.sectionTitle}>{title}</h2>
+        <span className={styles.sectionCount}>{list.length}</span>
+      </div>
+      <div className={styles.list}>
+        <div className={[styles.row, styles.headerRow].join(' ')}>
+          <span className={styles.colDrag} aria-hidden="true" />
+          <span>Tour</span>
+          <span className={styles.colType}>Type</span>
+          <span className={styles.colPrice}>Base price</span>
+          <span className={styles.colActive}>Active</span>
+          <span className={styles.colActions}>Actions</span>
+        </div>
+        <Droppable droppableId={droppableId}>
+          {(prov, snapshot) => (
+            <div
+              ref={prov.innerRef}
+              {...prov.droppableProps}
+              className={[styles.dropZone, snapshot.isDraggingOver ? styles.dropActive : '']
+                .filter(Boolean)
+                .join(' ')}
+            >
+              {list.length === 0 ? (
+                <p className={styles.sectionEmpty}>No tours in this category yet.</p>
+              ) : null}
+              {list.map((t, i) => renderRow(t, i))}
+              {prov.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </div>
+    </section>
+  );
 
   return (
     <div className={styles.wrap}>
@@ -199,64 +329,12 @@ export default function ToursClient() {
           </button>
         </div>
       ) : (
-        <div className={styles.list}>
-          <div className={[styles.row, styles.headerRow].join(' ')}>
-            <span>Tour</span>
-            <span className={styles.colType}>Type</span>
-            <span className={styles.colPrice}>Base price</span>
-            <span className={styles.colActive}>Active</span>
-            <span className={styles.colActions}>Actions</span>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className={styles.sections}>
+            {renderSection('Day Tours', 'one-day', dayTours)}
+            {renderSection('Multi-day Packages', 'multi-day', multiTours)}
           </div>
-
-          {tours.map((t) => (
-            <div key={t.id} className={styles.row}>
-              <div className={styles.tourInfo}>
-                <span className={styles.tourName}>{t.title}</span>
-                <span className={styles.tourCity}>
-                  <Icon name="map-pin" size={13} /> {t.location || '—'}
-                </span>
-              </div>
-
-              <div className={styles.metaGroup}>
-                <span className={[styles.typeBadge, styles.colType].join(' ')}>
-                  {t.type === 'multi-day' ? 'Multi-day' : 'Day tour'}
-                </span>
-                <span className={[styles.price, styles.colPrice].join(' ')}>{formatUSD(t.basePrice)}</span>
-              </div>
-
-              <div className={[styles.toggleCell, styles.colActive].join(' ')}>
-                <Toggle
-                  checked={t.isActive}
-                  onChange={(v) => void handleToggleActive(t, v)}
-                  disabled={togglingId === t.id}
-                  label={`Toggle ${t.title}`}
-                />
-                <span className={t.isActive ? styles.on : styles.off}>
-                  {t.isActive ? 'Active' : 'Hidden'}
-                </span>
-              </div>
-
-              <div className={[styles.actions, styles.colActions].join(' ')}>
-                <button
-                  className={styles.actionBtn}
-                  onClick={() => openEdit(t)}
-                  aria-label={`Edit ${t.title}`}
-                  title="Edit"
-                >
-                  <Icon name="pencil" size={16} />
-                </button>
-                <button
-                  className={[styles.actionBtn, styles.deleteBtn].join(' ')}
-                  onClick={() => setDeleteTarget(t)}
-                  aria-label={`Delete ${t.title}`}
-                  title="Delete"
-                >
-                  <Icon name="trash" size={16} />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+        </DragDropContext>
       )}
 
       <TourFormDrawer

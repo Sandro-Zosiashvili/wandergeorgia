@@ -26,6 +26,7 @@ export interface ApiTour {
   coverImage: string;
   gallery: string[];
   isActive: boolean;
+  orderIndex: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -112,6 +113,18 @@ export async function updateTour(id: string, input: Partial<TourInput>): Promise
 export async function deleteTour(id: string): Promise<void> {
   await handle<{ ok: true }>(
     await fetch(`${BASE}/${id}`, { method: 'DELETE', credentials: 'include' }),
+  );
+}
+
+/** Persist a new order for a category: `ids` in their new order. */
+export async function reorderTours(ids: string[]): Promise<void> {
+  await handle<{ ok: true }>(
+    await fetch(`${BASE}/reorder`, {
+      method: 'PATCH',
+      headers: JSON_HEADERS,
+      credentials: 'include',
+      body: JSON.stringify({ ids }),
+    }),
   );
 }
 
