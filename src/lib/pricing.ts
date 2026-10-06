@@ -170,13 +170,20 @@ export function computeBreakdown(tour: Tour, vehicle: VehicleId): PriceBreakdown
   }
 
   const rates = getRates(tour);
+  // A DB-sourced tour carries an explicit "from" price (admin `basePrice` =
+  // sedan × days). Derive the per-day sedan base from it so the booking total
+  // matches the tour page exactly; static tours use the rate table. Vehicle
+  // upgrade deltas always come from the rate table (the DB has no per-vehicle
+  // data), so the sedan total equals basePrice and upgrades stack on top.
+  const baseRatePerDay =
+    typeof tour.fromPrice === 'number' && days > 0 ? tour.fromPrice / days : rates.base;
   const upgradePerDay = rates.upgrades[vehicle];
-  const perDay = rates.base + upgradePerDay;
+  const perDay = baseRatePerDay + upgradePerDay;
 
   return {
     vehicle,
     days,
-    baseRatePerDay: rates.base,
+    baseRatePerDay,
     upgradePerDay,
     perDay,
     total: perDay * days,
