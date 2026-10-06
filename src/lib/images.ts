@@ -56,7 +56,7 @@ export const photos = {
   tbilisiAerial: 'photo-1603350576276-24747f7bbf40',
   kakhetiVineyard: 'photo-1694500788249-71b09a87db40',
   caucasusValley: 'photo-1564755123091-ac6bfcddf43b',
-  batumiCoast: 'photo-1625566360146-918001e76064',
+  batumiCoast: 'https://visitajara.com/storage/images/KS4zXRHqxH30MMh2mnwK8f4wIhgxyeDpYOLpmXnN.jpg',
 
   // Multi-day package cards & heroes.
   kazbegiMisty: 'photo-1577701122197-c9607038bd90',

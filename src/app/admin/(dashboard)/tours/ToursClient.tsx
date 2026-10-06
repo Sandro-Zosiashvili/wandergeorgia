@@ -119,7 +119,7 @@ export default function ToursClient() {
       }
       setDrawerOpen(false);
       await load(); // re-sync list with the DB
-      void revalidateTours(); // purge the public caches instantly
+      await revalidateTours(); // purge public caches BEFORE we finish (instant for visitors)
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Save failed.', 'error');
     } finally {
@@ -133,7 +133,7 @@ export default function ToursClient() {
     setTours((prev) => prev?.map((x) => (x.id === t.id ? { ...x, isActive: next } : x)) ?? prev);
     try {
       await updateTour(t.id, { isActive: next });
-      void revalidateTours(); // hidden/shown on the public site immediately
+      await revalidateTours(); // hidden/shown on the public site immediately
       showToast(next ? 'Tour activated.' : 'Tour hidden.');
     } catch (err) {
       // Roll back on failure.
@@ -152,7 +152,7 @@ export default function ToursClient() {
       showToast('Tour deleted.');
       setDeleteTarget(null);
       await load();
-      void revalidateTours(); // purge the public caches instantly
+      await revalidateTours(); // purge public caches BEFORE we finish (instant for visitors)
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Delete failed.', 'error');
     } finally {
