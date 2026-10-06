@@ -18,11 +18,11 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Admins can paste image URLs from any host in the tour editor, so allow
+    // any HTTPS image (next/image still optimizes them). Without this, a tour
+    // whose image lives on an unconfigured host crashes the page it renders on.
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
+      { protocol: 'https', hostname: '**' },
     ],
   },
 
