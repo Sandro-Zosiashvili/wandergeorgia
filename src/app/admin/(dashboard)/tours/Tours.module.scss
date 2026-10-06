@@ -12,6 +12,7 @@
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+
 }
 
 .title {
@@ -96,6 +97,7 @@
   border-radius: $radius-lg;
   border: 1px solid var(--hairline);
   background: var(--surface-raised);
+  overflow: hidden;
 }
 
 .dropZone {
@@ -175,6 +177,7 @@
   &:hover {
     color: var(--accent-bright);
   }
+
   &:active {
     cursor: grabbing;
   }
@@ -279,6 +282,7 @@
     color: #6fd3a3;
     font-weight: 600;
   }
+
   .off {
     font-size: 0.82rem;
     color: var(--text-faint);
