@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getAllTourSlugs } from '@/data/tours';
 import { fetchPublicTours, loadTourBySlug } from '@/lib/publicToursApi';
 import { formatUSD } from '@/lib/format';
 import { fromPriceUSD } from '@/lib/pricing';
@@ -18,12 +17,14 @@ export const revalidate = 60;
 // Tours created in the admin after a build still render, on-demand.
 export const dynamicParams = true;
 
-/** Pre-render every tour (DB + static) at build time. */
+/**
+ * Pre-render only ACTIVE tours from the DB. Hidden or unknown slugs are not
+ * pre-rendered; they render on-demand (dynamicParams) and resolve to
+ * notFound(), so a hidden tour is never reachable by direct URL.
+ */
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const db = await fetchPublicTours();
-  const dbSlugs = db?.map((t) => t.slug) ?? [];
-  const slugs = Array.from(new Set([...dbSlugs, ...getAllTourSlugs()]));
-  return slugs.map((slug) => ({ slug }));
+  return (db ?? []).map((t) => ({ slug: t.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

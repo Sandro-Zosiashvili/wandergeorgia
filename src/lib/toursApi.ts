@@ -114,3 +114,16 @@ export async function deleteTour(id: string): Promise<void> {
     await fetch(`${BASE}/${id}`, { method: 'DELETE', credentials: 'include' }),
   );
 }
+
+/**
+ * Purge the public tour caches on demand (home listing, detail pages, sitemap,
+ * footer) so admin changes appear for visitors immediately. Best-effort — a
+ * failure here never blocks the admin action.
+ */
+export async function revalidateTours(): Promise<void> {
+  try {
+    await fetch('/revalidate-tours', { method: 'POST', credentials: 'include' });
+  } catch {
+    /* ignore — the ISR timer still catches up within ~60s */
+  }
+}

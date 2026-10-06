@@ -1,6 +1,6 @@
 import type { ApiTour } from './toursApi';
 import type { Tour } from '@/types/tour';
-import { allTours, getTourBySlug } from '@/data/tours';
+import { allTours } from '@/data/tours';
 import { apiTourToTour } from './apiTourMapper';
 
 /**
@@ -44,16 +44,21 @@ export async function fetchPublicTourBySlug(slug: string): Promise<ApiTour | nul
 // ── Mapped loaders (DB-first, with the static catalog as a resilient fallback
 //    so the public site never breaks if the backend is briefly unavailable) ──
 
-/** All active tours, mapped to the front-end `Tour` shape. */
+/** All active tours, mapped to the front-end `Tour` shape (static fallback only
+ *  when the backend is unavailable — never shows individually-hidden tours in
+ *  normal operation, since the active-only endpoint already filters them). */
 export async function loadTours(): Promise<Tour[]> {
   const api = await fetchPublicTours();
   if (api && api.length) return api.map(apiTourToTour);
   return allTours;
 }
 
-/** One tour by slug (DB-first, static fallback), or undefined if unknown. */
+/**
+ * One tour by slug — strictly from the DB (active only). There is NO static
+ * fallback: a hidden or removed tour returns undefined so the page can call
+ * `notFound()`, and can never leak from the static catalog or be indexed.
+ */
 export async function loadTourBySlug(slug: string): Promise<Tour | undefined> {
   const api = await fetchPublicTourBySlug(slug);
-  if (api) return apiTourToTour(api);
-  return getTourBySlug(slug);
+  return api ? apiTourToTour(api) : undefined;
 }
