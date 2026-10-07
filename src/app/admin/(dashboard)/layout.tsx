@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { adminLogout, adminMe, type AdminUser } from '@/lib/adminApi';
+import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
 import Icon, { type IconName } from '@/components/ui/Icon/Icon';
 import styles from './AdminShell.module.scss';
 
@@ -23,6 +24,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+
+  // Lock background scroll while the mobile sidebar drawer is open.
+  useLockBodyScroll(menuOpen);
 
   useEffect(() => {
     let active = true;

@@ -6,6 +6,9 @@
   left: 0;
   right: 0;
   z-index: $z-header;
+  // Match the body's scrollbar compensation while a scroll lock is active, so
+  // the fixed header doesn't jump sideways when the scrollbar disappears.
+  padding-right: var(--scrollbar-gap, 0px);
   transition:
     background-color 0.4s $ease-out,
     backdrop-filter 0.4s $ease-out,
