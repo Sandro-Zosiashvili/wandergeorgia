@@ -47,8 +47,10 @@ export default function MemoryCard({
         </span>
 
         {isVideo ? (
-          <span className={styles.play} aria-hidden="true">
-            <Icon name="play" size={20} />
+          <span className={styles.playWrap} aria-hidden="true">
+            <span className={styles.play}>
+              <Icon name="play" size={20} />
+            </span>
           </span>
         ) : null}
       </div>

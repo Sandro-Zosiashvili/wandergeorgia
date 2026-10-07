@@ -406,7 +406,9 @@ export const iconRegistry = {
     ),
   },
   play: {
-    node: <path d="M8 5.14v13.72a.6.6 0 0 0 .92.5l10.64-6.86a.6.6 0 0 0 0-1l-10.64-6.86a.6.6 0 0 0-.92.5Z" />,
+    // Right-pointing triangle whose centroid sits at the 12,12 grid centre, so
+    // it reads as optically centred when the icon is flex-centred — no nudge.
+    node: <path d="M8.5 6.5 19 12 8.5 17.5Z" />,
     filled: true,
   },
   maximize: {
