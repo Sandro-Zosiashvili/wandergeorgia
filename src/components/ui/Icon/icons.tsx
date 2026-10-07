@@ -405,6 +405,10 @@ export const iconRegistry = {
       </>
     ),
   },
+  play: {
+    node: <path d="M8 5.14v13.72a.6.6 0 0 0 .92.5l10.64-6.86a.6.6 0 0 0 0-1l-10.64-6.86a.6.6 0 0 0-.92.5Z" />,
+    filled: true,
+  },
 } satisfies Record<string, IconDef>;
 
 export type IconName = keyof typeof iconRegistry;

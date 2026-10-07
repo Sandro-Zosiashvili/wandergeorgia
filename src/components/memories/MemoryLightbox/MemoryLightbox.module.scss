@@ -1,0 +1,186 @@
+@use '../../../styles/mixins' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: $z-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  background: rgba(4, 4, 3, 0.82);
+  backdrop-filter: blur(10px);
+}
+
+.close {
+  position: fixed;
+  top: clamp(0.9rem, 2.5vw, 1.4rem);
+  right: clamp(0.9rem, 2.5vw, 1.4rem);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--hairline);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  @include focus-ring;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(900px, 100%);
+  max-height: 100%;
+  background: var(--ink-800);
+  border: 1px solid var(--hairline);
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+
+  @include up($bp-md) {
+    flex-direction: row;
+    width: min(1040px, 100%);
+  }
+}
+
+.stage {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #000;
+
+  @include up($bp-md) {
+    width: 62%;
+    aspect-ratio: auto;
+  }
+}
+
+.photo {
+  object-fit: contain;
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: var(--ink-900);
+  background: rgba(255, 255, 255, 0.85);
+  border: none;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+  @include focus-ring;
+
+  &:hover {
+    background: #fff;
+  }
+}
+
+.prev {
+  left: 0.6rem;
+}
+
+.next {
+  right: 0.6rem;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: clamp(1.1rem, 3vw, 1.75rem);
+  overflow-y: auto;
+
+  @include up($bp-md) {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+.locTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  align-self: flex-start;
+  padding: 0.4rem 0.75rem;
+  border-radius: $radius-pill;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-bright);
+  background: var(--accent-tint);
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.caption {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-top: 0.2rem;
+  padding-top: 0.85rem;
+  @include hairline(top);
+}
+
+.traveler {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.flag {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.country {
+  color: var(--text-muted);
+}
+
+.date {
+  font-size: 0.8rem;
+  color: var(--text-faint);
+}

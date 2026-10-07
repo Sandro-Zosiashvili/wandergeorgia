@@ -1,6 +1,7 @@
 import Hero from '@/components/hero/Hero/Hero';
 import OneDayTours from '@/components/tours/OneDayTours/OneDayTours';
 import MultiDayTours from '@/components/tours/MultiDayTours/MultiDayTours';
+import TravelerMemories from '@/components/memories/TravelerMemories/TravelerMemories';
 import FleetMarquee from '@/components/fleet/FleetMarquee/FleetMarquee';
 import WhyChooseUs from '@/components/trust/WhyChooseUs/WhyChooseUs';
 import Reviews from '@/components/reviews/Reviews/Reviews';
@@ -20,6 +21,7 @@ export default async function HomePage() {
       <Hero />
       <OneDayTours tours={oneDay} />
       <MultiDayTours tours={multiDay} />
+      <TravelerMemories />
       <FleetMarquee />
       <WhyChooseUs />
       <Reviews />

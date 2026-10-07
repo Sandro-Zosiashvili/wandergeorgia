@@ -1,0 +1,81 @@
+@use '../../../styles/mixins' as *;
+
+.tabs {
+  display: flex;
+  width: fit-content;
+  gap: 0.3rem;
+  margin: 0 auto clamp(1.75rem, 4vw, 2.75rem);
+  padding: 0.35rem;
+  border-radius: $radius-pill;
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: $radius-pill;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.tabActive {
+  color: var(--ink-900);
+  background: var(--grad-gold);
+
+  &:hover {
+    color: var(--ink-900);
+  }
+
+  .count {
+    color: var(--ink-900);
+    background: rgba(6, 5, 4, 0.18);
+  }
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  padding: 0 0.35rem;
+  border-radius: $radius-pill;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.grid {
+  display: grid;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  grid-template-columns: 1fr;
+
+  @include up($bp-sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include up($bp-md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include up($bp-lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.cell {
+  display: flex;
+}
