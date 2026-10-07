@@ -590,6 +590,16 @@
   animation: tourspin 0.7s linear infinite;
 }
 
+// Spinner for the (muted) Upload buttons.
+.uploadSpinner {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid var(--hairline);
+  border-top-color: var(--accent-bright);
+  animation: tourspin 0.7s linear infinite;
+}
+
 @keyframes tourspin {
   to {
     transform: rotate(360deg);

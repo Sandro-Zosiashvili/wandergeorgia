@@ -132,6 +132,7 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
   const [slugTouched, setSlugTouched] = useState(mode === 'edit');
   const [showErrors, setShowErrors] = useState(false);
   const [openDays, setOpenDays] = useState<Set<string>>(new Set());
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   useEffect(() => {
     setForm(initial);
@@ -495,6 +496,7 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
         {/* ── Tab 4: Media ──────────────────────────────────────────────── */}
         {tab === 'media' ? (
           <div className={styles.fields}>
+            {uploadError ? <p className={styles.err}>{uploadError}</p> : null}
             <div className={styles.field}>
               <span className={styles.fieldLabel}>Cover image</span>
               <div className={styles.inputRow}>
@@ -504,10 +506,14 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
                   onChange={(e) => set('coverImage', e.target.value)}
                   placeholder="https://…"
                 />
-                <UploadButton label="Upload image" onFile={(data) => set('coverImage', data)} />
+                <UploadButton
+                  label="Upload image or video"
+                  onFile={(url) => { setUploadError(null); set('coverImage', url); }}
+                  onError={setUploadError}
+                />
               </div>
               <span className={styles.hint}>
-                Paste a hosted URL, or upload a file (embedded inline until file storage is wired up).
+                Paste a hosted URL, or upload an image/video — it&apos;s stored on Neon and the URL is filled in automatically.
               </span>
             </div>
             <ImgPreview src={form.coverImage} className={styles.coverPreview} />
@@ -564,7 +570,12 @@ export default function TourFormDrawer({ open, mode, initial, saving, onCancel, 
                     >
                       <Icon name="star" size={16} />
                     </button>
-                    <UploadButton compact label="Upload image" onFile={(data) => setString('gallery', i, data)} />
+                    <UploadButton
+                      compact
+                      label="Upload image or video"
+                      onFile={(url) => { setUploadError(null); setString('gallery', i, url); }}
+                      onError={setUploadError}
+                    />
                     <button
                       type="button"
                       className={[styles.iconBtnSm, styles.iconBtnDanger].join(' ')}
@@ -611,37 +622,57 @@ function Field({
 
 function UploadButton({
   onFile,
+  onError,
   label,
   compact,
 }: {
-  onFile: (dataUrl: string) => void;
+  onFile: (url: string) => void;
+  onError?: (message: string) => void;
   label: string;
   compact?: boolean;
 }) {
   const ref = useRef<HTMLInputElement>(null);
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [uploading, setUploading] = useState(false);
+
+  const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === 'string') onFile(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
     e.target.value = ''; // let the same file be picked again
+    if (!file) return;
+    setUploading(true);
+    try {
+      const body = new FormData();
+      body.append('file', file);
+      const res = await fetch('/api/upload', { method: 'POST', body, credentials: 'include' });
+      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
+      if (!res.ok || !data.url) throw new Error(data.error ?? `Upload failed (${res.status})`);
+      onFile(data.url); // populate the field with the permanent Neon URL
+    } catch (err) {
+      onError?.(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
   };
+
   return (
     <>
-      <input ref={ref} type="file" accept="image/*" className={styles.hiddenFile} onChange={onChange} />
+      <input
+        ref={ref}
+        type="file"
+        accept="image/*,video/*"
+        className={styles.hiddenFile}
+        onChange={onChange}
+        disabled={uploading}
+      />
       <button
         type="button"
         className={compact ? styles.iconBtnSm : styles.uploadBtn}
         onClick={() => ref.current?.click()}
         aria-label={label}
         title={label}
+        disabled={uploading}
       >
-        <Icon name="upload" size={compact ? 16 : 15} />
-        {compact ? null : <span>Upload</span>}
+        {uploading ? <span className={styles.uploadSpinner} aria-hidden="true" /> : <Icon name="upload" size={compact ? 16 : 15} />}
+        {compact ? null : <span>{uploading ? 'Uploading…' : 'Upload'}</span>}
       </button>
     </>
   );

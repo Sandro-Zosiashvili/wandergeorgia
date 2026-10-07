@@ -20,20 +20,30 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   // undefined = still checking, null = not authed (redirecting), else the user.
   const [user, setUser] = useState<AdminUser | null | undefined>(undefined);
+  const [error, setError] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     let active = true;
-    void adminMe().then((u) => {
-      if (!active) return;
-      if (!u) {
-        setUser(null);
-        router.replace('/admin/login');
-        return;
-      }
-      setUser(u);
-    });
+    setError(null);
+    adminMe()
+      .then((u) => {
+        if (!active) return;
+        if (!u) {
+          // Genuinely not signed in: clear the (stale) cookie first so the
+          // middleware won't bounce us back here, then go to login.
+          setUser(null);
+          void adminLogout().finally(() => router.replace('/admin/login'));
+          return;
+        }
+        setUser(u);
+      })
+      .catch(() => {
+        // Server unreachable/erroring — do NOT redirect (that loops with the
+        // cookie-based middleware). Show a recoverable error instead.
+        if (active) setError('Can’t reach the server. Check your connection and try again.');
+      });
     return () => {
       active = false;
     };
@@ -46,6 +56,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     router.refresh();
   };
 
+  if (error) {
+    return (
+      <div className={styles.loading}>
+        <div className={styles.errorBox}>
+          <Icon name="shield" size={28} />
+          <p className={styles.errorText}>{error}</p>
+          <button className={styles.errorBtn} onClick={() => window.location.reload()}>
+            <Icon name="arrow-right" size={16} /> Try again
+          </button>
+        </div>
+      </div>
+    );
+  }
   if (user === undefined) {
     return (
       <div className={styles.loading}>

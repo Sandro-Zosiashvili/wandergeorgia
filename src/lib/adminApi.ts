@@ -50,14 +50,19 @@ export async function adminLogout(): Promise<void> {
   }
 }
 
-/** Current admin from the cookie, or null if not authenticated. */
+/**
+ * Current admin from the cookie.
+ * - returns the user when authenticated
+ * - returns `null` when genuinely NOT authenticated (401/403) → caller should
+ *   sign out + go to login
+ * - THROWS when the server is unreachable/erroring → caller should show an
+ *   error, NOT redirect (redirecting while the cookie is still present causes a
+ *   middleware ↔ client redirect loop and a blank screen).
+ */
 export async function adminMe(): Promise<AdminUser | null> {
-  try {
-    const res = await fetch('/api/auth/me', { credentials: 'include' });
-    if (!res.ok) return null;
-    const data = (await res.json()) as { user: AdminUser };
-    return data.user ?? null;
-  } catch {
-    return null;
-  }
+  const res = await fetch('/api/auth/me', { credentials: 'include' });
+  if (res.status === 401 || res.status === 403) return null;
+  if (!res.ok) throw new Error(`Session check failed (${res.status})`);
+  const data = (await res.json()) as { user: AdminUser };
+  return data.user ?? null;
 }

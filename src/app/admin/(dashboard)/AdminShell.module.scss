@@ -18,6 +18,42 @@ $sidebar-w: 248px;
   animation: adminspin 0.8s linear infinite;
 }
 
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: 420px;
+  padding: 2rem;
+  text-align: center;
+  color: var(--accent-bright);
+}
+
+.errorText {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.errorDetail {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  word-break: break-word;
+}
+
+.errorBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: $radius-pill;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink-900);
+  background: var(--grad-gold);
+  @include focus-ring;
+}
+
 @keyframes adminspin {
   to {
     transform: rotate(360deg);
