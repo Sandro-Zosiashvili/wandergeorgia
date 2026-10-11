@@ -82,12 +82,23 @@ export default function MemoryLightbox({
     if (current.type === 'video') {
       const v = videoRef.current;
       if (!v) return;
-      // Safari/iOS exposes the proprietary webkit entry point instead.
-      const webkit = (v as unknown as { webkitEnterFullscreen?: () => void }).webkitEnterFullscreen;
-      if (typeof v.requestFullscreen === 'function') {
-        void v.requestFullscreen();
-      } else if (typeof webkit === 'function') {
-        webkit.call(v);
+      // iOS Safari: the standard element Fullscreen API is unreliable for
+      // <video>; its native entry point is webkitEnterFullscreen, which needs
+      // metadata loaded first. Prefer it when present, then fall back to the
+      // standard API (desktop Chrome/Firefox, Android).
+      const vv = v as HTMLVideoElement & {
+        webkitEnterFullscreen?: () => void;
+        webkitSupportsFullscreen?: boolean;
+      };
+      if (typeof vv.webkitEnterFullscreen === 'function') {
+        if (v.readyState >= 1) {
+          vv.webkitEnterFullscreen();
+        } else {
+          v.addEventListener('loadedmetadata', () => vv.webkitEnterFullscreen!(), { once: true });
+          v.load();
+        }
+      } else if (typeof v.requestFullscreen === 'function') {
+        void v.requestFullscreen().catch(() => {});
       }
     } else {
       setPhotoFull(true);
