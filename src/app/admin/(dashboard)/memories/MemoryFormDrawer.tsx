@@ -34,11 +34,12 @@ export const blankMemoryForm = (): MemoryFormState => ({
   isActive: true,
 });
 
-/** Map the editor state to the API payload (trimmed). */
+/** Map the editor state to the API payload (trimmed). Photos never carry a
+ *  separate thumbnail — the grid reuses the image itself. */
 export const toMemoryInput = (f: MemoryFormState): MemoryInput => ({
   type: f.type,
   mediaUrl: f.mediaUrl.trim(),
-  thumbnailUrl: f.thumbnailUrl.trim(),
+  thumbnailUrl: f.type === 'video' ? f.thumbnailUrl.trim() : '',
   tourTitle: f.tourTitle.trim(),
   caption: f.caption.trim(),
   travelerName: f.travelerName.trim(),
@@ -90,7 +91,8 @@ export default function MemoryFormDrawer({
   const set = <K extends keyof MemoryFormState>(key: K, value: MemoryFormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
 
-  const previewSrc = form.thumbnailUrl.trim() || form.mediaUrl.trim();
+  // Photos preview the image itself; videos preview their poster/thumbnail.
+  const previewSrc = form.type === 'video' ? form.thumbnailUrl.trim() : form.mediaUrl.trim();
 
   const submit = () => {
     if (!form.mediaUrl.trim()) {
@@ -174,34 +176,32 @@ export default function MemoryFormDrawer({
           </span>
         </label>
 
-        {/* Thumbnail / poster — dual input */}
-        <label className={styles.field}>
-          <span className={styles.fieldLabel}>
-            Thumbnail / poster
-            {form.type === 'video' ? <i className={styles.reqStar}>*</i> : null}
-          </span>
-          <div className={styles.inputRow}>
-            <input
-              className={styles.input}
-              value={form.thumbnailUrl}
-              onChange={(e) => set('thumbnailUrl', e.target.value)}
-              placeholder="https://…"
-            />
-            <UploadButton
-              label="Upload thumbnail"
-              onFile={(url) => {
-                setUploadError(null);
-                set('thumbnailUrl', url);
-              }}
-              onError={setUploadError}
-            />
-          </div>
-          <span className={styles.hint}>
-            {form.type === 'video'
-              ? 'Shown in the grid and as the video poster.'
-              : 'Grid preview. Leave blank to reuse the image above.'}
-          </span>
-        </label>
+        {/* Thumbnail / poster — videos only (photos reuse the image itself) */}
+        {form.type === 'video' ? (
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>
+              Thumbnail / poster
+              <i className={styles.reqStar}>*</i>
+            </span>
+            <div className={styles.inputRow}>
+              <input
+                className={styles.input}
+                value={form.thumbnailUrl}
+                onChange={(e) => set('thumbnailUrl', e.target.value)}
+                placeholder="https://…"
+              />
+              <UploadButton
+                label="Upload thumbnail"
+                onFile={(url) => {
+                  setUploadError(null);
+                  set('thumbnailUrl', url);
+                }}
+                onError={setUploadError}
+              />
+            </div>
+            <span className={styles.hint}>Shown in the grid and as the video poster.</span>
+          </label>
+        ) : null}
 
         {uploadError ? <p className={styles.err}>{uploadError}</p> : null}
 
@@ -210,7 +210,9 @@ export default function MemoryFormDrawer({
           <ImgPreview src={previewSrc} className={styles.preview} />
           {form.type === 'video' && previewSrc ? (
             <span className={styles.previewPlay} aria-hidden="true">
-              <Icon name="play" size={18} />
+              <span className={styles.playDot}>
+                <Icon name="play" size={18} />
+              </span>
             </span>
           ) : null}
         </div>

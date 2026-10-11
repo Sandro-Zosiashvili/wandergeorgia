@@ -33,8 +33,17 @@ export interface Memory {
 const img = (seed: string, w = 1200, h = 1500) =>
   `https://picsum.photos/seed/${seed}/${w}/${h}`;
 
-const VIDEO = (name: string) =>
-  `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/${name}`;
+// Working, range-enabled sample clips (the old Google sample bucket is now
+// blocked). This set is only the resilient fallback — real moments come from
+// the DB, where admins upload their own videos to Neon storage.
+const CLIPS = [
+  'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_2MB.mp4',
+  'https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_2MB.mp4',
+  'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
+  'https://test-videos.co.uk/vids/jellyfish/mp4/h264/360/Jellyfish_360_10s_1MB.mp4',
+];
+let clipIdx = 0;
+const VIDEO = (_name: string): string => CLIPS[clipIdx++ % CLIPS.length]!;
 
 export const memories: Memory[] = [
   {

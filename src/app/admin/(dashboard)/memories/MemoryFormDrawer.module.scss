@@ -205,11 +205,17 @@
   font-size: 0.82rem;
 }
 
+// Full-bleed overlay centres the play button over the poster (no drift).
 .previewPlay {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.previewPlay .playDot {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -220,10 +226,6 @@
   background: rgba(10, 9, 8, 0.5);
   border: 1.5px solid rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(6px);
-
-  svg {
-    margin-left: 2px;
-  }
 }
 
 .grid2 {

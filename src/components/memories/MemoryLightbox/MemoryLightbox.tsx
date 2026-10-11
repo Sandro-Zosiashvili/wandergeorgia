@@ -129,10 +129,12 @@ export default function MemoryLightbox({
                   ref={videoRef}
                   className={styles.video}
                   src={current.mediaUrl}
-                  poster={current.thumbnailUrl}
+                  poster={current.thumbnailUrl || undefined}
                   controls
                   autoPlay
+                  muted
                   playsInline
+                  preload="metadata"
                 />
               ) : (
                 <Image
