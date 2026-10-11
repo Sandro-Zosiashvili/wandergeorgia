@@ -127,26 +127,33 @@ export default function MemoryFormDrawer({
       <div className={styles.form}>
         {error ? <p className={styles.err}>{error}</p> : null}
 
-        {/* Media type */}
+        {/* Media type — editable on create, fixed on edit (can't change type). */}
         <div className={styles.field}>
           <span className={styles.fieldLabel}>Media type</span>
-          <div className={styles.segmented} role="radiogroup" aria-label="Media type">
-            {(['image', 'video'] as MemoryType[]).map((t) => (
-              <button
-                key={t}
-                type="button"
-                role="radio"
-                aria-checked={form.type === t}
-                className={[styles.segment, form.type === t ? styles.segmentOn : '']
-                  .filter(Boolean)
-                  .join(' ')}
-                onClick={() => set('type', t)}
-              >
-                <Icon name={t === 'video' ? 'play' : 'images'} size={15} />
-                {t === 'video' ? 'Video' : 'Photo'}
-              </button>
-            ))}
-          </div>
+          {mode === 'edit' ? (
+            <span className={styles.typeFixed}>
+              <Icon name={form.type === 'video' ? 'play' : 'images'} size={15} />
+              Type: {form.type === 'video' ? 'Video' : 'Photo'}
+            </span>
+          ) : (
+            <div className={styles.segmented} role="radiogroup" aria-label="Media type">
+              {(['image', 'video'] as MemoryType[]).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  role="radio"
+                  aria-checked={form.type === t}
+                  className={[styles.segment, form.type === t ? styles.segmentOn : '']
+                    .filter(Boolean)
+                    .join(' ')}
+                  onClick={() => set('type', t)}
+                >
+                  <Icon name={t === 'video' ? 'play' : 'images'} size={15} />
+                  {t === 'video' ? 'Video' : 'Photo'}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Media URL — dual input */}

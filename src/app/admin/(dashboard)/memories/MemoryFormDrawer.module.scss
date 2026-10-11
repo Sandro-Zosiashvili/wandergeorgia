@@ -175,6 +175,26 @@
   }
 }
 
+// Read-only media-type badge shown in edit mode.
+.typeFixed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  padding: 0.5rem 0.95rem;
+  border-radius: $radius-pill;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--ink-900);
+  border: 1px solid var(--hairline);
+
+  svg {
+    color: var(--accent-bright);
+    flex-shrink: 0;
+  }
+}
+
 // Live preview.
 .previewWrap {
   position: relative;
