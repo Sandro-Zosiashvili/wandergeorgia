@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { memories, type Memory } from '@/data/memories';
+import type { Memory } from '@/data/memories';
 import Container from '@/components/ui/Container/Container';
 import SectionHeading from '@/components/ui/SectionHeading/SectionHeading';
 import Button from '@/components/ui/Button/Button';
@@ -18,9 +18,12 @@ const PREVIEW_COUNT = 8;
  * clips sitting just below the tours. Tapping a card opens the lightbox; "See
  * all moments" links through to the full /memories gallery.
  */
-export default function TravelerMemories() {
+export default function TravelerMemories({ memories }: { memories: Memory[] }) {
   const items = memories.slice(0, PREVIEW_COUNT);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  // Nothing to show (backend empty and no fallback) — hide the whole section.
+  if (items.length === 0) return null;
 
   const open = (memory: Memory) => {
     const i = items.findIndex((m) => m.id === memory.id);

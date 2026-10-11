@@ -7,12 +7,13 @@ import WhyChooseUs from '@/components/trust/WhyChooseUs/WhyChooseUs';
 import Reviews from '@/components/reviews/Reviews/Reviews';
 import CTABand from '@/components/cta/CTABand/CTABand';
 import { loadTours } from '@/lib/publicToursApi';
+import { loadMemories } from '@/lib/publicMemoriesApi';
 
 // ISR — the home listings refetch from the DB so admin edits appear live.
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const tours = await loadTours();
+  const [tours, moments] = await Promise.all([loadTours(), loadMemories()]);
   const oneDay = tours.filter((t) => t.type === 'one-day');
   const multiDay = tours.filter((t) => t.type === 'multi-day');
 
@@ -21,7 +22,7 @@ export default async function HomePage() {
       <Hero />
       <OneDayTours tours={oneDay} />
       <MultiDayTours tours={multiDay} />
-      <TravelerMemories />
+      <TravelerMemories memories={moments} />
       <FleetMarquee />
       <WhyChooseUs />
       <Reviews />

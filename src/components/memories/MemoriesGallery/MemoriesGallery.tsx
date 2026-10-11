@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { memories, type Memory, type MemoryType } from '@/data/memories';
+import type { Memory, MemoryType } from '@/data/memories';
 import Reveal from '@/components/ui/Reveal/Reveal';
 import MemoryCard from '../MemoryCard/MemoryCard';
 import MemoryLightbox from '../MemoryLightbox/MemoryLightbox';
@@ -20,13 +20,13 @@ const TABS: { key: Filter; label: string }[] = [
  * grid, with the shared lightbox for viewing a photo or playing a clip. The
  * lightbox browses within the *currently filtered* set.
  */
-export default function MemoriesGallery() {
+export default function MemoriesGallery({ memories }: { memories: Memory[] }) {
   const [filter, setFilter] = useState<Filter>('all');
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const items = useMemo(
     () => (filter === 'all' ? memories : memories.filter((m) => m.type === filter)),
-    [filter],
+    [filter, memories],
   );
 
   const counts = useMemo(
@@ -35,7 +35,7 @@ export default function MemoriesGallery() {
       image: memories.filter((m) => m.type === 'image').length,
       video: memories.filter((m) => m.type === 'video').length,
     }),
-    [],
+    [memories],
   );
 
   const changeFilter = (next: Filter) => {

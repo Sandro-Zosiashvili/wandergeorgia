@@ -2,7 +2,11 @@ import type { Metadata } from 'next';
 import Container from '@/components/ui/Container/Container';
 import SectionHeading from '@/components/ui/SectionHeading/SectionHeading';
 import MemoriesGallery from '@/components/memories/MemoriesGallery/MemoriesGallery';
+import { loadMemories } from '@/lib/publicMemoriesApi';
 import styles from './page.module.scss';
+
+// ISR — the gallery refetches from the DB so admin edits appear live.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Traveler Moments',
@@ -26,7 +30,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function MemoriesPage() {
+export default async function MemoriesPage() {
+  const memories = await loadMemories();
+
   return (
     <div className={styles.page}>
       <Container>
@@ -39,7 +45,7 @@ export default function MemoriesPage() {
           />
         </div>
 
-        <MemoriesGallery />
+        <MemoriesGallery memories={memories} />
       </Container>
     </div>
   );

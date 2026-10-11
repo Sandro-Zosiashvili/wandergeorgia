@@ -1,0 +1,391 @@
+@use '../../../../styles/mixins' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  line-height: 1.1;
+}
+
+.sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: $radius-pill;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-900);
+  background: var(--grad-gold);
+  box-shadow: var(--shadow-gold);
+  transition: transform 0.2s $ease-out;
+  @include focus-ring;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+// ── List ─────────────────────────────────────────────────────────────────────
+.list {
+  border-radius: $radius-lg;
+  border: 1px solid var(--hairline);
+  background: var(--surface-raised);
+  overflow: hidden;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto auto;
+  align-items: center;
+  gap: 0.8rem 1.4rem;
+  padding: 0.9rem 1.2rem;
+  @include hairline(bottom);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.headerRow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  background: var(--ink-800);
+
+  @include down($bp-md) {
+    display: none;
+  }
+}
+
+.colType {
+  justify-self: start;
+}
+
+.colActions {
+  justify-self: end;
+}
+
+// ── Media thumbnail ──────────────────────────────────────────────────────────
+.media {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: $radius-md;
+  overflow: hidden;
+  background: var(--ink-800);
+  border: 1px solid var(--hairline);
+}
+
+.thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumbEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--text-faint);
+}
+
+.playBadge {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: var(--ink-900);
+  background: rgba(255, 255, 255, 0.9);
+
+  svg {
+    margin-left: 1px;
+  }
+}
+
+// ── Moment info ──────────────────────────────────────────────────────────────
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.tour {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+
+  svg {
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+}
+
+.caption {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.traveler {
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+.country {
+  color: var(--text-faint);
+}
+
+.typeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.6rem;
+  border-radius: $radius-pill;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border: 1px solid var(--hairline);
+  white-space: nowrap;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.typeBadge.video {
+  color: var(--accent-bright);
+  background: var(--accent-tint);
+  border-color: var(--accent);
+}
+
+.date {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.toggleCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  .on {
+    font-size: 0.82rem;
+    color: #6fd3a3;
+    font-weight: 600;
+  }
+
+  .off {
+    font-size: 0.82rem;
+    color: var(--text-faint);
+  }
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-md;
+  color: var(--text-muted);
+  border: 1px solid var(--hairline);
+  background: var(--surface);
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--accent-bright);
+    border-color: var(--accent);
+    background: var(--accent-tint);
+  }
+}
+
+.deleteBtn:hover {
+  color: #f98080;
+  border-color: #c0564a;
+  background: rgba(192, 86, 74, 0.1);
+}
+
+// ── Mobile: stack each row into a card ───────────────────────────────────────
+@include down($bp-md) {
+  .row {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'media info'
+      'media meta'
+      'active actions';
+    gap: 0.55rem 1rem;
+  }
+  .media {
+    grid-area: media;
+    width: 72px;
+    height: 72px;
+    align-self: start;
+  }
+  .info {
+    grid-area: info;
+  }
+  .colType {
+    grid-area: meta;
+    align-self: start;
+  }
+  // Date is folded into the meta row visually; keep it readable under the badge.
+  .colDate {
+    display: none;
+  }
+  .toggleCell {
+    grid-area: active;
+    align-self: center;
+  }
+  .actions {
+    grid-area: actions;
+    justify-self: end;
+    align-self: center;
+  }
+}
+
+// ── Loading / error / empty states ───────────────────────────────────────────
+.stateBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 220px;
+  padding: 2rem;
+  border-radius: $radius-lg;
+  border: 1px solid var(--hairline);
+  background: var(--surface-raised);
+  text-align: center;
+}
+
+.stateText {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  max-width: 420px;
+}
+
+.retryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: $radius-pill;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  border: 1px solid var(--hairline);
+  background: var(--surface);
+  transition: color 0.18s ease, border-color 0.18s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--accent-bright);
+    border-color: var(--accent);
+  }
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--hairline);
+  border-top-color: var(--accent-bright);
+  animation: memspin 0.8s linear infinite;
+}
+
+@keyframes memspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ── Delete confirm modal ─────────────────────────────────────────────────────
+.confirmText {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+
+  strong {
+    color: var(--text);
+  }
+}
+
+.ghostBtn,
+.dangerBtn {
+  padding: 0.65rem 1.2rem;
+  border-radius: $radius-pill;
+  font-size: 0.9rem;
+  font-weight: 600;
+  @include focus-ring;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.ghostBtn {
+  color: var(--text-muted);
+  border: 1px solid var(--hairline);
+  background: transparent;
+
+  &:hover:not(:disabled) {
+    color: var(--text);
+  }
+}
+
+.dangerBtn {
+  color: #fff;
+  background: #c0392b;
+  border: 1px solid #c0392b;
+
+  &:hover:not(:disabled) {
+    background: #a93226;
+  }
+}
