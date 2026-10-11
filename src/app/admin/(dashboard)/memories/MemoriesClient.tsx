@@ -192,7 +192,9 @@ export default function MemoriesClient() {
           )}
           {m.type === 'video' ? (
             <span className={styles.playBadge} aria-hidden="true">
-              <Icon name="play" size={13} />
+              <span className={styles.playDot}>
+                <Icon name="play" size={13} />
+              </span>
             </span>
           ) : null}
         </div>
