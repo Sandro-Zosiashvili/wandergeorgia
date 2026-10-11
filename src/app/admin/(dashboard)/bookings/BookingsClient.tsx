@@ -1,87 +1,147 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/ui/Icon/Icon';
 import StatusBadge from '@/components/admin/StatusBadge/StatusBadge';
 import StatusSelect from '@/components/admin/StatusSelect/StatusSelect';
 import AdminModal from '@/components/admin/AdminModal/AdminModal';
-import {
-  mockBookings,
-  mockDrivers,
-  waLink,
-  type AdminBooking,
-  type PaymentStatus,
-  type TourStatus,
-} from '@/data/adminMock';
+import Toast, { type ToastState } from '@/components/admin/Toast/Toast';
 import { formatUSD, formatDate } from '@/lib/format';
+import {
+  ApiError,
+  deleteBooking,
+  listBookings,
+  updateBooking,
+  type ApiBooking,
+  type BookingStatus,
+} from '@/lib/bookingsApi';
 import styles from './Bookings.module.scss';
 
-const TODAY = '2026-10-04';
-const STATUSES: (TourStatus | 'ALL')[] = ['ALL', 'PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'];
+const STATUSES: (BookingStatus | 'ALL')[] = ['ALL', 'PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'];
 const DATE_FILTERS = ['ALL', 'UPCOMING', 'PAST'] as const;
 
+const dayOf = (iso: string) => (iso ? iso.slice(0, 10) : '');
+const waLink = (phone: string) => `https://wa.me/${phone.replace(/[^\d]/g, '')}`;
+
 export default function BookingsClient() {
-  const [bookings, setBookings] = useState<AdminBooking[]>(mockBookings);
+  const [bookings, setBookings] = useState<ApiBooking[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<(typeof STATUSES)[number]>('ALL');
   const [dateFilter, setDateFilter] = useState<(typeof DATE_FILTERS)[number]>('ALL');
-  const [selected, setSelected] = useState<AdminBooking | null>(null);
+
+  const [selected, setSelected] = useState<ApiBooking | null>(null);
   const [notesDraft, setNotesDraft] = useState('');
+  const [savingNotes, setSavingNotes] = useState(false);
+
+  const [deleteTarget, setDeleteTarget] = useState<ApiBooking | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const [toast, setToast] = useState<ToastState | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showToast = useCallback((message: string, variant: ToastState['variant'] = 'success') => {
+    setToast({ message, variant });
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 2800);
+  }, []);
+  useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
+
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
+  const load = useCallback(async () => {
+    setLoadError(null);
+    try {
+      setBookings(await listBookings());
+    } catch (err) {
+      setBookings([]);
+      setLoadError(
+        err instanceof ApiError && err.status === 401
+          ? 'Your session expired. Please sign in again.'
+          : err instanceof Error
+            ? err.message
+            : 'Could not load bookings.',
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   const filtered = useMemo(() => {
+    const list = bookings ?? [];
     const q = query.trim().toLowerCase();
-    return bookings.filter((b) => {
-      if (status !== 'ALL' && b.tourStatus !== status) return false;
-      if (dateFilter === 'UPCOMING' && b.startDate < TODAY) return false;
-      if (dateFilter === 'PAST' && b.startDate >= TODAY) return false;
-      if (q && !b.clientName.toLowerCase().includes(q) && !b.phone.replace(/\s/g, '').includes(q.replace(/\s/g, ''))) {
-        return false;
+    return list.filter((b) => {
+      if (status !== 'ALL' && b.status !== status) return false;
+      const day = dayOf(b.startDate);
+      if (dateFilter === 'UPCOMING' && day < today) return false;
+      if (dateFilter === 'PAST' && day >= today) return false;
+      if (q) {
+        const hay = `${b.fullName} ${b.email} ${b.phone}`.toLowerCase().replace(/\s/g, '');
+        if (!hay.includes(q.replace(/\s/g, ''))) return false;
       }
       return true;
     });
-  }, [bookings, query, status, dateFilter]);
+  }, [bookings, query, status, dateFilter, today]);
 
-  const assignDriver = (bookingId: string, driverId: string) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === bookingId ? { ...b, driverId: driverId || null } : b)),
-    );
+  const setBookingStatus = async (b: ApiBooking, value: string) => {
+    const next = value as BookingStatus;
+    setUpdatingId(b.id);
+    setBookings((prev) => prev?.map((x) => (x.id === b.id ? { ...x, status: next } : x)) ?? prev);
+    try {
+      await updateBooking(b.id, { status: next });
+      showToast('Status updated.');
+    } catch (err) {
+      setBookings((prev) => prev?.map((x) => (x.id === b.id ? { ...x, status: b.status } : x)) ?? prev);
+      showToast(err instanceof Error ? err.message : 'Update failed.', 'error');
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
-  const setPayment = (bookingId: string, value: string) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === bookingId ? { ...b, paymentStatus: value as PaymentStatus } : b)),
-    );
-  };
-
-  const setTourStatus = (bookingId: string, value: string) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === bookingId ? { ...b, tourStatus: value as TourStatus } : b)),
-    );
-  };
-
-  // Only active drivers can be assigned (plus whoever is already on the booking).
-  const assignable = (currentId: string | null) =>
-    mockDrivers.filter((d) => d.status !== 'INACTIVE' || d.id === currentId);
-
-  const openDetails = (b: AdminBooking) => {
+  const openDetails = (b: ApiBooking) => {
     setSelected(b);
     setNotesDraft(b.adminNotes ?? '');
   };
 
-  const saveNotes = () => {
+  const saveNotes = async () => {
     if (!selected) return;
-    setBookings((prev) =>
-      prev.map((b) => (b.id === selected.id ? { ...b, adminNotes: notesDraft } : b)),
-    );
-    setSelected(null);
+    setSavingNotes(true);
+    try {
+      const updated = await updateBooking(selected.id, { adminNotes: notesDraft });
+      setBookings((prev) => prev?.map((x) => (x.id === selected.id ? updated : x)) ?? prev);
+      showToast('Notes saved.');
+      setSelected(null);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Save failed.', 'error');
+    } finally {
+      setSavingNotes(false);
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await deleteBooking(deleteTarget.id);
+      setBookings((prev) => prev?.filter((x) => x.id !== deleteTarget.id) ?? prev);
+      showToast('Booking deleted.');
+      setDeleteTarget(null);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Delete failed.', 'error');
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const exportCsv = () => {
-    const headers = ['ID', 'Client', 'Phone', 'Email', 'Tour', 'Start', 'Days', 'Pax', 'Vehicle', 'Total', 'Payment', 'Status', 'Driver'];
+    const headers = ['ID', 'Client', 'Phone', 'Email', 'Tour', 'Start', 'Days', 'Pax', 'Vehicle', 'Total', 'Status', 'Booked'];
     const rows = filtered.map((b) => [
-      b.id, b.clientName, b.phone, b.email, b.tourName, b.startDate, b.days, b.passengers,
-      b.vehicleType, b.totalPrice, b.paymentStatus, b.tourStatus,
-      mockDrivers.find((d) => d.id === b.driverId)?.name ?? '',
+      b.id, b.fullName, b.phone, b.email, b.tourTitle, dayOf(b.startDate), b.daysCount,
+      b.passengers, b.vehicleType, b.totalPrice, b.status, dayOf(b.createdAt),
     ]);
     const csv = [headers, ...rows]
       .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(','))
@@ -90,10 +150,12 @@ export default function BookingsClient() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `wanderkartli-bookings-${TODAY}.csv`;
+    a.download = `wanderkartli-bookings-${today}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const total = bookings?.length ?? 0;
 
   return (
     <div className={styles.wrap}>
@@ -101,10 +163,10 @@ export default function BookingsClient() {
         <div>
           <h1 className={styles.title}>Bookings</h1>
           <p className={styles.sub}>
-            {filtered.length} of {bookings.length} bookings
+            {bookings === null ? 'Loading…' : `${filtered.length} of ${total} booking${total === 1 ? '' : 's'}`}
           </p>
         </div>
-        <button className={styles.export} onClick={exportCsv}>
+        <button className={styles.export} onClick={exportCsv} disabled={!bookings || bookings.length === 0}>
           <Icon name="download" size={17} />
           Export CSV
         </button>
@@ -115,7 +177,7 @@ export default function BookingsClient() {
           <Icon name="search" size={17} className={styles.searchIcon} />
           <input
             className={styles.search}
-            placeholder="Search by name or phone…"
+            placeholder="Search by name, email or phone…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -132,82 +194,95 @@ export default function BookingsClient() {
         </select>
       </div>
 
-      <div className={styles.tableScroll}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Client</th>
-              <th>Contact</th>
-              <th>Tour</th>
-              <th>Date · Days</th>
-              <th>Pax</th>
-              <th>Vehicle</th>
-              <th>Total</th>
-              <th>Payment</th>
-              <th>Status</th>
-              <th>Driver</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((b) => (
-              <tr key={b.id} className={styles.row} onClick={() => openDetails(b)}>
-                <td>
-                  <span className={styles.client}>{b.clientName}</span>
-                  <span className={styles.bookingId}>#{b.id}</span>
-                </td>
-                <td onClick={(e) => e.stopPropagation()}>
-                  <a className={styles.wa} href={waLink(b.phone)} target="_blank" rel="noopener noreferrer" title={`WhatsApp ${b.phone}`}>
-                    <Icon name="whatsapp" size={16} />
-                    <span className={styles.waPhone}>{b.phone}</span>
-                  </a>
-                </td>
-                <td className={styles.tourCell} title={b.tourName}>{b.tourName}</td>
-                <td className={styles.nowrap}>
-                  {formatDate(b.startDate).replace(/,?\s*\d{4}$/, '')} · {b.days}d
-                </td>
-                <td>{b.passengers}</td>
-                <td className={styles.vehicleCell} title={b.vehicleType}>{b.vehicleType}</td>
-                <td className={styles.price}>{formatUSD(b.totalPrice)}</td>
-                <td onClick={(e) => e.stopPropagation()}>
-                  <StatusSelect kind="payment" value={b.paymentStatus} onChange={(v) => setPayment(b.id, v)} />
-                </td>
-                <td onClick={(e) => e.stopPropagation()}>
-                  <StatusSelect kind="tour" value={b.tourStatus} onChange={(v) => setTourStatus(b.id, v)} />
-                </td>
-                <td onClick={(e) => e.stopPropagation()}>
-                  <select
-                    className={styles.driverSelect}
-                    value={b.driverId ?? ''}
-                    onChange={(e) => assignDriver(b.id, e.target.value)}
-                  >
-                    <option value="">Unassigned</option>
-                    {assignable(b.driverId).map((d) => (
-                      <option key={d.id} value={d.id}>{d.name}</option>
-                    ))}
-                  </select>
-                </td>
-              </tr>
-            ))}
-            {filtered.length === 0 ? (
+      {bookings === null ? (
+        <div className={styles.stateBox}>
+          <span className={styles.spinner} aria-label="Loading bookings" />
+        </div>
+      ) : loadError ? (
+        <div className={styles.stateBox}>
+          <p className={styles.stateText}>{loadError}</p>
+          <button className={styles.retryBtn} onClick={() => void load()}>
+            <Icon name="arrow-right" size={16} /> Try again
+          </button>
+        </div>
+      ) : (
+        <div className={styles.tableScroll}>
+          <table className={styles.table}>
+            <thead>
               <tr>
-                <td colSpan={10} className={styles.empty}>No bookings match your filters.</td>
+                <th>Client</th>
+                <th>Contact</th>
+                <th>Tour</th>
+                <th>Date · Days</th>
+                <th>Pax</th>
+                <th>Vehicle</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th aria-label="Actions" />
               </tr>
-            ) : null}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {filtered.map((b) => (
+                <tr key={b.id} className={styles.row} onClick={() => openDetails(b)}>
+                  <td>
+                    <span className={styles.client}>{b.fullName}</span>
+                    <span className={styles.bookingId}>#{b.id.slice(0, 8)}</span>
+                  </td>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <a className={styles.wa} href={waLink(b.phone)} target="_blank" rel="noopener noreferrer" title={`WhatsApp ${b.phone}`}>
+                      <Icon name="whatsapp" size={16} />
+                      <span className={styles.waPhone}>{b.phone}</span>
+                    </a>
+                  </td>
+                  <td className={styles.tourCell} title={b.tourTitle}>{b.tourTitle}</td>
+                  <td className={styles.nowrap}>
+                    {formatDate(dayOf(b.startDate)).replace(/,?\s*\d{4}$/, '')} · {b.daysCount}d
+                  </td>
+                  <td>{b.passengers}</td>
+                  <td className={styles.vehicleCell} title={b.vehicleType}>{b.vehicleType}</td>
+                  <td className={styles.price}>{formatUSD(b.totalPrice)}</td>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <StatusSelect kind="tour" value={b.status} onChange={(v) => void setBookingStatus(b, v)} />
+                  </td>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <button
+                      className={styles.deleteBtn}
+                      onClick={() => setDeleteTarget(b)}
+                      aria-label={`Delete booking for ${b.fullName}`}
+                      title="Delete booking"
+                      disabled={updatingId === b.id}
+                    >
+                      <Icon name="trash" size={16} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className={styles.empty}>
+                    {total === 0 ? 'No bookings yet.' : 'No bookings match your filters.'}
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      )}
 
+      {/* Details + notes */}
       <AdminModal
         open={selected !== null}
-        onClose={() => setSelected(null)}
-        title={selected?.clientName ?? ''}
-        subtitle={selected ? `#${selected.id} · ${selected.tourName}` : undefined}
+        onClose={() => (savingNotes ? undefined : setSelected(null))}
+        title={selected?.fullName ?? ''}
+        subtitle={selected ? `#${selected.id.slice(0, 8)} · ${selected.tourTitle}` : undefined}
         wide
         footer={
           selected ? (
             <>
-              <button className={styles.ghostBtn} onClick={() => setSelected(null)}>Close</button>
-              <button className={styles.primaryBtn} onClick={saveNotes}>Save notes</button>
+              <button className={styles.ghostBtn} onClick={() => setSelected(null)} disabled={savingNotes}>Close</button>
+              <button className={styles.primaryBtn} onClick={() => void saveNotes()} disabled={savingNotes}>
+                {savingNotes ? 'Saving…' : 'Save notes'}
+              </button>
             </>
           ) : null
         }
@@ -215,12 +290,11 @@ export default function BookingsClient() {
         {selected ? (
           <div className={styles.details}>
             <div className={styles.detailBadges}>
-              <StatusBadge kind="tour" value={selected.tourStatus} />
-              <StatusBadge kind="payment" value={selected.paymentStatus} />
+              <StatusBadge kind="tour" value={selected.status} />
             </div>
 
             <dl className={styles.detailGrid}>
-              <div><dt>Dates</dt><dd>{formatDate(selected.startDate)} · {selected.days} day{selected.days === 1 ? '' : 's'}</dd></div>
+              <div><dt>Dates</dt><dd>{formatDate(dayOf(selected.startDate))} · {selected.daysCount} day{selected.daysCount === 1 ? '' : 's'}</dd></div>
               <div><dt>Passengers</dt><dd>{selected.passengers}</dd></div>
               <div><dt>Vehicle</dt><dd>{selected.vehicleType}</dd></div>
               <div><dt>Total</dt><dd className={styles.detailPrice}>{formatUSD(selected.totalPrice)}</dd></div>
@@ -233,6 +307,7 @@ export default function BookingsClient() {
                   </a>
                 </dd>
               </div>
+              <div><dt>Booked</dt><dd>{formatDate(dayOf(selected.createdAt))}</dd></div>
             </dl>
 
             <div className={styles.block}>
@@ -253,6 +328,28 @@ export default function BookingsClient() {
           </div>
         ) : null}
       </AdminModal>
+
+      {/* Delete confirm */}
+      <AdminModal
+        open={deleteTarget !== null}
+        onClose={() => (deleting ? undefined : setDeleteTarget(null))}
+        title="Delete booking"
+        subtitle={deleteTarget ? `${deleteTarget.fullName} · ${deleteTarget.tourTitle}` : undefined}
+        footer={
+          <>
+            <button className={styles.ghostBtn} onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</button>
+            <button className={styles.dangerBtn} onClick={() => void confirmDelete()} disabled={deleting}>
+              {deleting ? 'Deleting…' : 'Delete booking'}
+            </button>
+          </>
+        }
+      >
+        <p className={styles.blockText}>
+          This permanently removes the booking for <strong>{deleteTarget?.fullName}</strong>. This can’t be undone.
+        </p>
+      </AdminModal>
+
+      <Toast toast={toast} />
     </div>
   );
 }
