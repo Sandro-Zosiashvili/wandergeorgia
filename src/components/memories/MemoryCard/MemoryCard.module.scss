@@ -1,9 +1,12 @@
 @use '../../../styles/mixins' as *;
 
 .card {
-  display: flex;
-  flex-direction: column;
+  // NOTE: a plain block, NOT flex — Safari/iOS ignores display:flex on a
+  // <button>, which collapsed the aspect-ratio media to 0 height. The flex
+  // layout lives on .cardInner instead.
+  display: block;
   width: 100%;
+  padding: 0;
   text-align: left;
   background: var(--surface-raised);
   border: 1px solid var(--hairline);
@@ -31,6 +34,13 @@
       color: var(--ink-900);
     }
   }
+}
+
+// The real flex column (outside the <button>, so Safari honours it).
+.cardInner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 // Inset the media from the card edges so it isn't flush with the border.

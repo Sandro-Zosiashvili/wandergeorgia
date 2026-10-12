@@ -31,8 +31,12 @@ export default function MemoryCard({
       onClick={() => onOpen(memory)}
       aria-label={`${isVideo ? 'Play video' : 'View photo'} from ${memory.tourTitle} by ${memory.travelerName}`}
     >
-      <div className={styles.mediaFrame}>
-        <div className={styles.media}>
+      {/* Inner wrapper holds the flex layout: Safari/iOS does NOT honour
+          display:flex/grid on a <button> itself, which collapsed the
+          aspect-ratio media box to 0 height on mobile. */}
+      <span className={styles.cardInner}>
+        <div className={styles.mediaFrame}>
+          <div className={styles.media}>
           <Image
             src={memory.thumbnailUrl}
             alt={memory.caption}
@@ -76,6 +80,7 @@ export default function MemoryCard({
           <span className={styles.country}>{memory.country}</span>
         </span>
       </div>
+      </span>
     </button>
   );
 }
