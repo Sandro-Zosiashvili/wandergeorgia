@@ -14,6 +14,7 @@ import {
   updateBooking,
   type ApiBooking,
   type BookingStatus,
+  type PaymentStatus,
 } from '@/lib/bookingsApi';
 import styles from './Bookings.module.scss';
 
@@ -26,6 +27,7 @@ const waLink = (phone: string) => `https://wa.me/${phone.replace(/[^\d]/g, '')}`
 export default function BookingsClient() {
   const [bookings, setBookings] = useState<ApiBooking[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [driverNames, setDriverNames] = useState<string[]>([]);
 
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<(typeof STATUSES)[number]>('ALL');
@@ -71,6 +73,24 @@ export default function BookingsClient() {
     void load();
   }, [load]);
 
+  // Driver roster for the assignment dropdown (live from the drivers API).
+  useEffect(() => {
+    let active = true;
+    fetch('/api/drivers', { credentials: 'include' })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((list: { name?: string; status?: string }[]) => {
+        if (active) {
+          setDriverNames(
+            list.filter((d) => d.status !== 'INACTIVE').map((d) => d.name ?? '').filter(Boolean),
+          );
+        }
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const filtered = useMemo(() => {
     const list = bookings ?? [];
     const q = query.trim().toLowerCase();
@@ -96,6 +116,35 @@ export default function BookingsClient() {
       showToast('Status updated.');
     } catch (err) {
       setBookings((prev) => prev?.map((x) => (x.id === b.id ? { ...x, status: b.status } : x)) ?? prev);
+      showToast(err instanceof Error ? err.message : 'Update failed.', 'error');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const setPayment = async (b: ApiBooking, value: string) => {
+    const next = value as PaymentStatus;
+    setUpdatingId(b.id);
+    setBookings((prev) => prev?.map((x) => (x.id === b.id ? { ...x, paymentStatus: next } : x)) ?? prev);
+    try {
+      await updateBooking(b.id, { paymentStatus: next });
+      showToast('Payment updated.');
+    } catch (err) {
+      setBookings((prev) => prev?.map((x) => (x.id === b.id ? { ...x, paymentStatus: b.paymentStatus } : x)) ?? prev);
+      showToast(err instanceof Error ? err.message : 'Update failed.', 'error');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const setDriver = async (b: ApiBooking, name: string) => {
+    setUpdatingId(b.id);
+    setBookings((prev) => prev?.map((x) => (x.id === b.id ? { ...x, driverName: name || null } : x)) ?? prev);
+    try {
+      await updateBooking(b.id, { driverName: name });
+      showToast(name ? 'Driver assigned.' : 'Driver unassigned.');
+    } catch (err) {
+      setBookings((prev) => prev?.map((x) => (x.id === b.id ? { ...x, driverName: b.driverName } : x)) ?? prev);
       showToast(err instanceof Error ? err.message : 'Update failed.', 'error');
     } finally {
       setUpdatingId(null);
@@ -138,10 +187,10 @@ export default function BookingsClient() {
   };
 
   const exportCsv = () => {
-    const headers = ['ID', 'Client', 'Phone', 'Email', 'Tour', 'Start', 'Days', 'Pax', 'Vehicle', 'Total', 'Status', 'Booked'];
+    const headers = ['ID', 'Client', 'Phone', 'Email', 'Tour', 'Start', 'Days', 'Pax', 'Vehicle', 'Total', 'Payment', 'Status', 'Driver', 'Booked'];
     const rows = filtered.map((b) => [
       b.id, b.fullName, b.phone, b.email, b.tourTitle, dayOf(b.startDate), b.daysCount,
-      b.passengers, b.vehicleType, b.totalPrice, b.status, dayOf(b.createdAt),
+      b.passengers, b.vehicleType, b.totalPrice, b.paymentStatus, b.status, b.driverName ?? '', dayOf(b.createdAt),
     ]);
     const csv = [headers, ...rows]
       .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(','))
@@ -217,7 +266,9 @@ export default function BookingsClient() {
                 <th>Pax</th>
                 <th>Vehicle</th>
                 <th>Total</th>
+                <th>Payment</th>
                 <th>Status</th>
+                <th>Driver</th>
                 <th aria-label="Actions" />
               </tr>
             </thead>
@@ -242,7 +293,26 @@ export default function BookingsClient() {
                   <td className={styles.vehicleCell} title={b.vehicleType}>{b.vehicleType}</td>
                   <td className={styles.price}>{formatUSD(b.totalPrice)}</td>
                   <td onClick={(e) => e.stopPropagation()}>
+                    <StatusSelect kind="payment" value={b.paymentStatus} onChange={(v) => void setPayment(b, v)} />
+                  </td>
+                  <td onClick={(e) => e.stopPropagation()}>
                     <StatusSelect kind="tour" value={b.status} onChange={(v) => void setBookingStatus(b, v)} />
+                  </td>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <select
+                      className={styles.driverSelect}
+                      value={b.driverName ?? ''}
+                      onChange={(e) => void setDriver(b, e.target.value)}
+                      disabled={updatingId === b.id}
+                    >
+                      <option value="">Unassigned</option>
+                      {b.driverName && !driverNames.includes(b.driverName) ? (
+                        <option value={b.driverName}>{b.driverName}</option>
+                      ) : null}
+                      {driverNames.map((n) => (
+                        <option key={n} value={n}>{n}</option>
+                      ))}
+                    </select>
                   </td>
                   <td onClick={(e) => e.stopPropagation()}>
                     <button
@@ -259,7 +329,7 @@ export default function BookingsClient() {
               ))}
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className={styles.empty}>
+                  <td colSpan={11} className={styles.empty}>
                     {total === 0 ? 'No bookings yet.' : 'No bookings match your filters.'}
                   </td>
                 </tr>
@@ -291,12 +361,14 @@ export default function BookingsClient() {
           <div className={styles.details}>
             <div className={styles.detailBadges}>
               <StatusBadge kind="tour" value={selected.status} />
+              <StatusBadge kind="payment" value={selected.paymentStatus} />
             </div>
 
             <dl className={styles.detailGrid}>
               <div><dt>Dates</dt><dd>{formatDate(dayOf(selected.startDate))} · {selected.daysCount} day{selected.daysCount === 1 ? '' : 's'}</dd></div>
               <div><dt>Passengers</dt><dd>{selected.passengers}</dd></div>
               <div><dt>Vehicle</dt><dd>{selected.vehicleType}</dd></div>
+              <div><dt>Driver</dt><dd>{selected.driverName || 'Unassigned'}</dd></div>
               <div><dt>Total</dt><dd className={styles.detailPrice}>{formatUSD(selected.totalPrice)}</dd></div>
               <div><dt>Email</dt><dd><a href={`mailto:${selected.email}`}>{selected.email}</a></dd></div>
               <div>

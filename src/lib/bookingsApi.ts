@@ -6,6 +6,7 @@
  */
 
 export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED';
+export type PaymentStatus = 'UNPAID' | 'DEPOSIT_PAID' | 'FULL_PAID';
 
 export interface ApiBooking {
   id: string;
@@ -20,12 +21,16 @@ export interface ApiBooking {
   totalPrice: number;
   specialRequests: string | null;
   adminNotes: string | null;
+  paymentStatus: PaymentStatus;
+  driverName: string | null;
   status: BookingStatus;
   createdAt: string;
 }
 
 export interface BookingUpdate {
   status?: BookingStatus;
+  paymentStatus?: PaymentStatus;
+  driverName?: string;
   adminNotes?: string;
 }
 
