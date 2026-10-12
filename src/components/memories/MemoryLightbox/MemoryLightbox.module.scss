@@ -77,11 +77,42 @@
   }
 }
 
+// Centred spinner shown over the (black) stage while the photo downloads.
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.22);
+  border-top-color: var(--accent-bright);
+  animation: lightboxspin 0.8s linear infinite;
+  z-index: 1;
+}
+
+@keyframes lightboxspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .photo,
 .video {
   // `cover` fills the stage edge-to-edge with no bars or stretching (aspect
   // ratio preserved, edges cropped). The expand button reveals the full frame.
   object-fit: cover;
+}
+
+// Fade the photo in once it has loaded, so it doesn't pop over the spinner.
+.photo {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.photoReady {
+  opacity: 1;
 }
 
 .video {

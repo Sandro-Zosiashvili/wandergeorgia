@@ -44,6 +44,9 @@ export default function MemoryLightbox({
   // unreliable for an element with a cross-origin <img> on some browsers);
   // videos use the native fullscreen so the player chrome comes along.
   const [photoFull, setPhotoFull] = useState(false);
+  // Tracks whether the current moment's high-res photo has finished loading, so
+  // we can show a spinner (instead of a black stage) while it downloads.
+  const [imgReady, setImgReady] = useState(false);
 
   const count = items.length;
   const go = useCallback(
@@ -54,10 +57,11 @@ export default function MemoryLightbox({
     [count, onIndexChange],
   );
 
-  // Reset the photo-fullscreen overlay whenever the moment changes or the
-  // lightbox closes, so it never lingers over a different item.
+  // Reset the photo-fullscreen overlay + the photo loading state whenever the
+  // moment changes or the lightbox closes.
   useEffect(() => {
     setPhotoFull(false);
+    setImgReady(false);
   }, [index]);
 
   useEffect(() => {
@@ -155,15 +159,19 @@ export default function MemoryLightbox({
                   preload="metadata"
                 />
               ) : (
-                <Image
-                  key={current.id}
-                  src={current.mediaUrl}
-                  alt={current.caption}
-                  fill
-                  sizes="(min-width: 768px) 684px, 100vw"
-                  className={styles.photo}
-                  priority
-                />
+                <>
+                  {!imgReady ? <span className={styles.loader} aria-label="Loading photo" /> : null}
+                  <Image
+                    key={current.id}
+                    src={current.mediaUrl}
+                    alt={current.caption}
+                    fill
+                    sizes="(min-width: 768px) 684px, 100vw"
+                    className={[styles.photo, imgReady ? styles.photoReady : ''].filter(Boolean).join(' ')}
+                    priority
+                    onLoad={() => setImgReady(true)}
+                  />
+                </>
               )}
 
               <button
