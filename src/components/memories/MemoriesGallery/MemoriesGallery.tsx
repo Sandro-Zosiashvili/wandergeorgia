@@ -3,17 +3,13 @@
 import { useMemo, useState } from 'react';
 import type { Memory, MemoryType } from '@/data/memories';
 import Reveal from '@/components/ui/Reveal/Reveal';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import MemoryCard from '../MemoryCard/MemoryCard';
 import MemoryLightbox from '../MemoryLightbox/MemoryLightbox';
 import styles from './MemoriesGallery.module.scss';
 
 type Filter = 'all' | MemoryType;
-
-const TABS: { key: Filter; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'image', label: 'Photos' },
-  { key: 'video', label: 'Videos' },
-];
 
 /**
  * Full moments gallery: filter tabs (All / Photos / Videos) over the complete
@@ -21,6 +17,12 @@ const TABS: { key: Filter; label: string }[] = [
  * lightbox browses within the *currently filtered* set.
  */
 export default function MemoriesGallery({ memories }: { memories: Memory[] }) {
+  const m = ui(useLocale()).memories;
+  const TABS: { key: Filter; label: string }[] = [
+    { key: 'all', label: m.all },
+    { key: 'image', label: m.photos },
+    { key: 'video', label: m.videos },
+  ];
   const [filter, setFilter] = useState<Filter>('all');
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 

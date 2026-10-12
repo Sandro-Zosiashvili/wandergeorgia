@@ -70,18 +70,18 @@ export default function HeroSlideshow({ slides }: HeroSlideshowProps) {
       <div className={styles.vignette} aria-hidden="true" />
 
       {/* Current place tag — fades in on each change. */}
-      {current.place ? (
-        <motion.div
-          key={current.id}
-          className={styles.place}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Icon name="map-pin" size={16} />
-          <span>{current.place}</span>
-        </motion.div>
-      ) : null}
+      {/*{current.place ? (*/}
+      {/*  <motion.div*/}
+      {/*    key={current.id}*/}
+      {/*    className={styles.place}*/}
+      {/*    initial={{ opacity: 0, y: 8 }}*/}
+      {/*    animate={{ opacity: 1, y: 0 }}*/}
+      {/*    transition={{ duration: 0.5 }}*/}
+      {/*  >*/}
+      {/*    <Icon name="map-pin" size={16} />*/}
+      {/*    <span>{current.place}</span>*/}
+      {/*  </motion.div>*/}
+      {/*) : null}*/}
     </div>
   );
 }

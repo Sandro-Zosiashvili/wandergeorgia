@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import LocaleLink from '@/components/ui/LocaleLink/LocaleLink';
 import type { Tour } from '@/types/tour';
 import { formatUSD } from '@/lib/format';
 import { fromPriceUSD } from '@/lib/pricing';
@@ -15,7 +15,7 @@ interface TourCardProps {
 /** Day-tour card: image, location, title, duration and price. */
 export default function TourCard({ tour, featured = false }: TourCardProps) {
   return (
-    <Link
+    <LocaleLink
       href={`/tours/${tour.slug}`}
       className={[styles.card, featured ? styles.featured : ''].filter(Boolean).join(' ')}
     >
@@ -54,6 +54,6 @@ export default function TourCard({ tour, featured = false }: TourCardProps) {
           <Icon name="arrow-right" size={17} className={styles.ctaIcon} />
         </span>
       </div>
-    </Link>
+    </LocaleLink>
   );
 }

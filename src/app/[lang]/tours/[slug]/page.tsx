@@ -5,51 +5,43 @@ import { formatUSD } from '@/lib/format';
 import { fromPriceUSD } from '@/lib/pricing';
 import { getTourSeo } from '@/data/tourSeo';
 import { tourJsonLd } from '@/lib/structuredData';
+import { hreflangAlternates } from '@/lib/i18nSeo';
+import { LOCALES, toLocale } from '@/lib/locale';
 import TourDetail from '@/components/tourdetail/TourDetail/TourDetail';
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; lang: string }>;
 }
 
-// ISR: pages are statically rendered but refetched from the DB in the
-// background, so admin edits appear live within this window.
 export const revalidate = 60;
-// Tours created in the admin after a build still render, on-demand.
 export const dynamicParams = true;
 
-/**
- * Pre-render only ACTIVE tours from the DB. Hidden or unknown slugs are not
- * pre-rendered; they render on-demand (dynamicParams) and resolve to
- * notFound(), so a hidden tour is never reachable by direct URL.
- */
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
+/** Pre-render active tours in both locales. */
+export async function generateStaticParams(): Promise<{ lang: string; slug: string }[]> {
   const db = await fetchPublicTours();
-  return (db ?? []).map((t) => ({ slug: t.slug }));
+  const slugs = (db ?? []).map((t) => t.slug);
+  return LOCALES.flatMap((lang) => slugs.map((slug) => ({ lang, slug })));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const tour = await loadTourBySlug(slug);
+  const { slug, lang: raw } = await params;
+  const lang = toLocale(raw);
+  const tour = await loadTourBySlug(slug, lang);
   if (!tour) return { title: 'Tour not found' };
 
-  // Curated SEO copy where we have it; fall back to on-page content otherwise.
   const seo = getTourSeo(tour.slug);
-  const metaTitle = seo?.title ?? tour.title;
-  const metaDescription = seo?.description ?? tour.shortDescription;
-  const canonical = `/tours/${tour.slug}`;
-  // Short, scannable social subtitle — price + place + length at a glance.
+  const metaTitle = lang === 'en' && seo ? seo.title : tour.title;
+  const metaDescription = lang === 'en' && seo ? seo.description : tour.shortDescription;
   const social = `${tour.duration} · ${tour.city} · from ${formatUSD(fromPriceUSD(tour))}`;
 
   return {
-    // Absolute title bypasses the "%s · WanderKartli" template so the curated,
-    // length-controlled title is exactly what Google shows.
-    title: seo ? { absolute: seo.title } : tour.title,
+    title: lang === 'en' && seo ? { absolute: seo.title } : tour.title,
     description: metaDescription,
-    keywords: seo?.keywords,
-    alternates: { canonical },
+    keywords: lang === 'en' ? seo?.keywords : undefined,
+    alternates: hreflangAlternates(lang, `/tours/${tour.slug}`),
     openGraph: {
       type: 'article',
-      url: canonical,
+      url: `/${lang}/tours/${tour.slug}`,
       title: metaTitle,
       description: social,
       images: [{ url: tour.heroImage, alt: tour.title }],
@@ -64,9 +56,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function TourPage({ params }: PageProps) {
-  const { slug } = await params;
-  const tour = await loadTourBySlug(slug);
-
+  const { slug, lang } = await params;
+  const tour = await loadTourBySlug(slug, toLocale(lang));
   if (!tour) notFound();
 
   return (

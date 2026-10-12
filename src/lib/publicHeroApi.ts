@@ -13,6 +13,10 @@ export interface HeroSlide {
   place: string;
 }
 
+import type { Locale } from './locale';
+
+const langQuery = (lang: Locale) => (lang === 'ru' ? '?lang=ru' : '');
+
 const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? 'https://wandergeorgia-backend.vercel.app').replace(/\/$/, '');
 
 export const HERO_REVALIDATE = 60;
@@ -37,10 +41,10 @@ interface ApiHero {
 }
 
 /** Active hero slides, in order — from the DB, with a static fallback. */
-export async function loadHeroSlides(): Promise<HeroSlide[]> {
+export async function loadHeroSlides(lang: Locale = 'en'): Promise<HeroSlide[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/public/hero`, {
-      next: { revalidate: HERO_REVALIDATE, tags: ['hero'] },
+    const res = await fetch(`${API_BASE}/api/public/hero${langQuery(lang)}`, {
+      next: { revalidate: HERO_REVALIDATE, tags: ['hero', `hero:${lang}`] },
     });
     if (!res.ok) return FALLBACK;
     const data = (await res.json()) as ApiHero[];

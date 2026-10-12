@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import LocaleLink from '@/components/ui/LocaleLink/LocaleLink';
 import type { Tour } from '@/types/tour';
 import { formatUSD } from '@/lib/format';
 import { fromPriceUSD } from '@/lib/pricing';
@@ -17,7 +17,7 @@ interface MultiDayCardProps {
 export default function MultiDayCard({ tour, reversed = false }: MultiDayCardProps) {
   return (
     <article className={[styles.card, reversed ? styles.reversed : ''].filter(Boolean).join(' ')}>
-      <Link href={`/tours/${tour.slug}`} className={styles.media} aria-label={tour.title}>
+      <LocaleLink href={`/tours/${tour.slug}`} className={styles.media} aria-label={tour.title}>
         <Image
           src={tour.cardImage}
           alt={tour.title}
@@ -30,7 +30,7 @@ export default function MultiDayCard({ tour, reversed = false }: MultiDayCardPro
           <span className={styles.daysNum}>{tour.days}</span>
           <span className={styles.daysLabel}>days</span>
         </span>
-      </Link>
+      </LocaleLink>
 
       <div className={styles.body}>
         <span className={styles.route}>
@@ -39,9 +39,9 @@ export default function MultiDayCard({ tour, reversed = false }: MultiDayCardPro
         </span>
 
         <h3 className={styles.title}>
-          <Link href={`/tours/${tour.slug}`} className={styles.titleLink}>
+          <LocaleLink href={`/tours/${tour.slug}`} className={styles.titleLink}>
             {tour.title}
-          </Link>
+          </LocaleLink>
         </h3>
 
         <p className={styles.desc}>{tour.shortDescription}</p>

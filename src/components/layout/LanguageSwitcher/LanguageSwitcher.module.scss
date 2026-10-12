@@ -1,0 +1,41 @@
+@use '../../../styles/mixins' as *;
+
+.switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.2rem;
+  border-radius: $radius-pill;
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0.28rem 0.5rem;
+  border-radius: $radius-pill;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.active {
+  color: var(--ink-900);
+  background: var(--grad-gold);
+
+  &:hover {
+    color: var(--ink-900);
+  }
+}

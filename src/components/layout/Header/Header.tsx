@@ -6,8 +6,12 @@ import { useScrolled } from '@/hooks/useScrolled';
 import Logo from '../Logo/Logo';
 import NavLinks from '../NavLinks/NavLinks';
 import MobileMenu from '../MobileMenu/MobileMenu';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Button from '@/components/ui/Button/Button';
 import Icon from '@/components/ui/Icon/Icon';
+import { useLocale } from '@/hooks/useLocale';
+import { localePath } from '@/lib/locale';
+import { ui } from '@/lib/uiStrings';
 import styles from './Header.module.scss';
 
 // Applied inline (not via CSS) so the minifier can't strip the standard
@@ -22,6 +26,8 @@ export default function Header() {
   const scrolled = useScrolled(40);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const locale = useLocale();
+  const t = ui(locale).actions;
 
   // The /admin area has its own chrome — hide the public site header there.
   if (pathname?.startsWith('/admin')) return null;
@@ -40,17 +46,18 @@ export default function Header() {
           </nav>
 
           <div className={styles.actions}>
-            <Button href="/#day-tours" variant="ghost" size="sm" className={styles.exploreLink}>
-              Explore tours
+            <LanguageSwitcher className={styles.langSwitch} />
+            <Button href={localePath(locale, '/#day-tours')} variant="ghost" size="sm" className={styles.exploreLink}>
+              {t.exploreTours}
             </Button>
             <Button
-              href="/#packages"
+              href={localePath(locale, '/#packages')}
               variant="primary"
               size="sm"
               icon="arrow-right"
               className={styles.bookCta}
             >
-              Book a trip
+              {t.bookTrip}
             </Button>
             <button
               className={styles.burger}

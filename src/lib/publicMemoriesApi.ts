@@ -1,5 +1,8 @@
 import type { Memory } from '@/data/memories';
 import { memories as staticMemories } from '@/data/memories';
+import type { Locale } from './locale';
+
+const langQuery = (lang: Locale) => (lang === 'ru' ? '?lang=ru' : '');
 
 /**
  * Server-side fetcher for the PUBLIC memories API, used by the home "Moments"
@@ -43,10 +46,10 @@ function toMemory(m: ApiMemory): Memory {
 }
 
 /** All active memories, mapped — static mock only when the backend is down. */
-export async function loadMemories(): Promise<Memory[]> {
+export async function loadMemories(lang: Locale = 'en'): Promise<Memory[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/public/memories`, {
-      next: { revalidate: MEMORIES_REVALIDATE, tags: ['memories'] },
+    const res = await fetch(`${API_BASE}/api/public/memories${langQuery(lang)}`, {
+      next: { revalidate: MEMORIES_REVALIDATE, tags: ['memories', `memories:${lang}`] },
     });
     if (!res.ok) return staticMemories;
     const data = (await res.json()) as ApiMemory[];

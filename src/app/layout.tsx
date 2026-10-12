@@ -1,4 +1,5 @@
 import type {Metadata, Viewport} from 'next';
+import {headers} from 'next/headers';
 import {Fraunces, Manrope} from 'next/font/google';
 import {site} from '@/config/site';
 import Header from '@/components/layout/Header/Header';
@@ -35,9 +36,6 @@ export const metadata: Metadata = {
     },
     description: site.description,
     applicationName: site.name,
-    alternates: {
-        canonical: '/',
-    },
     // Site favicon. The SVG gives browser tabs a crisp icon, but Google Search
     // does NOT support SVG favicons in results — it needs a raster — so we also
     // ship a PNG. Both are referenced on every page via these <link> tags.
@@ -116,11 +114,14 @@ export const viewport: Viewport = {
     initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
                                        children,
                                    }: Readonly<{ children: React.ReactNode }>) {
+    // The locale is set on the request by middleware (public routes); admin and
+    // other non-localized routes fall back to English.
+    const lang = (await headers()).get('x-locale') === 'ru' ? 'ru' : 'en';
     return (
-        <html lang="en" className={`${display.variable} ${sans.variable}`}>
+        <html lang={lang} className={`${display.variable} ${sans.variable}`}>
         <body>
         <script
             type="application/ld+json"

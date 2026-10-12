@@ -2,22 +2,31 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { isLocale } from '@/lib/locale';
 
 /** Home-page section ids that the hash nav links point at, top → bottom. */
 const SECTION_IDS = ['day-tours', 'packages', 'why-us', 'contact'] as const;
 
+/** Strip the locale prefix from a pathname, e.g. '/ru/memories' → '/memories',
+ *  '/en' → '/'. */
+function unprefixed(pathname: string): string {
+  const parts = pathname.split('/'); // ['', 'ru', 'memories']
+  const rest = isLocale(parts[1]) ? '/' + parts.slice(2).join('/') : pathname;
+  return rest === '' ? '/' : rest;
+}
+
 /**
- * Returns the href of the nav item that matches where the visitor currently is:
- * on the home page it scroll-spies the section whose top has passed under the
- * header; elsewhere it's just the current path. Used to highlight the active
- * link in the header and mobile menu.
+ * Returns the href of the nav item that matches where the visitor currently is,
+ * locale-independent (so '/ru/memories' highlights the '/memories' item). On
+ * the home page it scroll-spies the current section.
  */
 export function useActiveNav(): string {
   const pathname = usePathname();
+  const path = unprefixed(pathname ?? '/');
   const [hash, setHash] = useState('');
 
   useEffect(() => {
-    if (pathname !== '/') {
+    if (path !== '/') {
       setHash('');
       return;
     }
@@ -39,8 +48,8 @@ export function useActiveNav(): string {
       window.removeEventListener('scroll', update);
       window.removeEventListener('resize', update);
     };
-  }, [pathname]);
+  }, [path]);
 
-  if (pathname !== '/') return pathname;
+  if (path !== '/') return path;
   return hash ? `/${hash}` : '/';
 }

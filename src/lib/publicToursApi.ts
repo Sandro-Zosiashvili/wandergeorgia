@@ -1,7 +1,11 @@
 import type { ApiTour } from './toursApi';
 import type { Tour } from '@/types/tour';
+import type { Locale } from './locale';
 import { allTours } from '@/data/tours';
 import { apiTourToTour } from './apiTourMapper';
+
+/** `?lang=ru` only (en is the default payload → keeps its own clean cache key). */
+const langQuery = (lang: Locale) => (lang === 'ru' ? '?lang=ru' : '');
 
 /**
  * Server-side fetchers for the PUBLIC tour API, used by the tour pages. These
@@ -16,10 +20,10 @@ const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? 'https://wandergeorgia-back
 export const TOURS_REVALIDATE = 60;
 
 /** All active tours, or null if the backend is unavailable. */
-export async function fetchPublicTours(): Promise<ApiTour[] | null> {
+export async function fetchPublicTours(lang: Locale = 'en'): Promise<ApiTour[] | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/public/tours`, {
-      next: { revalidate: TOURS_REVALIDATE, tags: ['tours'] },
+    const res = await fetch(`${API_BASE}/api/public/tours${langQuery(lang)}`, {
+      next: { revalidate: TOURS_REVALIDATE, tags: ['tours', `tours:${lang}`] },
     });
     if (!res.ok) return null;
     return (await res.json()) as ApiTour[];
@@ -29,10 +33,10 @@ export async function fetchPublicTours(): Promise<ApiTour[] | null> {
 }
 
 /** A single active tour by slug, or null if missing / backend unavailable. */
-export async function fetchPublicTourBySlug(slug: string): Promise<ApiTour | null> {
+export async function fetchPublicTourBySlug(slug: string, lang: Locale = 'en'): Promise<ApiTour | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/public/tours/${encodeURIComponent(slug)}`, {
-      next: { revalidate: TOURS_REVALIDATE, tags: ['tours', `tour:${slug}`] },
+    const res = await fetch(`${API_BASE}/api/public/tours/${encodeURIComponent(slug)}${langQuery(lang)}`, {
+      next: { revalidate: TOURS_REVALIDATE, tags: ['tours', `tour:${slug}`, `tour:${slug}:${lang}`] },
     });
     if (!res.ok) return null;
     return (await res.json()) as ApiTour;
@@ -47,8 +51,8 @@ export async function fetchPublicTourBySlug(slug: string): Promise<ApiTour | nul
 /** All active tours, mapped to the front-end `Tour` shape (static fallback only
  *  when the backend is unavailable — never shows individually-hidden tours in
  *  normal operation, since the active-only endpoint already filters them). */
-export async function loadTours(): Promise<Tour[]> {
-  const api = await fetchPublicTours();
+export async function loadTours(lang: Locale = 'en'): Promise<Tour[]> {
+  const api = await fetchPublicTours(lang);
   if (api && api.length) return api.map(apiTourToTour);
   return allTours;
 }
@@ -58,7 +62,7 @@ export async function loadTours(): Promise<Tour[]> {
  * fallback: a hidden or removed tour returns undefined so the page can call
  * `notFound()`, and can never leak from the static catalog or be indexed.
  */
-export async function loadTourBySlug(slug: string): Promise<Tour | undefined> {
-  const api = await fetchPublicTourBySlug(slug);
+export async function loadTourBySlug(slug: string, lang: Locale = 'en'): Promise<Tour | undefined> {
+  const api = await fetchPublicTourBySlug(slug, lang);
   return api ? apiTourToTour(api) : undefined;
 }
