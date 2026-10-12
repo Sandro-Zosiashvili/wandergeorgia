@@ -38,6 +38,12 @@ export default function MemoryCard({
             alt={memory.caption}
             fill
             sizes={sizes}
+            // Load eagerly: the default lazy IntersectionObserver can fail to
+            // fire on some mobile browsers for a fill image whose aspect-ratio
+            // box resolves its height after the observer registers, leaving the
+            // card media blank until the item is opened. These are the section's
+            // primary content, so eager loading is the right call.
+            loading="eager"
             className={styles.image}
           />
           <span className={styles.scrim} aria-hidden="true" />
