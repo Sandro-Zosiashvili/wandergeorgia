@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { HeroSlide } from '@/lib/publicHeroApi';
 import { useSlideshow } from '@/hooks/useSlideshow';
 import Icon from '@/components/ui/Icon/Icon';
@@ -12,86 +12,75 @@ interface HeroSlideshowProps {
   slides: HeroSlide[];
 }
 
+/** Each slide is shown for exactly this long before advancing. */
+const SLIDE_MS = 5000;
+
 /**
- * Cross-fading, Ken-Burns hero backdrop. Each slide slowly pans/zooms while
- * fading into the next; dots let the visitor jump between destinations. Images
- * come straight from the DB (server-rendered) and fill the screen via
- * object-cover, so any uploaded photo works on every screen size.
+ * Cross-fading, Ken-Burns hero backdrop. Every slide is rendered at once
+ * (stacked, only the active one visible) so all images are loaded up front —
+ * transitions never stall waiting for a lazy image. The index advances on a
+ * strict fixed timer and wraps seamlessly, so the loop is smooth and the timing
+ * is identical for every slide.
  */
 export default function HeroSlideshow({ slides }: HeroSlideshowProps) {
-  const { index, goTo } = useSlideshow({ count: slides.length, interval: 6500 });
-  const slide = slides[index];
+  const { index } = useSlideshow({ count: slides.length, interval: SLIDE_MS });
 
-  if (!slide) return null;
+  if (!slides.length) return null;
+  const current = slides[index] ?? slides[0]!;
 
   return (
     <div className={styles.slideshow}>
-      <AnimatePresence>
-        <motion.div
-          key={slide.id}
-          className={styles.slide}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <motion.div
-            className={styles.kenburns}
-            initial={{ scale: 1.02 }}
-            animate={{ scale: 1.16 }}
-            transition={{ duration: 8, ease: 'linear' }}
+      {slides.map((slide, i) => {
+        const isActive = i === index;
+        return (
+          <div
+            key={slide.id}
+            className={styles.slide}
+            style={{ opacity: isActive ? 1 : 0 }}
+            aria-hidden={!isActive}
           >
-            <Image
-              src={slide.imageUrl}
-              alt={slide.alt}
-              fill
-              priority={index === 0}
-              sizes="100vw"
-              className={styles.image}
-            />
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
+            <motion.div
+              className={styles.kenburns}
+              initial={{ scale: 1.04 }}
+              animate={{ scale: isActive ? 1.16 : 1.04 }}
+              transition={
+                isActive
+                  ? { duration: 7, ease: 'linear' }
+                  : { duration: 1.4, ease: [0.22, 1, 0.36, 1] }
+              }
+            >
+              <Image
+                src={slide.imageUrl}
+                alt={slide.alt}
+                fill
+                // First slide is the LCP element (preload); the rest load
+                // eagerly so they're ready before their turn — no mid-loop freeze.
+                priority={i === 0}
+                loading={i === 0 ? undefined : 'eager'}
+                sizes="100vw"
+                className={styles.image}
+              />
+            </motion.div>
+          </div>
+        );
+      })}
 
       {/* Cinematic overlays for legibility + depth. */}
       <div className={styles.scrim} aria-hidden="true" />
       <div className={styles.vignette} aria-hidden="true" />
 
-      {/* Current place tag */}
-      {slide.place ? (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={slide.id}
-            className={styles.place}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Icon name="map-pin" size={16} />
-            <span>{slide.place}</span>
-          </motion.div>
-        </AnimatePresence>
-      ) : null}
-
-      {/* Progress dots — the active one fills left→right over the slide's
-          duration. Keying the fill on `index` remounts it each slide so the
-          animation always restarts cleanly and runs fully to the end. */}
-      {slides.length > 1 ? (
-        <div className={styles.dots} role="tablist" aria-label="Hero slides">
-          {slides.map((s, i) => (
-            <button
-              key={s.id}
-              className={[styles.dot, i === index ? styles.dotActive : ''].filter(Boolean).join(' ')}
-              onClick={() => goTo(i)}
-              role="tab"
-              aria-selected={i === index}
-              aria-label={`Show ${s.place || `slide ${i + 1}`}`}
-            >
-              {i === index ? <span key={index} className={styles.dotFill} /> : null}
-            </button>
-          ))}
-        </div>
+      {/* Current place tag — fades in on each change. */}
+      {current.place ? (
+        <motion.div
+          key={current.id}
+          className={styles.place}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Icon name="map-pin" size={16} />
+          <span>{current.place}</span>
+        </motion.div>
       ) : null}
     </div>
   );
