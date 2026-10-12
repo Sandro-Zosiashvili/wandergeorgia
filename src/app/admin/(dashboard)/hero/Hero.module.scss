@@ -1,0 +1,161 @@
+@use '../../../../styles/mixins' as *;
+
+.wrap { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+}
+.title { font-size: clamp(1.6rem, 4vw, 2.1rem); line-height: 1.1; }
+.sub { font-size: 0.9rem; color: var(--text-muted); }
+
+.addBtn {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.1rem;
+  border-radius: $radius-pill; font-size: 0.9rem; font-weight: 700; color: var(--ink-900);
+  background: var(--grad-gold); box-shadow: var(--shadow-gold); transition: transform 0.2s $ease-out; @include focus-ring;
+  &:hover { transform: translateY(-1px); }
+}
+
+// ── List ──────────────────────────────────────────────────────────────────────
+.list {
+  display: flex; flex-direction: column; gap: 0.75rem; list-style: none; margin: 0; padding: 0;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: auto 120px minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: $radius-lg;
+  border: 1px solid var(--hairline);
+  background: var(--surface-raised);
+
+  @include down($bp-md) {
+    grid-template-columns: auto 88px minmax(0, 1fr) auto;
+    grid-template-areas:
+      'pos preview info actions'
+      'pos preview reorder active';
+    gap: 0.5rem 0.9rem;
+  }
+}
+
+.pos {
+  display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;
+  border-radius: 50%; font-size: 0.8rem; font-weight: 700; color: var(--accent-bright);
+  background: var(--accent-tint); border: 1px solid var(--accent);
+  @include down($bp-md) { grid-area: pos; }
+}
+
+.preview {
+  width: 120px; height: 68px; border-radius: $radius-md; overflow: hidden; background: var(--ink-800);
+  border: 1px solid var(--hairline); flex-shrink: 0;
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @include down($bp-md) { grid-area: preview; width: 88px; height: 56px; }
+}
+
+.info {
+  display: flex; flex-direction: column; gap: 0.25rem; min-width: 0;
+  @include down($bp-md) { grid-area: info; }
+}
+.place {
+  display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.95rem; font-weight: 600; color: var(--text);
+  svg { color: var(--accent); flex-shrink: 0; }
+}
+.alt {
+  font-size: 0.82rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  em { color: var(--text-faint); }
+}
+
+.reorder {
+  display: inline-flex; gap: 0.3rem;
+  @include down($bp-md) { grid-area: reorder; }
+}
+.moveBtn {
+  display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px;
+  border-radius: $radius-md; color: var(--text-muted); border: 1px solid var(--hairline); background: var(--surface);
+  transition: color 0.18s ease, border-color 0.18s ease; @include focus-ring;
+  &:hover:not(:disabled) { color: var(--accent-bright); border-color: var(--accent); }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.activeCell {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  @include down($bp-md) { grid-area: active; justify-self: end; }
+  .on { font-size: 0.8rem; font-weight: 600; color: #6fd3a3; }
+  .off { font-size: 0.8rem; color: var(--text-faint); }
+}
+
+.actions {
+  display: inline-flex; gap: 0.45rem;
+  @include down($bp-md) { grid-area: actions; justify-self: end; }
+}
+.actionBtn {
+  display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px;
+  border-radius: $radius-md; color: var(--text-muted); border: 1px solid var(--hairline); background: var(--surface);
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease; @include focus-ring;
+  &:hover { color: var(--accent-bright); border-color: var(--accent); background: var(--accent-tint); }
+}
+.deleteBtn:hover { color: #f98080; border-color: #c0564a; background: rgba(192, 86, 74, 0.1); }
+
+// ── States ────────────────────────────────────────────────────────────────────
+.stateBox {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+  min-height: 220px; padding: 2rem; text-align: center;
+  border-radius: $radius-lg; border: 1px solid var(--hairline); background: var(--surface-raised);
+}
+.stateText { font-size: 0.95rem; color: var(--text-muted); max-width: 420px; }
+.retryBtn {
+  display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.6rem 1.1rem; border-radius: $radius-pill;
+  font-size: 0.88rem; font-weight: 600; color: var(--text); border: 1px solid var(--hairline); background: var(--surface); @include focus-ring;
+  &:hover { color: var(--accent-bright); border-color: var(--accent); }
+}
+.spinner { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--hairline); border-top-color: var(--accent-bright); animation: herospin 0.8s linear infinite; }
+@keyframes herospin { to { transform: rotate(360deg); } }
+
+// ── Form (modal) ──────────────────────────────────────────────────────────────
+.form { display: flex; flex-direction: column; gap: 1.1rem; }
+.field { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+.label { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+.hint { font-size: 0.76rem; color: var(--text-faint); }
+.err {
+  margin: 0; padding: 0.6rem 0.8rem; border-radius: $radius-md; font-size: 0.82rem;
+  color: #f8b4b4; background: rgba(192, 86, 74, 0.12); border: 1px solid rgba(192, 86, 74, 0.4);
+}
+.input {
+  width: 100%; padding: 0.6rem 0.75rem; border-radius: $radius-md; font-size: 0.9rem; font-family: inherit;
+  color: var(--text); background: var(--ink-900); border: 1px solid var(--hairline);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  &::placeholder { color: var(--text-faint); }
+  &:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-tint); }
+}
+.photoRow { display: flex; gap: 0.75rem; align-items: flex-start; }
+.photoPreview {
+  flex-shrink: 0; width: 92px; height: 56px; border-radius: $radius-md; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--ink-900); border: 1px solid var(--hairline); color: var(--text-faint);
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+.photoControls { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.hiddenFile { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+.uploadBtn {
+  display: inline-flex; align-items: center; gap: 0.4rem; align-self: flex-start; padding: 0.5rem 0.85rem;
+  border-radius: $radius-md; font-size: 0.84rem; font-weight: 600; color: var(--text);
+  background: var(--surface); border: 1px solid var(--hairline); @include focus-ring;
+  &:hover:not(:disabled) { color: var(--accent-bright); border-color: var(--accent); background: var(--accent-tint); }
+  &:disabled { opacity: 0.7; cursor: progress; }
+}
+.uploadSpinner { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--hairline); border-top-color: var(--accent-bright); animation: herospin 0.7s linear infinite; }
+.toggleRow {
+  display: inline-flex; align-items: center; gap: 0.6rem; padding-top: 0.2rem;
+  .on { font-size: 0.82rem; font-weight: 600; color: #6fd3a3; }
+  .off { font-size: 0.82rem; color: var(--text-faint); }
+}
+
+.ghostBtn, .primaryBtn, .dangerBtn {
+  padding: 0.65rem 1.2rem; border-radius: $radius-pill; font-size: 0.9rem; font-weight: 600; @include focus-ring;
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+}
+.ghostBtn { color: var(--text-muted); border: 1px solid var(--hairline); background: transparent; &:hover:not(:disabled) { color: var(--text); } }
+.primaryBtn { color: var(--ink-900); background: var(--grad-gold); border: none; box-shadow: var(--shadow-gold); }
+.dangerBtn { color: #fff; background: #c0392b; border: 1px solid #c0392b; &:hover:not(:disabled) { background: #a93226; } }
+.blockText { font-size: 0.95rem; line-height: 1.55; color: var(--text-muted); }

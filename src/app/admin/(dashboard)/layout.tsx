@@ -15,6 +15,7 @@ const NAV: { label: string; href: string; icon: IconName; soon?: boolean }[] = [
   { label: 'Calendar', href: '/admin/calendar', icon: 'calendar' },
   { label: 'Tours', href: '/admin/tours', icon: 'compass' },
   { label: 'Memories', href: '/admin/memories', icon: 'images' },
+  { label: 'Hero', href: '/admin/hero', icon: 'sparkle' },
 ];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

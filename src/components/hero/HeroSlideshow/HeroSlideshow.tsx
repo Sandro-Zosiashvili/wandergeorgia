@@ -2,25 +2,33 @@
 
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
-import { heroSlides } from '@/data/heroSlides';
-import { unsplashLandscape, unsplashPortrait } from '@/lib/images';
+import type { HeroSlide } from '@/lib/publicHeroApi';
 import { useSlideshow } from '@/hooks/useSlideshow';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './HeroSlideshow.module.scss';
 
+interface HeroSlideshowProps {
+  /** Slides fetched server-side from the DB. */
+  slides: HeroSlide[];
+}
+
 /**
  * Cross-fading, Ken-Burns hero backdrop. Each slide slowly pans/zooms while
- * fading into the next; dots let the visitor jump between destinations.
+ * fading into the next; dots let the visitor jump between destinations. Images
+ * come straight from the DB (server-rendered) and fill the screen via
+ * object-cover, so any uploaded photo works on every screen size.
  */
-export default function HeroSlideshow() {
-  const { index, goTo } = useSlideshow({ count: heroSlides.length, interval: 6500 });
-  const slide = heroSlides[index]!;
+export default function HeroSlideshow({ slides }: HeroSlideshowProps) {
+  const { index, goTo } = useSlideshow({ count: slides.length, interval: 6500 });
+  const slide = slides[index];
+
+  if (!slide) return null;
 
   return (
     <div className={styles.slideshow}>
       <AnimatePresence>
         <motion.div
-          key={index}
+          key={slide.id}
           className={styles.slide}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -33,25 +41,13 @@ export default function HeroSlideshow() {
             animate={{ scale: 1.16 }}
             transition={{ duration: 8, ease: 'linear' }}
           >
-            {/* Landscape crop for tablet/desktop, portrait crop for phones —
-                a full-screen landscape shot would otherwise over-zoom on a
-                tall phone screen. Only one is shown at a time (CSS). */}
             <Image
-              src={unsplashLandscape(slide.photo)}
+              src={slide.imageUrl}
               alt={slide.alt}
               fill
               priority={index === 0}
               sizes="100vw"
-              className={`${styles.image} ${styles.imageDesktop}`}
-            />
-            <Image
-              src={unsplashPortrait(slide.photo)}
-              alt=""
-              aria-hidden="true"
-              fill
-              priority={index === 0}
-              sizes="100vw"
-              className={`${styles.image} ${styles.imageMobile}`}
+              className={styles.image}
             />
           </motion.div>
         </motion.div>
@@ -62,37 +58,41 @@ export default function HeroSlideshow() {
       <div className={styles.vignette} aria-hidden="true" />
 
       {/* Current place tag */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={slide.place}
-          className={styles.place}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Icon name="map-pin" size={16} />
-          <span>{slide.place}</span>
-        </motion.div>
-      </AnimatePresence>
+      {slide.place ? (
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={slide.id}
+            className={styles.place}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Icon name="map-pin" size={16} />
+            <span>{slide.place}</span>
+          </motion.div>
+        </AnimatePresence>
+      ) : null}
 
       {/* Progress dots — the active one fills left→right over the slide's
           duration. Keying the fill on `index` remounts it each slide so the
           animation always restarts cleanly and runs fully to the end. */}
-      <div className={styles.dots} role="tablist" aria-label="Hero slides">
-        {heroSlides.map((s, i) => (
-          <button
-            key={s.place}
-            className={[styles.dot, i === index ? styles.dotActive : ''].filter(Boolean).join(' ')}
-            onClick={() => goTo(i)}
-            role="tab"
-            aria-selected={i === index}
-            aria-label={`Show ${s.place}`}
-          >
-            {i === index ? <span key={index} className={styles.dotFill} /> : null}
-          </button>
-        ))}
-      </div>
+      {slides.length > 1 ? (
+        <div className={styles.dots} role="tablist" aria-label="Hero slides">
+          {slides.map((s, i) => (
+            <button
+              key={s.id}
+              className={[styles.dot, i === index ? styles.dotActive : ''].filter(Boolean).join(' ')}
+              onClick={() => goTo(i)}
+              role="tab"
+              aria-selected={i === index}
+              aria-label={`Show ${s.place || `slide ${i + 1}`}`}
+            >
+              {i === index ? <span key={index} className={styles.dotFill} /> : null}
+            </button>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
