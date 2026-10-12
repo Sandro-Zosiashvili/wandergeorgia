@@ -286,7 +286,7 @@ export default function DriversClient() {
           </label>
           <label className={styles.field}>
             <span>Bio</span>
-            <textarea className={[styles.input, styles.textarea].join(' ')} rows={3} value={form.bio} onChange={(e) => set('bio', e.target.value)} placeholder="Short bio shown on the public driver profile…" />
+            <textarea className={[styles.input, styles.textarea].join(' ')} rows={3} value={form.bio} onChange={(e) => set('bio', e.target.value)} placeholder="Short bio / internal notes about this driver…" />
           </label>
           <label className={styles.field}>
             <span>Vehicle model</span>

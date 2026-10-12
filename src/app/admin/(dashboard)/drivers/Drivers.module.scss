@@ -168,7 +168,11 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 1.1rem;
+  // Breathing room from the drawer edges (the shared AdminDrawer body is
+  // unpadded; each form supplies its own). The bottom padding also keeps the
+  // last fields clear of the sticky Cancel / Save footer.
+  padding: 1.4rem 1.5rem;
 }
 
 .row2 {
