@@ -33,7 +33,7 @@ export default function Header() {
         style={scrolled ? GLASS : undefined}
       >
         <div className={styles.bar}>
-          <Logo compact={scrolled} />
+          <Logo />
 
           <nav className={styles.desktopNav} aria-label="Primary">
             <NavLinks />

@@ -10,9 +10,8 @@
 .mark {
   height: 42px;
   flex-shrink: 0;
-  transition:
-    height 0.4s $ease-out,
-    transform 0.5s $ease-spring;
+  // Fixed size — only the hover micro-scale transitions (no scroll scaling).
+  transition: transform 0.5s $ease-spring;
 }
 
 .markSvg {
@@ -39,7 +38,6 @@
   font-size: 1.2rem;
   font-weight: 500;
   color: var(--text);
-  transition: font-size 0.4s $ease-out;
 }
 
 .kartli {
@@ -50,18 +48,4 @@
   font-weight: 600;
   color: var(--accent-bright);
   padding-left: 0.1em;
-  transition: font-size 0.4s $ease-out;
-}
-
-.compact {
-  .mark {
-    height: 34px;
-  }
-  .wander {
-    font-size: 1.05rem;
-  }
-  .kartli {
-    font-size: 0.66rem;
-    margin-right: -2px;
-  }
 }

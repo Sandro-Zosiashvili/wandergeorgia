@@ -8,17 +8,16 @@ import styles from './Logo.module.scss';
 const MARK_SRC = '/assets/icons/W-icon.png';
 
 interface LogoProps {
-  /** Shrinks the wordmark on compact bars. */
-  compact?: boolean;
   onClick?: () => void;
 }
 
-/** Brand lockup: compass-peak mark + wordmark, links home. */
-export default function Logo({ compact = false, onClick }: LogoProps) {
+/** Brand lockup: compass-peak mark + wordmark, links home. A single fixed size
+ *  at all times (no scroll-driven scaling). */
+export default function Logo({ onClick }: LogoProps) {
   return (
     <Link
       href="/"
-      className={[styles.logo, compact ? styles.compact : ''].filter(Boolean).join(' ')}
+      className={styles.logo}
       aria-label={`${site.name} — home`}
       onClick={onClick}
     >
