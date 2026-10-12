@@ -9,6 +9,7 @@ export const navItems: readonly NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'Day Tours', href: '/#day-tours' },
   { label: 'Packages', href: '/#packages' },
+  { label: 'Memories', href: '/memories' },
   { label: 'Why Us', href: '/#why-us' },
   { label: 'Contact', href: '/#contact' },
 ] as const;
