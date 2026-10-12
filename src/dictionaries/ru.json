@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "home": "Главная",
+    "dayTours": "Однодневные туры",
+    "packages": "Пакеты",
+    "memories": "Моменты",
+    "whyUs": "О нас",
+    "contact": "Контакты"
+  },
+  "actions": {
+    "exploreTours": "Смотреть туры",
+    "bookTrip": "Забронировать",
+    "whatsapp": "Написать в WhatsApp",
+    "viewTour": "Подробнее о туре",
+    "seeAllMoments": "Все моменты",
+    "bookNow": "Забронировать"
+  },
+  "common": {
+    "from": "от",
+    "perPerson": "за человека",
+    "language": "Язык",
+    "english": "English",
+    "russian": "Русский"
+  },
+  "memories": {
+    "eyebrow": "Моменты путешественников",
+    "all": "Все",
+    "photos": "Фото",
+    "videos": "Видео"
+  }
+}

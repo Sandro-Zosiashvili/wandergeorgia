@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "home": "Home",
+    "dayTours": "Day Tours",
+    "packages": "Packages",
+    "memories": "Memories",
+    "whyUs": "Why Us",
+    "contact": "Contact"
+  },
+  "actions": {
+    "exploreTours": "Explore tours",
+    "bookTrip": "Book a trip",
+    "whatsapp": "Chat on WhatsApp",
+    "viewTour": "View this tour",
+    "seeAllMoments": "See all moments",
+    "bookNow": "Book now"
+  },
+  "common": {
+    "from": "from",
+    "perPerson": "per person",
+    "language": "Language",
+    "english": "English",
+    "russian": "Русский"
+  },
+  "memories": {
+    "eyebrow": "Traveler moments",
+    "all": "All",
+    "photos": "Photos",
+    "videos": "Videos"
+  }
+}
