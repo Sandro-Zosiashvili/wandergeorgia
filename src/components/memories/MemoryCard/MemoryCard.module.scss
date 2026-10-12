@@ -33,11 +33,18 @@
   }
 }
 
+// Inset the media from the card edges so it isn't flush with the border.
+.mediaFrame {
+  padding: 0.55rem 0.55rem 0;
+}
+
 .media {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 5;
   overflow: hidden;
+  // Round the image/video content itself, matching the card.
+  border-radius: $radius-md;
 }
 
 .image {

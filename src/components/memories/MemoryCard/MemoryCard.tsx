@@ -31,28 +31,30 @@ export default function MemoryCard({
       onClick={() => onOpen(memory)}
       aria-label={`${isVideo ? 'Play video' : 'View photo'} from ${memory.tourTitle} by ${memory.travelerName}`}
     >
-      <div className={styles.media}>
-        <Image
-          src={memory.thumbnailUrl}
-          alt={memory.caption}
-          fill
-          sizes={sizes}
-          className={styles.image}
-        />
-        <span className={styles.scrim} aria-hidden="true" />
+      <div className={styles.mediaFrame}>
+        <div className={styles.media}>
+          <Image
+            src={memory.thumbnailUrl}
+            alt={memory.caption}
+            fill
+            sizes={sizes}
+            className={styles.image}
+          />
+          <span className={styles.scrim} aria-hidden="true" />
 
-        <span className={styles.locTag}>
-          <Icon name="map-pin" size={13} />
-          {memory.tourTitle}
-        </span>
-
-        {isVideo ? (
-          <span className={styles.playWrap} aria-hidden="true">
-            <span className={styles.play}>
-              <Icon name="play" size={20} />
-            </span>
+          <span className={styles.locTag}>
+            <Icon name="map-pin" size={13} />
+            {memory.tourTitle}
           </span>
-        ) : null}
+
+          {isVideo ? (
+            <span className={styles.playWrap} aria-hidden="true">
+              <span className={styles.play}>
+                <Icon name="play" size={20} />
+              </span>
+            </span>
+          ) : null}
+        </div>
       </div>
 
       <div className={styles.body}>

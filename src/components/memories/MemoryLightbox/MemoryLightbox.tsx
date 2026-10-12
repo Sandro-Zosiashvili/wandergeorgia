@@ -79,29 +79,36 @@ export default function MemoryLightbox({
 
   const expand = useCallback(() => {
     if (!current) return;
-    if (current.type === 'video') {
-      const v = videoRef.current;
-      if (!v) return;
-      // iOS Safari: the standard element Fullscreen API is unreliable for
-      // <video>; its native entry point is webkitEnterFullscreen, which needs
-      // metadata loaded first. Prefer it when present, then fall back to the
-      // standard API (desktop Chrome/Firefox, Android).
-      const vv = v as HTMLVideoElement & {
-        webkitEnterFullscreen?: () => void;
-        webkitSupportsFullscreen?: boolean;
-      };
-      if (typeof vv.webkitEnterFullscreen === 'function') {
-        if (v.readyState >= 1) {
-          vv.webkitEnterFullscreen();
-        } else {
-          v.addEventListener('loadedmetadata', () => vv.webkitEnterFullscreen!(), { once: true });
-          v.load();
-        }
-      } else if (typeof v.requestFullscreen === 'function') {
-        void v.requestFullscreen().catch(() => {});
-      }
-    } else {
+    if (current.type !== 'video') {
       setPhotoFull(true);
+      return;
+    }
+    const v = videoRef.current;
+    if (!v) return;
+    const vv = v as HTMLVideoElement & {
+      webkitEnterFullscreen?: () => void;
+      webkitRequestFullscreen?: () => void;
+    };
+    // CRITICAL: everything here must run synchronously inside the click gesture.
+    // iOS blocks fullscreen requested from a later async callback (e.g. waiting
+    // for loadedmetadata), which is why deferring used to fail on mobile.
+    // Kick playback so the player has media to show; ignore the autoplay promise.
+    try {
+      const p = v.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    } catch {
+      /* ignore */
+    }
+
+    if (typeof vv.webkitEnterFullscreen === 'function') {
+      // iOS Safari / iOS Chrome — native video fullscreen (no element FS API).
+      vv.webkitEnterFullscreen();
+    } else if (typeof v.requestFullscreen === 'function') {
+      // Desktop + Android Chrome/Firefox.
+      void v.requestFullscreen().catch(() => {});
+    } else if (typeof vv.webkitRequestFullscreen === 'function') {
+      // Older WebKit/Android fallback.
+      vv.webkitRequestFullscreen();
     }
   }, [current]);
 
