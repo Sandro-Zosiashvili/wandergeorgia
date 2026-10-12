@@ -20,7 +20,12 @@
   width: min(88vw, 420px);
   display: flex;
   flex-direction: column;
-  padding: 1.5rem clamp(1.5rem, 6vw, 2.5rem) 2rem;
+  padding: 1.5rem clamp(1.5rem, 6vw, 2.5rem);
+  // Scroll the whole drawer on short screens so the footer buttons are never
+  // clipped. Respect the iOS home-indicator safe area at the bottom.
+  padding-bottom: max(1.75rem, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: linear-gradient(160deg, var(--ink-700), var(--ink-900));
   border-left: 1px solid var(--hairline);
   box-shadow: var(--shadow-lg);
@@ -42,9 +47,13 @@
 }
 
 .body {
-  flex: 1;
+  // `flex: 1 0 auto` so the nav never shrinks below its content (which would
+  // clip it); it centres vertically on tall screens, and on short screens the
+  // panel scrolls instead of hiding the footer.
+  flex: 1 0 auto;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   margin-block: 1rem;
 }
 

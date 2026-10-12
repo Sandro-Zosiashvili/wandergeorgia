@@ -6,7 +6,9 @@
 }
 
 .inline {
-  gap: clamp(1.25rem, 2.5vw, 2.4rem);
+  // Tighter, more adaptive gap so all items fit on one line at ~1024px without
+  // overlapping the action buttons.
+  gap: clamp(0.85rem, 1.5vw, 1.9rem);
 }
 
 .stacked {
@@ -69,9 +71,11 @@
 
   .link {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 9vw, 2.9rem);
+    // Slightly smaller so six items fit without forcing the footer off-screen
+    // on shorter phones (the drawer also scrolls as a safety net).
+    font-size: clamp(1.6rem, 7vw, 2.6rem);
     color: var(--text);
-    padding: 0.35rem 0;
+    padding: 0.3rem 0;
 
     &::after {
       bottom: 4px;
