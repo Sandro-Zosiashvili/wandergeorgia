@@ -25,22 +25,50 @@ import TourFormDrawer, {
 } from './TourFormDrawer';
 import styles from './Tours.module.scss';
 
-const formFromTour = (t: ApiTour): TourFormState => ({
-  title: t.title,
-  slug: t.slug,
-  type: t.type,
-  location: t.location,
-  duration: t.duration,
-  basePrice: t.basePrice,
-  overview: t.overview,
-  highlights: [...t.highlights],
-  included: [...t.included],
-  excluded: [...t.excluded],
-  itinerary: t.itinerary.map((d) => toFormDay(d)),
-  coverImage: t.coverImage,
-  gallery: [...t.gallery],
-  isActive: t.isActive,
-});
+/** Show a stored RU value only when it's a genuine translation — values the
+ *  save step filled in from English (fallback) come back as empty inputs so the
+ *  admin can tell at a glance what still needs translating. */
+const ruText = (ru: string | undefined, en: string): string =>
+  ru && ru !== en ? ru : '';
+const ruList = (ru: string[] | undefined, en: string[]): string[] =>
+  en.map((e, i) => ruText(ru?.[i], e));
+
+const formFromTour = (t: ApiTour): TourFormState => {
+  const ru = t.i18n?.ru ?? {};
+  const ruDays = ru.itinerary ?? [];
+  return {
+    title: t.title,
+    slug: t.slug,
+    type: t.type,
+    location: t.location,
+    duration: t.duration,
+    basePrice: t.basePrice,
+    overview: t.overview,
+    highlights: [...t.highlights],
+    included: [...t.included],
+    excluded: [...t.excluded],
+    itinerary: t.itinerary.map((d, i) => {
+      const rd = ruDays[i];
+      return toFormDay(d, {
+        title: ruText(rd?.title, d.title),
+        description: ruText(rd?.description, d.description),
+        highlights: ruList(rd?.highlights, d.highlights ?? []),
+      });
+    }),
+    coverImage: t.coverImage,
+    gallery: [...t.gallery],
+    isActive: t.isActive,
+    ru: {
+      title: ruText(ru.title, t.title),
+      location: ruText(ru.location, t.location),
+      duration: ruText(ru.duration, t.duration),
+      overview: ruText(ru.overview, t.overview),
+      highlights: ruList(ru.highlights, t.highlights),
+      included: ruList(ru.included, t.included),
+      excluded: ruList(ru.excluded, t.excluded),
+    },
+  };
+};
 
 export default function ToursClient() {
   const [tours, setTours] = useState<ApiTour[] | null>(null);

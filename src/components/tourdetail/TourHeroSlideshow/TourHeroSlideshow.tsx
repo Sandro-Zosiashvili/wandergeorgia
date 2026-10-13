@@ -35,6 +35,7 @@ interface TourHeroSlideshowProps {
 export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHeroSlideshowProps) {
   const count = slides.length;
   const [index, setIndex] = useState(0);
+  const pg = ui(useLocale()).photoGallery;
   const [browsing, setBrowsing] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -88,7 +89,7 @@ export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHero
         aria-hidden="true"
       />
 
-      <div className={styles.dots} role="tablist" aria-label={ui(useLocale()).photoGallery.tourPhotos}>
+      <div className={styles.dots} role="tablist" aria-label={pg.tourPhotos}>
         {slides.map((s, i) => (
           <button
             key={s.label}
@@ -110,7 +111,7 @@ export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHero
         onClick={() => setGalleryOpen(true)}
       >
         <Icon name="images" size={15} />
-        <span>Photos</span>
+        <span>{pg.open}</span>
       </button>
 
       <TourPhotoGallery

@@ -10,6 +10,23 @@ export interface ApiItineraryDay {
   highlights: string[];
 }
 
+/** Translatable tour fields that can be overridden per locale (e.g. Russian). */
+export interface TourI18nFields {
+  title?: string;
+  location?: string;
+  duration?: string;
+  overview?: string;
+  highlights?: string[];
+  included?: string[];
+  excluded?: string[];
+  itinerary?: ApiItineraryDay[];
+}
+
+/** Per-locale text overrides stored on the tour (English stays in base cols). */
+export interface TourI18n {
+  ru?: TourI18nFields;
+}
+
 export interface ApiTour {
   id: string;
   title: string;
@@ -26,6 +43,8 @@ export interface ApiTour {
   coverImage: string;
   gallery: string[];
   isActive: boolean;
+  /** Russian (and future-locale) overrides; null/absent when none set. */
+  i18n?: TourI18n | null;
   orderIndex: number;
   createdAt: string;
   updatedAt: string;
@@ -47,6 +66,8 @@ export interface TourInput {
   coverImage?: string;
   gallery?: string[];
   isActive?: boolean;
+  /** Per-locale overrides to persist (e.g. { ru: { title, overview, … } }). */
+  i18n?: TourI18n;
 }
 
 export class ApiError extends Error {

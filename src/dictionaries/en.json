@@ -42,7 +42,8 @@
     "popularTours": "Popular tours",
     "getInTouch": "Get in touch",
     "rights": "Private tours across Georgia.",
-    "transfers": "Airport pickup & drop-off included with every journey."
+    "transfers": "Airport pickup & drop-off included with every journey.",
+    "blurb": "Premium private tours across Georgia — hand-crafted itineraries, expert local guides, and airport transfers included with every trip."
   },
   "home": {
     "hero": {
@@ -129,6 +130,8 @@
     "whatsInPrice": "What's in the price",
     "alwaysIncluded": "Always included",
     "bookAria": "Book this tour",
+    "heroTransfers": "Airport transfers included",
+    "heroPickup": "Hotel pick-up included",
     "packageJeep": "package · Jeep 4x4",
     "perGroup": "per group",
     "privateOnly": "Private — your group only",
@@ -160,7 +163,8 @@
     "close": "Close gallery",
     "prev": "Previous photo",
     "next": "Next photo",
-    "tourPhotos": "Tour photos"
+    "tourPhotos": "Tour photos",
+    "open": "Photos"
   },
   "booking": {
     "picker": {

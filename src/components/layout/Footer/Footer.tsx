@@ -38,7 +38,7 @@ export default function Footer({ popular }: FooterProps) {
       <div className={styles.inner}>
         <div className={styles.brandCol}>
           <Logo />
-          <p className={styles.blurb}>{site.description}</p>
+          <p className={styles.blurb}>{f.blurb}</p>
           <ul className={styles.socials}>
             {socialLinks.map((s) => (
               <li key={s.name}>

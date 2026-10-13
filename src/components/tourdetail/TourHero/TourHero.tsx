@@ -81,12 +81,12 @@ export default function TourHero({ tour }: TourHeroProps) {
             {hasAirportTransfers ? (
               <>
                 <Icon name="plane-arrival" size={17} />
-                Airport transfers included
+                {t.tourDetail.heroTransfers}
               </>
             ) : (
               <>
                 <Icon name="map-pin" size={17} />
-                Hotel pick-up included
+                {t.tourDetail.heroPickup}
               </>
             )}
           </li>
