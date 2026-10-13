@@ -7,6 +7,8 @@ import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
 import NavLinks from '../NavLinks/NavLinks';
 import Button from '@/components/ui/Button/Button';
 import Icon from '@/components/ui/Icon/Icon';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import styles from './MobileMenu.module.scss';
 
 interface MobileMenuProps {
@@ -28,6 +30,7 @@ const OVERLAY_BLUR = {
 
 /** Full-height slide-in navigation drawer for small screens. */
 export default function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const t = ui(useLocale()).menu;
   useLockBodyScroll(open);
 
   useEffect(() => {
@@ -52,7 +55,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
           onClick={onClose}
           role="dialog"
           aria-modal="true"
-          aria-label="Navigation menu"
+          aria-label={t.navAria}
         >
           <motion.nav
             className={styles.panel}
@@ -62,7 +65,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             exit="exit"
             onClick={(e) => e.stopPropagation()}
           >
-            <button className={styles.close} onClick={onClose} aria-label="Close menu">
+            <button className={styles.close} onClick={onClose} aria-label={t.close}>
               <Icon name="close" size={26} />
             </button>
 
@@ -76,7 +79,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
                   by the scroll lock (Button-as-link can't take onClick). */}
               <span className={styles.ctaWrap} onClick={onClose}>
                 <Button href="/#packages" variant="primary" icon="arrow-right" fullWidth>
-                  Book a trip
+                  {t.bookTrip}
                 </Button>
               </span>
               <Button
@@ -87,7 +90,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
                 iconLeading
                 fullWidth
               >
-                Chat on WhatsApp
+                {t.whatsapp}
               </Button>
               <a href={`tel:${site.contact.phone.replace(/\s/g, '')}`} className={styles.phone}>
                 <Icon name="phone" size={17} />

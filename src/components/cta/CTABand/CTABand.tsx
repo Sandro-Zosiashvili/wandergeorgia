@@ -1,12 +1,16 @@
 import { site, whatsappLink } from '@/config/site';
+import type { Locale } from '@/lib/locale';
 import Container from '@/components/ui/Container/Container';
 import Button from '@/components/ui/Button/Button';
 import Icon from '@/components/ui/Icon/Icon';
 import Reveal from '@/components/ui/Reveal/Reveal';
+import { ui } from '@/lib/uiStrings';
+import { emphasize } from '@/lib/emphasize';
 import styles from './CTABand.module.scss';
 
 /** "Plan your trip" call-to-action band, also the #contact anchor target. */
-export default function CTABand() {
+export default function CTABand({ lang }: { lang: Locale }) {
+  const t = ui(lang).home.cta;
   return (
     <section id="contact" className={styles.section} aria-labelledby="cta-title">
       <Container>
@@ -17,20 +21,16 @@ export default function CTABand() {
             <div className={styles.content}>
               <span className={styles.eyebrow}>
                 <Icon name="compass" size={16} />
-                Let&apos;s plan something unforgettable
+                {t.eyebrow}
               </span>
               <h2 id="cta-title" className={styles.title}>
-                Your Georgia, <em>designed around you</em>.
+                {emphasize(t.title)}
               </h2>
-              <p className={styles.text}>
-                Tell us your dates and what you dream of seeing. We&apos;ll craft a
-                private itinerary — airport transfers included — and have you
-                exploring within days.
-              </p>
+              <p className={styles.text}>{t.text}</p>
 
               <div className={styles.actions}>
                 <Button href="/#packages" size="lg" icon="arrow-right">
-                  Start planning
+                  {t.startPlanning}
                 </Button>
                 <Button
                   href={whatsappLink()}
@@ -40,7 +40,7 @@ export default function CTABand() {
                   icon="whatsapp"
                   iconLeading
                 >
-                  Chat on WhatsApp
+                  {t.whatsapp}
                 </Button>
               </div>
 

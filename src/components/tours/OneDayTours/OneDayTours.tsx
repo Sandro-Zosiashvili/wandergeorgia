@@ -6,6 +6,9 @@ import Container from '@/components/ui/Container/Container';
 import SectionHeading from '@/components/ui/SectionHeading/SectionHeading';
 import CityFilter, { ALL_CITIES } from '../CityFilter/CityFilter';
 import TourGrid from '../TourGrid/TourGrid';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
+import { emphasize } from '@/lib/emphasize';
 import styles from './OneDayTours.module.scss';
 
 interface OneDayToursProps {
@@ -14,6 +17,7 @@ interface OneDayToursProps {
 
 /** "One-Day Tours" home section — filterable grid organised by city. */
 export default function OneDayTours({ tours }: OneDayToursProps) {
+  const t = ui(useLocale()).home.oneDay;
   const [city, setCity] = useState<string>(ALL_CITIES);
 
   const cities = useMemo(
@@ -31,13 +35,9 @@ export default function OneDayTours({ tours }: OneDayToursProps) {
       <Container>
         <div className={styles.header}>
           <SectionHeading
-            eyebrow="Single-day escapes"
-            title={
-              <span id="day-tours-title">
-                One-day <em>tours</em>
-              </span>
-            }
-            description="Set out after breakfast, return by evening. Each private day trip is fully guided, at your own pace — choose a base and we'll do the rest."
+            eyebrow={t.eyebrow}
+            title={<span id="day-tours-title">{emphasize(t.title)}</span>}
+            description={t.description}
           />
           <CityFilter cities={cities} active={city} onChange={setCity} />
         </div>

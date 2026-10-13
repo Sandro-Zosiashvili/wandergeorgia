@@ -134,7 +134,7 @@ export default async function RootLayout({
         <ScrollManager/>
         <Header/>
         <main id="main">{children}</main>
-        <FooterSection/>
+        <FooterSection lang={lang}/>
         <WhatsAppButton/>
         </body>
         </html>

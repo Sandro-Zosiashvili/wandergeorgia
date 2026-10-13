@@ -6,6 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Icon from '@/components/ui/Icon/Icon';
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import styles from './TourPhotoGallery.module.scss';
 
 const DESKTOP_QUERY = '(min-width: 768px)';
@@ -52,6 +54,7 @@ export default function TourPhotoGallery({
   onIndexChange,
   onClose,
 }: TourPhotoGalleryProps) {
+  const pg = ui(useLocale()).photoGallery;
   useLockBodyScroll(open);
   const [isDesktop, setIsDesktop] = useState(readIsDesktop);
   const [dragY, setDragY] = useState(0);
@@ -137,7 +140,7 @@ export default function TourPhotoGallery({
               className={styles.sheet}
               role="dialog"
               aria-modal="true"
-              aria-label="All tour photos"
+              aria-label={pg.allPhotos}
               style={{
                 transform: dragY ? `translateY(${dragY}px)` : undefined,
                 transition: dragging ? 'none' : undefined,
@@ -161,7 +164,7 @@ export default function TourPhotoGallery({
                   type="button"
                   className={styles.close}
                   onClick={onClose}
-                  aria-label="Close gallery"
+                  aria-label={pg.close}
                 >
                   <Icon name="close" className={styles.closeIcon} size={22} />
                 </button>
@@ -192,7 +195,7 @@ export default function TourPhotoGallery({
                       type="button"
                       className={`${styles.navBtn} ${styles.navPrev}`}
                       onClick={() => go(index - 1)}
-                      aria-label="Previous photo"
+                      aria-label={pg.prev}
                     >
                       <Icon name="chevron-right" className={styles.rightIcon} size={26} stroke={2.2} />
                     </button>
@@ -200,7 +203,7 @@ export default function TourPhotoGallery({
                       type="button"
                       className={`${styles.navBtn} ${styles.navNext}`}
                       onClick={() => go(index + 1)}
-                      aria-label="Next photo"
+                      aria-label={pg.next}
                     >
                       <Icon name="chevron-right" className={styles.rightIcon} size={26} stroke={2.2} />
                     </button>

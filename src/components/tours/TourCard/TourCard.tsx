@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import LocaleLink from '@/components/ui/LocaleLink/LocaleLink';
 import type { Tour } from '@/types/tour';
+import type { Locale } from '@/lib/locale';
 import { formatUSD } from '@/lib/format';
 import { fromPriceUSD } from '@/lib/pricing';
+import { ui } from '@/lib/uiStrings';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './TourCard.module.scss';
 
@@ -10,10 +12,12 @@ interface TourCardProps {
   tour: Tour;
   /** Larger, feature-sized card for the first item in a grid. */
   featured?: boolean;
+  lang?: Locale;
 }
 
 /** Day-tour card: image, location, title, duration and price. */
-export default function TourCard({ tour, featured = false }: TourCardProps) {
+export default function TourCard({ tour, featured = false, lang = 'en' }: TourCardProps) {
+  const t = ui(lang).tourCard;
   return (
     <LocaleLink
       href={`/tours/${tour.slug}`}
@@ -42,7 +46,7 @@ export default function TourCard({ tour, featured = false }: TourCardProps) {
             {tour.duration}
           </span>
           <span className={styles.price}>
-            <span className={styles.priceFrom}>from</span> {formatUSD(fromPriceUSD(tour))}
+            <span className={styles.priceFrom}>{t.from}</span> {formatUSD(fromPriceUSD(tour))}
           </span>
         </div>
 
@@ -50,7 +54,7 @@ export default function TourCard({ tour, featured = false }: TourCardProps) {
         <p className={styles.desc}>{tour.shortDescription}</p>
 
         <span className={styles.cta}>
-          View this tour
+          {t.viewTour}
           <Icon name="arrow-right" size={17} className={styles.ctaIcon} />
         </span>
       </div>

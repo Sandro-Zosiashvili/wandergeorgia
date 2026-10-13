@@ -3,39 +3,35 @@
 import Reveal from '@/components/ui/Reveal/Reveal';
 import Button from '@/components/ui/Button/Button';
 import Icon from '@/components/ui/Icon/Icon';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
+import { emphasize } from '@/lib/emphasize';
 import styles from './HeroContent.module.scss';
 
 /** Hero headline, subhead and calls-to-action with a staggered entrance. */
 export default function HeroContent() {
+  const t = ui(useLocale()).home.hero;
   return (
     <div className={styles.content}>
       <Reveal from="up" distance={18}>
         <span className={styles.eyebrow}>
           <Icon name="sparkle" size={15} />
-          Private tours across Georgia
+          {t.eyebrow}
         </span>
       </Reveal>
 
       <Reveal from="up" delay={0.1}>
-        <h1 className={styles.title}>
-          The Caucasus,
-          <br />
-          <em>unhurried </em> &amp; yours alone.
-        </h1>
+        <h1 className={styles.title}>{emphasize(t.title)}</h1>
       </Reveal>
 
       <Reveal from="up" delay={0.2}>
-        <p className={styles.subhead}>
-          Hand-crafted private journeys through Georgia&apos;s mountains, wine
-          country and ancient cities — with a dedicated guide and airport
-          transfers included, from the moment you land.
-        </p>
+        <p className={styles.subhead}>{t.subhead}</p>
       </Reveal>
 
       <Reveal from="up" delay={0.3}>
         <div className={styles.actions}>
           <Button href="/#day-tours" size="lg" icon="arrow-right">
-            Explore tours
+            {t.exploreTours}
           </Button>
           {/* Same link, two weights — a full outline pill reads as a second
               equally-important choice on phones, adding real height to an
@@ -47,7 +43,7 @@ export default function HeroContent() {
             variant="outline"
             className={styles.packagesDesktop}
           >
-            Multi-day packages
+            {t.multiDayPackages}
           </Button>
           <Button
             href="/#packages"
@@ -56,7 +52,7 @@ export default function HeroContent() {
             icon="arrow-right"
             className={styles.packagesMobile}
           >
-            Multi-day packages
+            {t.multiDayPackages}
           </Button>
         </div>
       </Reveal>
@@ -69,15 +65,15 @@ export default function HeroContent() {
                 <Icon key={i} name="star" size={15} />
               ))}
             </span>
-            <span>500+ five-star reviews</span>
+            <span>{t.trustReviews}</span>
           </li>
           <li className={styles.trustItem}>
             <Icon name="plane-arrival" size={18} />
-            <span>Airport pickup &amp; drop-off included</span>
+            <span>{t.trustTransfers}</span>
           </li>
           <li className={styles.trustItem}>
             <Icon name="guide" size={18} />
-            <span>Expert private guides</span>
+            <span>{t.trustGuides}</span>
           </li>
         </ul>
       </Reveal>

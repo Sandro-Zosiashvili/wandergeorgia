@@ -8,6 +8,8 @@ import type { Memory } from '@/data/memories';
 import { flagFor } from '@/data/memories';
 import Icon from '@/components/ui/Icon/Icon';
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import styles from './MemoryLightbox.module.scss';
 
 interface MemoryLightboxProps {
@@ -36,6 +38,7 @@ export default function MemoryLightbox({
   onIndexChange,
   onClose,
 }: MemoryLightboxProps) {
+  const m = ui(useLocale()).memories;
   const open = index !== null;
   useLockBodyScroll(open);
 
@@ -160,7 +163,7 @@ export default function MemoryLightbox({
                 />
               ) : (
                 <>
-                  {!imgReady ? <span className={styles.loader} aria-label="Loading photo" /> : null}
+                  {!imgReady ? <span className={styles.loader} aria-label={m.loadingPhoto} /> : null}
                   <Image
                     key={current.id}
                     src={current.mediaUrl}
@@ -178,7 +181,7 @@ export default function MemoryLightbox({
                 type="button"
                 className={styles.expand}
                 onClick={expand}
-                aria-label={current.type === 'video' ? 'Play fullscreen' : 'View fullscreen'}
+                aria-label={current.type === 'video' ? m.playFullscreen : m.viewFullscreen}
                 title="Fullscreen"
               >
                 <Icon name="maximize" size={18} stroke={2} />
@@ -190,7 +193,7 @@ export default function MemoryLightbox({
                     type="button"
                     className={`${styles.nav} ${styles.prev}`}
                     onClick={() => go((index ?? 0) - 1)}
-                    aria-label="Previous moment"
+                    aria-label={m.prevMoment}
                   >
                     <Icon name="chevron-left" size={26} stroke={2.2} />
                   </button>
@@ -198,7 +201,7 @@ export default function MemoryLightbox({
                     type="button"
                     className={`${styles.nav} ${styles.next}`}
                     onClick={() => go((index ?? 0) + 1)}
-                    aria-label="Next moment"
+                    aria-label={m.nextMoment}
                   >
                     <Icon name="chevron-right" size={26} stroke={2.2} />
                   </button>
@@ -248,7 +251,7 @@ export default function MemoryLightbox({
                     e.stopPropagation();
                     setPhotoFull(false);
                   }}
-                  aria-label="Exit fullscreen"
+                  aria-label={m.exitFullscreen}
                 >
                   <Icon name="close" size={22} />
                 </button>

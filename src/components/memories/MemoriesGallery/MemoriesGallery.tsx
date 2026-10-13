@@ -17,7 +17,8 @@ type Filter = 'all' | MemoryType;
  * lightbox browses within the *currently filtered* set.
  */
 export default function MemoriesGallery({ memories }: { memories: Memory[] }) {
-  const m = ui(useLocale()).memories;
+  const lang = useLocale();
+  const m = ui(lang).memories;
   const TABS: { key: Filter; label: string }[] = [
     { key: 'all', label: m.all },
     { key: 'image', label: m.photos },
@@ -73,7 +74,7 @@ export default function MemoriesGallery({ memories }: { memories: Memory[] }) {
       <div className={styles.grid}>
         {items.map((memory, i) => (
           <Reveal key={memory.id} from="up" delay={(i % 4) * 0.05} className={styles.cell}>
-            <MemoryCard memory={memory} onOpen={open} />
+            <MemoryCard memory={memory} onOpen={open} lang={lang} />
           </Reveal>
         ))}
       </div>

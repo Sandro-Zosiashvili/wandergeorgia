@@ -1,7 +1,10 @@
 import Image from 'next/image';
 import { fleetCars } from '@/data/fleet';
+import type { Locale } from '@/lib/locale';
 import Container from '@/components/ui/Container/Container';
 import SectionHeading from '@/components/ui/SectionHeading/SectionHeading';
+import { ui } from '@/lib/uiStrings';
+import { emphasize } from '@/lib/emphasize';
 import styles from './FleetMarquee.module.scss';
 
 // Doubled so the strip can loop seamlessly: translating the track exactly
@@ -9,18 +12,15 @@ import styles from './FleetMarquee.module.scss';
 const track = [...fleetCars, ...fleetCars];
 
 /** Endless, non-stop left-scrolling showcase of the vehicles used on tours. */
-export default function FleetMarquee() {
+export default function FleetMarquee({ lang }: { lang: Locale }) {
+  const t = ui(lang).home.fleet;
   return (
     <section id="fleet" className={styles.section} aria-labelledby="fleet-title">
       <Container>
         <SectionHeading
-          eyebrow="Our Fleet"
-          title={
-            <span id="fleet-title">
-              Premium cars, <em>every journey</em>
-            </span>
-          }
-          description="Modern, air-conditioned vehicles driven by our own guides — comfortable however far the road goes."
+          eyebrow={t.eyebrow}
+          title={<span id="fleet-title">{emphasize(t.title)}</span>}
+          description={t.description}
         />
       </Container>
 

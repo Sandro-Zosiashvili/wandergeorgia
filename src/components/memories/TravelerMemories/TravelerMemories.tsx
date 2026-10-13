@@ -8,6 +8,9 @@ import Button from '@/components/ui/Button/Button';
 import Reveal from '@/components/ui/Reveal/Reveal';
 import MemoryCard from '../MemoryCard/MemoryCard';
 import MemoryLightbox from '../MemoryLightbox/MemoryLightbox';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
+import { emphasize } from '@/lib/emphasize';
 import styles from './TravelerMemories.module.scss';
 
 /** Number of curated moments shown on the home teaser. */
@@ -19,6 +22,8 @@ const PREVIEW_COUNT = 8;
  * all moments" links through to the full /memories gallery.
  */
 export default function TravelerMemories({ memories }: { memories: Memory[] }) {
+  const lang = useLocale();
+  const t = ui(lang).home.moments;
   const items = memories.slice(0, PREVIEW_COUNT);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -35,27 +40,23 @@ export default function TravelerMemories({ memories }: { memories: Memory[] }) {
       <Container>
         <div className={styles.header}>
           <SectionHeading
-            eyebrow="Traveler moments"
-            title={
-              <span id="moments-title">
-                Memories from <em>the road</em>
-              </span>
-            }
-            description="Real photos and clips shared by guests across Georgia — from Kazbegi sunrises to Kakheti cellars. A glimpse of the trip waiting for you."
+            eyebrow={t.eyebrow}
+            title={<span id="moments-title">{emphasize(t.title)}</span>}
+            description={t.description}
           />
         </div>
 
         <div className={styles.grid}>
           {items.map((memory, i) => (
             <Reveal key={memory.id} from="up" delay={(i % 4) * 0.06} className={styles.cell}>
-              <MemoryCard memory={memory} onOpen={open} />
+              <MemoryCard memory={memory} onOpen={open} lang={lang} />
             </Reveal>
           ))}
         </div>
 
         <div className={styles.foot}>
           <Button href="/memories" variant="outline" icon="arrow-right">
-            See all moments
+            {t.seeAll}
           </Button>
         </div>
       </Container>

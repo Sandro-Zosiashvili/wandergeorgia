@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import type { Memory } from '@/data/memories';
 import { flagFor } from '@/data/memories';
+import type { Locale } from '@/lib/locale';
+import { ui, tpl } from '@/lib/uiStrings';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './MemoryCard.module.scss';
 
@@ -10,6 +12,7 @@ interface MemoryCardProps {
   onOpen: (memory: Memory) => void;
   /** Hint for next/image responsive sizing (grid column width). */
   sizes?: string;
+  lang?: Locale;
 }
 
 /**
@@ -21,7 +24,9 @@ export default function MemoryCard({
   memory,
   onOpen,
   sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw',
+  lang = 'en',
 }: MemoryCardProps) {
+  const m = ui(lang).memories;
   const isVideo = memory.type === 'video';
 
   return (
@@ -29,7 +34,11 @@ export default function MemoryCard({
       type="button"
       className={styles.card}
       onClick={() => onOpen(memory)}
-      aria-label={`${isVideo ? 'Play video' : 'View photo'} from ${memory.tourTitle} by ${memory.travelerName}`}
+      aria-label={tpl(m.cardAria, {
+        action: isVideo ? m.playVideo : m.viewPhoto,
+        tour: memory.tourTitle,
+        name: memory.travelerName,
+      })}
     >
       {/* Inner wrapper holds the flex layout: Safari/iOS does NOT honour
           display:flex/grid on a <button> itself, which collapsed the

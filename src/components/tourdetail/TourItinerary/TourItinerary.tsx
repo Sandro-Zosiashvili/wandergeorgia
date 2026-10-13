@@ -1,14 +1,18 @@
 import type { Tour } from '@/types/tour';
+import type { Locale } from '@/lib/locale';
+import { ui } from '@/lib/uiStrings';
 import Reveal from '@/components/ui/Reveal/Reveal';
 import styles from './TourItinerary.module.scss';
 
 interface TourItineraryProps {
   tour: Tour;
+  lang: Locale;
 }
 
 /** "What you'll see" — a numbered vertical timeline of the tour's stops, or a
  *  day-by-day plan (with per-day highlights) when the tour has an itinerary. */
-export default function TourItinerary({ tour }: TourItineraryProps) {
+export default function TourItinerary({ tour, lang }: TourItineraryProps) {
+  const t = ui(lang).tourDetail;
   const isMultiDay = tour.type === 'multi-day';
   const days = tour.itinerary ?? [];
 
@@ -16,10 +20,10 @@ export default function TourItinerary({ tour }: TourItineraryProps) {
     <section className={styles.section} aria-labelledby="itinerary-title">
       <span className={styles.eyebrow}>
         <span className={styles.mark} aria-hidden="true" />
-        {isMultiDay ? 'Day by day' : "What you'll see"}
+        {isMultiDay ? t.dayByDay : t.whatYoullSee}
       </span>
       <h2 id="itinerary-title" className={styles.heading}>
-        {isMultiDay ? 'Your itinerary' : 'Highlights of the day'}
+        {isMultiDay ? t.yourItinerary : t.highlightsOfDay}
       </h2>
 
       {days.length > 0 ? (

@@ -26,7 +26,16 @@
     "eyebrow": "Traveler moments",
     "all": "All",
     "photos": "Photos",
-    "videos": "Videos"
+    "videos": "Videos",
+    "playVideo": "Play video",
+    "viewPhoto": "View photo",
+    "cardAria": "{action} from {tour} by {name}",
+    "loadingPhoto": "Loading photo",
+    "playFullscreen": "Play fullscreen",
+    "viewFullscreen": "View fullscreen",
+    "prevMoment": "Previous moment",
+    "nextMoment": "Next moment",
+    "exitFullscreen": "Exit fullscreen"
   },
   "footer": {
     "explore": "Explore",
@@ -34,6 +43,124 @@
     "getInTouch": "Get in touch",
     "rights": "Private tours across Georgia.",
     "transfers": "Airport pickup & drop-off included with every journey."
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Private tours across Georgia",
+      "title": "The Caucasus, *unhurried* & yours alone.",
+      "subhead": "Hand-crafted private journeys through Georgia's mountains, wine country and ancient cities — with a dedicated guide and airport transfers included, from the moment you land.",
+      "exploreTours": "Explore tours",
+      "multiDayPackages": "Multi-day packages",
+      "trustReviews": "500+ five-star reviews",
+      "trustTransfers": "Airport pickup & drop-off included",
+      "trustGuides": "Expert private guides"
+    },
+    "oneDay": {
+      "eyebrow": "Single-day escapes",
+      "title": "One-day *tours*",
+      "description": "Set out after breakfast, return by evening. Each private day trip is fully guided, at your own pace — choose a base and we'll do the rest."
+    },
+    "multiDay": {
+      "eyebrow": "Complete journeys",
+      "title": "Multi-day *packages*",
+      "description": "Longer, seamless itineraries that string the best of Georgia together — accommodation, guiding and every airport transfer handled end to end."
+    },
+    "moments": {
+      "eyebrow": "Traveler moments",
+      "title": "Memories from *the road*",
+      "description": "Real photos and clips shared by guests across Georgia — from Kazbegi sunrises to Kakheti cellars. A glimpse of the trip waiting for you.",
+      "seeAll": "See all moments"
+    },
+    "fleet": {
+      "eyebrow": "Our Fleet",
+      "title": "Premium cars, *every journey*",
+      "description": "Modern, air-conditioned vehicles driven by our own guides — comfortable however far the road goes."
+    },
+    "why": {
+      "eyebrow": "Why WanderKartli",
+      "title": "Premium, personal, *and effortless*",
+      "description": "From your arrival gate to your final farewell, everything is handled with care. This is travel the way it should feel — private, considered and calm.",
+      "items": [
+        { "icon": "guide", "title": "Private expert guides", "description": "Never a coach full of strangers. Every trip is just your party and a passionate local guide who tailors the day to you." },
+        { "icon": "plane-arrival", "title": "Airport transfers included", "description": "We meet you the moment you land and see you off at departure — every tour includes airport pickup and drop-off." },
+        { "icon": "star", "title": "500+ five-star reviews", "description": "A decade of guiding, thousands of happy travelers, and a near-perfect rating across TripAdvisor and Google." },
+        { "icon": "route", "title": "Journeys built around you", "description": "Flexible pacing, hidden stops and honest recommendations — itineraries shaped by what you actually want to see." }
+      ],
+      "stats": [
+        { "value": "4.9★", "label": "Average rating" },
+        { "value": "12k+", "label": "Guests hosted" },
+        { "value": "10 yrs", "label": "Guiding Georgia" },
+        { "value": "100%", "label": "Private tours" }
+      ]
+    },
+    "reviews": {
+      "eyebrow": "Guest reviews",
+      "title": "Loved by travelers *worldwide*",
+      "googleRating": "Google rating · based on {count} reviews",
+      "verified": "Verified by Google",
+      "certified": "Only certified, genuinely written reviews from real guests — nothing is edited or invented.",
+      "outOf": "{rating} out of 5"
+    },
+    "cta": {
+      "eyebrow": "Let's plan something unforgettable",
+      "title": "Your Georgia, *designed around you*.",
+      "text": "Tell us your dates and what you dream of seeing. We'll craft a private itinerary — airport transfers included — and have you exploring within days.",
+      "startPlanning": "Start planning",
+      "whatsapp": "Chat on WhatsApp"
+    }
+  },
+  "tourCard": {
+    "from": "from",
+    "viewTour": "View this tour",
+    "viewPackage": "View package",
+    "perGroup": "/ group"
+  },
+  "tourDetail": {
+    "overviewEyebrow": "Overview",
+    "aboutJourney": "About this journey",
+    "aboutDay": "About this day",
+    "highlightsAria": "Tour highlights",
+    "overviewBody": "Every departure is fully private — just your party, a dedicated guide and a comfortable vehicle. We handle the details so you can be fully present: pacing to your energy, stopping where the light is good, and always leaving room for the unplanned discoveries that make a trip memorable.",
+    "dayByDay": "Day by day",
+    "whatYoullSee": "What you'll see",
+    "yourItinerary": "Your itinerary",
+    "highlightsOfDay": "Highlights of the day",
+    "includedEyebrow": "Included",
+    "whatsInPrice": "What's in the price",
+    "alwaysIncluded": "Always included",
+    "bookAria": "Book this tour",
+    "packageJeep": "package · Jeep 4x4",
+    "perGroup": "per group",
+    "privateOnly": "Private — your group only",
+    "airportTransfers": "Airport pickup & drop-off",
+    "bookNow": "Book now",
+    "askQuestion": "Ask a question",
+    "askMessage": "Hi WanderKartli, I'm interested in the \"{tour}\" tour.",
+    "reassurance": "No payment today — reserve your dates and we'll confirm within 24 hours.",
+    "keepExploring": "Keep exploring",
+    "moreMultiDay": "More multi-day *packages*",
+    "moreOneDay": "More one-day *tours*",
+    "notFound": "Tour not found"
+  },
+  "menu": {
+    "navAria": "Navigation menu",
+    "close": "Close menu",
+    "bookTrip": "Book a trip",
+    "whatsapp": "Chat on WhatsApp"
+  },
+  "whatsapp": {
+    "chat": "Chat with us"
+  },
+  "cityFilter": {
+    "all": "All",
+    "aria": "Filter tours by city"
+  },
+  "photoGallery": {
+    "allPhotos": "All tour photos",
+    "close": "Close gallery",
+    "prev": "Previous photo",
+    "next": "Next photo",
+    "tourPhotos": "Tour photos"
   },
   "booking": {
     "picker": {

@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Tour } from '@/types/tour';
 import TourCard from '../TourCard/TourCard';
+import { useLocale } from '@/hooks/useLocale';
 import styles from './TourGrid.module.scss';
 
 interface TourGridProps {
@@ -13,6 +14,7 @@ interface TourGridProps {
 
 /** Responsive, animated grid of day-tour cards. */
 export default function TourGrid({ tours, featureFirst = false }: TourGridProps) {
+  const lang = useLocale();
   return (
     <motion.div layout className={styles.grid}>
       <AnimatePresence mode="popLayout">
@@ -28,7 +30,7 @@ export default function TourGrid({ tours, featureFirst = false }: TourGridProps)
               featureFirst && i === 0 ? styles.featuredCell : undefined
             }
           >
-            <TourCard tour={tour} featured={featureFirst && i === 0} />
+            <TourCard tour={tour} featured={featureFirst && i === 0} lang={lang} />
           </motion.div>
         ))}
       </AnimatePresence>

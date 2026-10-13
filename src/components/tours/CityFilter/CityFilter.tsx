@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Icon from '@/components/ui/Icon/Icon';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import styles from './CityFilter.module.scss';
 
 interface CityFilterProps {
@@ -17,6 +19,7 @@ export const ALL_CITIES = 'All';
  * horizontally with edge fades hinting there's more; on desktop it wraps.
  */
 export default function CityFilter({ cities, active, onChange }: CityFilterProps) {
+  const t = ui(useLocale()).cityFilter;
   const options = [ALL_CITIES, ...cities];
   const railRef = useRef<HTMLDivElement>(null);
   const [edges, setEdges] = useState({ start: false, end: false });
@@ -67,7 +70,7 @@ export default function CityFilter({ cities, active, onChange }: CityFilterProps
         .filter(Boolean)
         .join(' ')}
     >
-      <div className={styles.rail} ref={railRef} role="tablist" aria-label="Filter tours by city">
+      <div className={styles.rail} ref={railRef} role="tablist" aria-label={t.aria}>
         {options.map((city) => {
           const isActive = city === active;
           return (
@@ -79,7 +82,7 @@ export default function CityFilter({ cities, active, onChange }: CityFilterProps
               onClick={() => onChange(city)}
             >
               <Icon name="map-pin" size={15} className={styles.pin} />
-              {city}
+              {city === ALL_CITIES ? t.all : city}
             </button>
           );
         })}

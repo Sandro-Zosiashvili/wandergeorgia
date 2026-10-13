@@ -5,6 +5,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ImagePosition } from '@/types/tour';
 import Icon from '@/components/ui/Icon/Icon';
 import TourPhotoGallery from '../TourPhotoGallery/TourPhotoGallery';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import styles from './TourHeroSlideshow.module.scss';
 
 export interface HeroSlide {
@@ -86,7 +88,7 @@ export default function TourHeroSlideshow({ slides, onBrowsingChange }: TourHero
         aria-hidden="true"
       />
 
-      <div className={styles.dots} role="tablist" aria-label="Tour photos">
+      <div className={styles.dots} role="tablist" aria-label={ui(useLocale()).photoGallery.tourPhotos}>
         {slides.map((s, i) => (
           <button
             key={s.label}

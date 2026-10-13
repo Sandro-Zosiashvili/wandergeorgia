@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { site, whatsappLink } from '@/config/site';
 import Icon from '@/components/ui/Icon/Icon';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import styles from './WhatsAppButton.module.scss';
 
 /**
@@ -14,6 +16,7 @@ import styles from './WhatsAppButton.module.scss';
 export default function WhatsAppButton() {
   const [hovered, setHovered] = useState(false);
   const pathname = usePathname();
+  const t = ui(useLocale()).whatsapp;
   // Never show the public chat button inside the /admin area.
   if (pathname?.startsWith('/admin')) return null;
   // On the booking flow the sticky mobile summary bar owns the bottom edge, so
@@ -48,7 +51,7 @@ export default function WhatsAppButton() {
             exit={{ opacity: 0, width: 0, marginLeft: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
-            Chat with us
+            {t.chat}
           </motion.span>
         ) : null}
       </AnimatePresence>

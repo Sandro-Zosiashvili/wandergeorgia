@@ -1,10 +1,13 @@
 import type { Review } from '@/data/reviews';
+import type { Locale } from '@/lib/locale';
+import { ui, tpl } from '@/lib/uiStrings';
 import Icon from '@/components/ui/Icon/Icon';
 import GoogleG from '../GoogleG/GoogleG';
 import styles from './ReviewCard.module.scss';
 
 interface ReviewCardProps {
   review: Review;
+  lang?: Locale;
 }
 
 /** Google-style avatar colours for guests without a photo. */
@@ -17,7 +20,7 @@ function avatarColor(name: string): string {
 }
 
 /** A single guest review, styled like a Google review card. */
-export default function ReviewCard({ review }: ReviewCardProps) {
+export default function ReviewCard({ review, lang = 'en' }: ReviewCardProps) {
   return (
     <article className={styles.card}>
       <header className={styles.head}>
@@ -38,7 +41,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         <GoogleG size={22} className={styles.g} />
       </header>
 
-      <div className={styles.stars} aria-label={`${review.rating} out of 5 stars`}>
+      <div className={styles.stars} aria-label={tpl(ui(lang).home.reviews.outOf, { rating: review.rating })}>
         {Array.from({ length: review.rating }).map((_, i) => (
           <Icon key={i} name="star" size={17} />
         ))}

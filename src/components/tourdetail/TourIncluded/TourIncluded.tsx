@@ -1,24 +1,28 @@
 import type { Tour } from '@/types/tour';
+import type { Locale } from '@/lib/locale';
+import { ui } from '@/lib/uiStrings';
 import Icon, { type IconName } from '@/components/ui/Icon/Icon';
 import { isIconName } from '@/components/ui/Icon/icons';
 import styles from './TourIncluded.module.scss';
 
 interface TourIncludedProps {
   tour: Tour;
+  lang: Locale;
 }
 
 const AIRPORT_ICONS = new Set(['plane-arrival', 'plane-departure']);
 
 /** "Included" grid — airport transfers are visually emphasised. */
-export default function TourIncluded({ tour }: TourIncludedProps) {
+export default function TourIncluded({ tour, lang }: TourIncludedProps) {
+  const t = ui(lang).tourDetail;
   return (
     <section className={styles.section} aria-labelledby="included-title">
       <span className={styles.eyebrow}>
         <span className={styles.mark} aria-hidden="true" />
-        Included
+        {t.includedEyebrow}
       </span>
       <h2 id="included-title" className={styles.heading}>
-        What&apos;s in the price
+        {t.whatsInPrice}
       </h2>
 
       <ul className={styles.grid}>
@@ -34,7 +38,7 @@ export default function TourIncluded({ tour }: TourIncludedProps) {
                 <Icon name={iconName} size={20} />
               </span>
               <span className={styles.itemLabel}>{inc.label}</span>
-              {isAirport ? <span className={styles.tag}>Always included</span> : null}
+              {isAirport ? <span className={styles.tag}>{t.alwaysIncluded}</span> : null}
             </li>
           );
         })}

@@ -1,8 +1,11 @@
 import Image from 'next/image';
 import LocaleLink from '@/components/ui/LocaleLink/LocaleLink';
 import type { Tour } from '@/types/tour';
+import type { Locale } from '@/lib/locale';
 import { formatUSD } from '@/lib/format';
 import { fromPriceUSD } from '@/lib/pricing';
+import { plural } from '@/lib/plural';
+import { ui } from '@/lib/uiStrings';
 import Icon from '@/components/ui/Icon/Icon';
 import Button from '@/components/ui/Button/Button';
 import styles from './MultiDayCard.module.scss';
@@ -11,10 +14,13 @@ interface MultiDayCardProps {
   tour: Tour;
   /** Flip media to the right for an alternating rhythm. */
   reversed?: boolean;
+  lang?: Locale;
 }
 
 /** Wide, editorial card for multi-day packages with highlights + itinerary. */
-export default function MultiDayCard({ tour, reversed = false }: MultiDayCardProps) {
+export default function MultiDayCard({ tour, reversed = false, lang = 'en' }: MultiDayCardProps) {
+  const d = ui(lang);
+  const t = d.tourCard;
   return (
     <article className={[styles.card, reversed ? styles.reversed : ''].filter(Boolean).join(' ')}>
       <LocaleLink href={`/tours/${tour.slug}`} className={styles.media} aria-label={tour.title}>
@@ -28,7 +34,7 @@ export default function MultiDayCard({ tour, reversed = false }: MultiDayCardPro
         <div className={styles.mediaScrim} aria-hidden="true" />
         <span className={styles.daysBadge}>
           <span className={styles.daysNum}>{tour.days}</span>
-          <span className={styles.daysLabel}>days</span>
+          <span className={styles.daysLabel}>{plural(lang, tour.days ?? 0, d.booking.units.day)}</span>
         </span>
       </LocaleLink>
 
@@ -59,12 +65,12 @@ export default function MultiDayCard({ tour, reversed = false }: MultiDayCardPro
 
         <div className={styles.footer}>
           <div className={styles.priceBlock}>
-            <span className={styles.priceFrom}>from</span>
+            <span className={styles.priceFrom}>{t.from}</span>
             <span className={styles.price}>{formatUSD(fromPriceUSD(tour))}</span>
-            <span className={styles.perPerson}>/ group</span>
+            <span className={styles.perPerson}>{t.perGroup}</span>
           </div>
           <Button href={`/tours/${tour.slug}`} icon="arrow-right" size="sm">
-            View package
+            {t.viewPackage}
           </Button>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { getTourSeo } from '@/data/tourSeo';
 import { tourJsonLd } from '@/lib/structuredData';
 import { hreflangAlternates } from '@/lib/i18nSeo';
 import { LOCALES, toLocale } from '@/lib/locale';
+import { ui } from '@/lib/uiStrings';
 import TourDetail from '@/components/tourdetail/TourDetail/TourDetail';
 
 interface PageProps {
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug, lang: raw } = await params;
   const lang = toLocale(raw);
   const tour = await loadTourBySlug(slug, lang);
-  if (!tour) return { title: 'Tour not found' };
+  if (!tour) return { title: ui(lang).tourDetail.notFound };
 
   const seo = getTourSeo(tour.slug);
   const metaTitle = lang === 'en' && seo ? seo.title : tour.title;
@@ -57,7 +58,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function TourPage({ params }: PageProps) {
   const { slug, lang } = await params;
-  const tour = await loadTourBySlug(slug, toLocale(lang));
+  const locale = toLocale(lang);
+  const tour = await loadTourBySlug(slug, locale);
   if (!tour) notFound();
 
   return (
@@ -66,7 +68,7 @@ export default async function TourPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(tourJsonLd(tour)) }}
       />
-      <TourDetail tour={tour} />
+      <TourDetail tour={tour} lang={locale} />
     </>
   );
 }

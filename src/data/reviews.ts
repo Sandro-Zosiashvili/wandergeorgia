@@ -1,3 +1,5 @@
+import type { Locale } from '@/lib/locale';
+
 /** Verified guest reviews. Placeholder content — swap for real Google reviews. */
 
 export interface Review {
@@ -10,7 +12,7 @@ export interface Review {
   date?: string;
 }
 
-export const reviews: Review[] = [
+const reviewsEn: Review[] = [
   {
     quote:
       'From the airport welcome to the last goodbye, everything was seamless. Our guide felt like a friend who happened to know every hidden corner of Georgia.',
@@ -66,3 +68,68 @@ export const reviews: Review[] = [
     date: '6 days ago',
   },
 ];
+
+const reviewsRu: Review[] = [
+  {
+    quote:
+      'От встречи в аэропорту до последнего прощания всё было безупречно. Наш гид был как друг, который знает каждый укромный уголок Грузии.',
+    author: 'Emily R.',
+    country: 'Великобритания',
+    rating: 5,
+    tour: 'Вино и горы — 5 дней',
+    date: '2 недели назад',
+  },
+  {
+    quote:
+      'Казбеги на рассвете — самое красивое утро в нашей жизни. Личный автомобиль позволил опередить все толпы. Стоит каждого лари.',
+    author: 'Daniel & Sofia',
+    country: 'Германия',
+    rating: 5,
+    tour: 'Казбеги и Гергетская Троица',
+    date: 'месяц назад',
+  },
+  {
+    quote:
+      'Винный день в Кахетии был необыкновенным — семейные погреба, которые сами мы бы не нашли, и обед, о котором мы до сих пор вспоминаем.',
+    author: 'Marcus T.',
+    country: 'США',
+    rating: 5,
+    tour: 'Винный край Кахетии — день',
+    date: '3 недели назад',
+  },
+  {
+    quote:
+      'Безупречно организовано и без спешки. Они перестроили весь маршрут под нашего малыша без единого возражения.',
+    author: 'Aisha K.',
+    country: 'ОАЭ',
+    rating: 5,
+    tour: 'Знакомство с Грузией — 3 дня',
+    date: 'месяц назад',
+  },
+  {
+    quote:
+      'Десять дней безупречной логистики. Встреча в зале прилёта и дорога прямо в горы задали тон всей поездке.',
+    author: 'Lucas M.',
+    country: 'Франция',
+    rating: 5,
+    tour: 'Большое путешествие по Грузии — 7 дней',
+    date: '2 месяца назад',
+  },
+  {
+    quote:
+      'По-настоящему премиально и без пафоса. Прекрасный автомобиль, гид с настоящими историями и точные рекомендации.',
+    author: 'Nina P.',
+    country: 'Польша',
+    rating: 5,
+    tour: 'Старый Тбилиси и бани',
+    date: '6 дней назад',
+  },
+];
+
+/** Reviews in the active locale (English content is the base). */
+export function getReviews(locale: Locale): Review[] {
+  return locale === 'ru' ? reviewsRu : reviewsEn;
+}
+
+/** Back-compat export (English). Prefer getReviews(locale). */
+export const reviews = reviewsEn;

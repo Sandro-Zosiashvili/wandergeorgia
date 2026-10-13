@@ -16,9 +16,28 @@ import { toLocale } from '@/lib/locale';
 // ISR — the home listings refetch from the DB so admin edits appear live.
 export const revalidate = 60;
 
+const HOME_META: Record<'en' | 'ru', { title: string; description: string }> = {
+  en: {
+    title: 'WanderKartli — Private tours across Georgia',
+    description:
+      'Hand-crafted private tours across Georgia — Tbilisi, Kazbegi, Kakheti and beyond. Dedicated guide, premium vehicle and airport transfers included. Book today.',
+  },
+  ru: {
+    title: 'WanderKartli — Частные туры по Грузии',
+    description:
+      'Индивидуальные частные туры по Грузии — Тбилиси, Казбеги, Кахетия и не только. Персональный гид, премиум-автомобиль и трансферы из аэропорта включены. Бронируйте сегодня.',
+  },
+};
+
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
-  return { alternates: hreflangAlternates(toLocale(lang), '/') };
+  const l = toLocale(lang);
+  return {
+    title: { absolute: HOME_META[l].title },
+    description: HOME_META[l].description,
+    alternates: hreflangAlternates(l, '/'),
+    openGraph: { type: 'website', url: `/${l}`, title: HOME_META[l].title, description: HOME_META[l].description },
+  };
 }
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
@@ -36,12 +55,12 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     <>
       <Hero slides={heroSlides} />
       <OneDayTours tours={oneDay} />
-      <MultiDayTours tours={multiDay} />
+      <MultiDayTours tours={multiDay} lang={lang} />
       <TravelerMemories memories={moments} />
-      <FleetMarquee />
-      <WhyChooseUs />
-      <Reviews />
-      <CTABand />
+      <FleetMarquee lang={lang} />
+      <WhyChooseUs lang={lang} />
+      <Reviews lang={lang} />
+      <CTABand lang={lang} />
     </>
   );
 }
