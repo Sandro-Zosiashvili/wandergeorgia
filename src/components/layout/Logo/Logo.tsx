@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import LocaleLink from '@/components/ui/LocaleLink/LocaleLink';
 import { site } from '@/config/site';
 import styles from './Logo.module.scss';
 
@@ -15,7 +15,7 @@ interface LogoProps {
  *  at all times (no scroll-driven scaling). */
 export default function Logo({ onClick }: LogoProps) {
   return (
-    <Link
+    <LocaleLink
       href="/"
       className={styles.logo}
       aria-label={`${site.name} — home`}
@@ -31,6 +31,6 @@ export default function Logo({ onClick }: LogoProps) {
         <span className={styles.wander}>Wander</span>
         <span className={styles.kartli}>Kartli</span>
       </span>
-    </Link>
+    </LocaleLink>
   );
 }

@@ -10,7 +10,10 @@ import {
   getTourDays,
 } from '@/lib/pricing';
 import { formatUSD } from '@/lib/format';
+import { plural } from '@/lib/plural';
 import { whatsappLink } from '@/config/site';
+import { useLocale } from '@/hooks/useLocale';
+import { ui, tpl } from '@/lib/uiStrings';
 import Icon from '@/components/ui/Icon/Icon';
 import Button from '@/components/ui/Button/Button';
 import styles from './VehicleSelector.module.scss';
@@ -38,6 +41,9 @@ export default function VehicleSelector({
   onChange,
   error,
 }: VehicleSelectorProps) {
+  const locale = useLocale();
+  const t = ui(locale).booking;
+  const v0 = t.vehicle;
   const fixed = getFixedPackage(tour);
   const days = getTourDays(tour);
   const isMultiDay = days > 1;
@@ -46,17 +52,17 @@ export default function VehicleSelector({
   return (
     <div className={styles.wrap}>
       <div className={styles.head}>
-        <span className={styles.label}>Choose your vehicle</span>
+        <span className={styles.label}>{v0.choose}</span>
         <span className={styles.sub}>
           {fixed
-            ? 'This package is offered with a 4x4 Jeep.'
+            ? v0.subFixed
             : isMultiDay
-              ? `Upgrade prices shown per day · ${days} days`
-              : 'One private vehicle for your group'}
+              ? `${v0.subPerDay} · ${days} ${plural(locale, days, t.units.day)}`
+              : v0.subSingle}
         </span>
       </div>
 
-      <div className={styles.grid} role="radiogroup" aria-label="Vehicle class">
+      <div className={styles.grid} role="radiogroup" aria-label={v0.ariaGroup}>
         {VEHICLES.map((v) => {
           const bd = computeBreakdown(tour, v.id);
           const disabled =
@@ -66,11 +72,11 @@ export default function VehicleSelector({
           const unavailable = fixed !== null && v.id !== fixed.vehicle;
           const priceLabel = fixed
             ? v.id === fixed.vehicle
-              ? `${formatUSD(fixed.total)} package`
-              : 'Not available'
+              ? tpl(v0.packageLabel, { price: formatUSD(fixed.total) })
+              : v0.notAvailable
             : v.id === 'sedan'
-              ? 'Included'
-              : `+${formatUSD(bd.upgradePerDay)}${isMultiDay ? ' / day' : ''}`;
+              ? v0.included
+              : `+${formatUSD(bd.upgradePerDay)}${isMultiDay ? ' ' + v0.perDay : ''}`;
 
           const priceClass = unavailable
             ? styles.unavailable
@@ -98,22 +104,24 @@ export default function VehicleSelector({
                 <span className={styles.icon} aria-hidden="true">
                   <Icon name={v.icon} size={26} />
                 </span>
-                {v.premium ? <span className={styles.premium}>Premium</span> : null}
+                {v.premium ? <span className={styles.premium}>{v0.premium}</span> : null}
                 <span className={styles.check} aria-hidden="true">
                   <Icon name="check" size={14} />
                 </span>
               </span>
 
-              <span className={styles.name}>{v.label}</span>
+              <span className={styles.name}>{t.vehicleNames[v.id]}</span>
               <span className={styles.capacity}>
                 <Icon name="users" size={13} />
-                1–{v.capacity} passengers
+                {tpl(v0.passengers, { cap: v.capacity })}
               </span>
 
               <span className={styles.priceRow}>
                 <span className={priceClass}>{priceLabel}</span>
                 {showSubtotal ? (
-                  <span className={styles.subtotal}>{formatUSD(totalUpgrade)} total</span>
+                  <span className={styles.subtotal}>
+                    {tpl(v0.totalLabel, { price: formatUSD(totalUpgrade) })}
+                  </span>
                 ) : null}
               </span>
             </button>
@@ -132,22 +140,17 @@ export default function VehicleSelector({
         <div className={styles.notice} role="status">
           <Icon name="users" size={18} />
           <div>
-            <strong>Traveling with more than {MAX_PRIVATE_PAX}?</strong>
-            <p>
-              For larger groups we arrange extra vehicles or a coach. Message us and
-              we&apos;ll tailor it to your party.
-            </p>
+            <strong>{tpl(v0.tooManyTitle, { max: MAX_PRIVATE_PAX })}</strong>
+            <p>{v0.tooManyText}</p>
             <Button
-              href={whatsappLink(
-                `Hi WanderKartli, we're a group of ${pax} for the "${tour.title}" tour.`,
-              )}
+              href={whatsappLink(tpl(v0.whatsappMessage, { pax, tour: tour.title }))}
               external
               variant="outline"
               size="sm"
               icon="whatsapp"
               iconLeading
             >
-              Contact us
+              {v0.contactUs}
             </Button>
           </div>
         </div>

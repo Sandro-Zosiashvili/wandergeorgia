@@ -6,7 +6,10 @@ import type { Tour } from '@/types/tour';
 import type { BookingData } from '@/hooks/useBooking';
 import { type PriceBreakdown, getVehicle } from '@/lib/pricing';
 import { formatUSD } from '@/lib/format';
+import { plural } from '@/lib/plural';
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import Button from '@/components/ui/Button/Button';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './MobileSummaryBar.module.scss';
@@ -50,9 +53,12 @@ export default function MobileSummaryBar({
   const [open, setOpen] = useState(false);
   useLockBodyScroll(open);
 
+  const locale = useLocale();
+  const b = ui(locale).booking;
+  const s = b.summary;
   const vehicle = getVehicle(breakdown.vehicle);
   const { days, baseRatePerDay, upgradePerDay, isFixed } = breakdown;
-  const perDay = tour.type === 'multi-day' || days > 1 ? ' / day' : '';
+  const perDay = tour.type === 'multi-day' || days > 1 ? ` ${b.vehicle.perDay}` : '';
 
   const handleContinue = () => {
     setOpen(false);
@@ -94,7 +100,7 @@ export default function MobileSummaryBar({
             <motion.div
               className={styles.sheet}
               role="dialog"
-              aria-label="Price breakdown"
+              aria-label={s.ariaBreakdown}
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
@@ -108,7 +114,7 @@ export default function MobileSummaryBar({
                   type="button"
                   className={styles.close}
                   onClick={() => setOpen(false)}
-                  aria-label="Close breakdown"
+                  aria-label={s.closeBreakdown}
                 >
                   <Icon name="close" size={18} />
                 </button>
@@ -117,61 +123,61 @@ export default function MobileSummaryBar({
               <dl className={styles.lines}>
                 <div className={styles.line}>
                   <dt>
-                    <Icon name={vehicle.icon} size={15} /> Vehicle
+                    <Icon name={vehicle.icon} size={15} /> {s.vehicle}
                   </dt>
-                  <dd>{vehicle.label}</dd>
+                  <dd>{b.vehicleNames[breakdown.vehicle]}</dd>
                 </div>
                 <div className={styles.line}>
-                  <dt>Travelers</dt>
+                  <dt>{s.travelers}</dt>
                   <dd>{data.travelers}</dd>
                 </div>
 
                 {isFixed ? (
                   <div className={styles.line}>
-                    <dt>Package price</dt>
+                    <dt>{s.packagePrice}</dt>
                     <dd>{formatUSD(baseRatePerDay)}</dd>
                   </div>
                 ) : (
                   <>
                     <div className={styles.line}>
-                      <dt>Base price</dt>
+                      <dt>{s.basePrice}</dt>
                       <dd>
                         {formatUSD(baseRatePerDay)}
                         {perDay}
                       </dd>
                     </div>
                     <div className={styles.line}>
-                      <dt>Vehicle upgrade</dt>
+                      <dt>{s.vehicleUpgrade}</dt>
                       <dd className={upgradePerDay > 0 ? undefined : styles.free}>
                         {upgradePerDay > 0
                           ? `+${formatUSD(upgradePerDay)}${perDay}`
-                          : 'Included'}
+                          : s.included}
                       </dd>
                     </div>
                   </>
                 )}
 
                 <div className={styles.line}>
-                  <dt>Duration</dt>
+                  <dt>{s.duration}</dt>
                   <dd>
-                    {days} {days === 1 ? 'day' : 'days'}
+                    {days} {plural(locale, days, b.units.day)}
                   </dd>
                 </div>
                 <div className={styles.line}>
                   <dt className={styles.included}>
-                    <Icon name="check" size={14} /> Airport transfers
+                    <Icon name="check" size={14} /> {s.airportTransfers}
                   </dt>
-                  <dd className={styles.free}>Included</dd>
+                  <dd className={styles.free}>{s.included}</dd>
                 </div>
               </dl>
 
               <div className={styles.sheetFoot}>
                 <div className={styles.sheetTotal}>
-                  <span>Grand total</span>
+                  <span>{s.grandTotal}</span>
                   <span className={styles.sheetTotalValue}>{formatUSD(total)}</span>
                 </div>
                 <Button onClick={handleContinue} icon="arrow-right" fullWidth size="lg">
-                  Continue
+                  {b.nav.continue}
                 </Button>
               </div>
             </motion.div>
@@ -185,10 +191,10 @@ export default function MobileSummaryBar({
           className={styles.toggle}
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
-          aria-label="View price breakdown"
+          aria-label={s.viewBreakdown}
         >
           <span className={styles.toggleHead}>
-            Grand total
+            {s.grandTotal}
             <Icon
               name="chevron-down"
               size={14}
@@ -199,7 +205,7 @@ export default function MobileSummaryBar({
         </button>
 
         <Button onClick={onContinue} icon="arrow-right" className={styles.continue}>
-          Continue
+          {b.nav.continue}
         </Button>
       </div>
     </>

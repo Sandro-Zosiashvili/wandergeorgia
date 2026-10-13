@@ -27,5 +27,151 @@
     "all": "All",
     "photos": "Photos",
     "videos": "Videos"
+  },
+  "footer": {
+    "explore": "Explore",
+    "popularTours": "Popular tours",
+    "getInTouch": "Get in touch",
+    "rights": "Private tours across Georgia.",
+    "transfers": "Airport pickup & drop-off included with every journey."
+  },
+  "booking": {
+    "picker": {
+      "title": "Choose a tour to book",
+      "text": "Select the experience you'd like to reserve and we'll walk you through the details.",
+      "from": "from"
+    },
+    "header": {
+      "back": "Back to tour",
+      "eyebrow": "Reserve your journey"
+    },
+    "steps": {
+      "travelers": "Travelers",
+      "dates": "Dates",
+      "details": "Your details",
+      "review": "Review",
+      "confirm": "Confirm"
+    },
+    "nav": {
+      "back": "Back",
+      "continue": "Continue",
+      "prevAria": "Previous step",
+      "nextAria": "Next step"
+    },
+    "travelersStep": {
+      "title": "Your group & vehicle",
+      "description": "Your tour is entirely private — pick your group size and the vehicle you'd like, and the price updates instantly.",
+      "travelersLabel": "Travelers",
+      "travelersHint": "Infants and children count toward the group — mention ages later."
+    },
+    "vehicle": {
+      "choose": "Choose your vehicle",
+      "ariaGroup": "Vehicle class",
+      "subFixed": "This package is offered with a 4x4 Jeep.",
+      "subPerDay": "Upgrade prices shown per day",
+      "subSingle": "One private vehicle for your group",
+      "premium": "Premium",
+      "included": "Included",
+      "notAvailable": "Not available",
+      "packageLabel": "{price} package",
+      "perDay": "/ day",
+      "passengers": "1–{cap} passengers",
+      "totalLabel": "{price} total",
+      "tooManyTitle": "Traveling with more than {max}?",
+      "tooManyText": "For larger groups we arrange extra vehicles or a coach. Message us and we'll tailor it to your party.",
+      "contactUs": "Contact us",
+      "whatsappMessage": "Hi WanderKartli, we're a group of {pax} for the \"{tour}\" tour."
+    },
+    "datesStep": {
+      "title": "When are you in Georgia?",
+      "description": "Because every tour includes airport pickup and drop-off, we need your arrival and departure dates to arrange your transfers.",
+      "arrivalLabel": "Arrival in Georgia",
+      "arrivalPlaceholder": "Select arrival date",
+      "departureLabel": "Departure from Georgia",
+      "departurePlaceholder": "Select departure date",
+      "flightLabel": "Flight details",
+      "flightPlaceholder": "e.g. TK378 arriving 14:20, departing TK379 06:40",
+      "flightHint": "Share your flight numbers and times so we can be at the gate.",
+      "note": "A driver will meet you in the arrivals hall with a name sign, included in your price."
+    },
+    "detailsStep": {
+      "title": "Your details",
+      "description": "Just so we can confirm your booking and reach you before the trip.",
+      "nameLabel": "Full name",
+      "namePlaceholder": "Jane Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "jane@example.com",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "+1 555 123 4567"
+    },
+    "reviewStep": {
+      "title": "Review your booking",
+      "description": "Please check the details below. You won't be charged yet — the next step is payment.",
+      "tour": "Tour",
+      "travelers": "Travelers",
+      "vehicle": "Vehicle",
+      "inGeorgia": "In Georgia",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "flights": "Flights",
+      "note": "Airport pickup on arrival and drop-off on departure are included."
+    },
+    "paymentStep": {
+      "confirmTitle": "Confirm your request",
+      "confirmDescription": "Send us your trip details and we'll reply within 24 hours to confirm everything. No payment is required now.",
+      "estimatedTotal": "Estimated total",
+      "sending": "Sending…",
+      "sendRequest": "Send booking request",
+      "fine": "We only use your details to arrange this tour. Questions? Call {phone}.",
+      "receivedTitle": "Request received",
+      "successTitle": "Thank you — your request is on its way.",
+      "successText": "We've emailed you a confirmation and our team will get back to you within 24 hours to finalise your private tour. No payment is taken now — you'll arrange it directly with us.",
+      "backHome": "Back to home",
+      "messageWhatsapp": "Message us on WhatsApp"
+    },
+    "summary": {
+      "ariaPrice": "Price summary",
+      "ariaBreakdown": "Price breakdown",
+      "dayPackageTag": "{days}-day package",
+      "dayTourTag": "Day tour",
+      "vehicle": "Vehicle",
+      "travelers": "Travelers",
+      "packagePrice": "Package price",
+      "basePrice": "Base price",
+      "vehicleUpgrade": "Vehicle upgrade",
+      "included": "Included",
+      "duration": "Duration",
+      "arrival": "Arrival",
+      "airportTransfers": "Airport transfers",
+      "grandTotal": "Grand total",
+      "fine": "Private tour · all prices in USD",
+      "viewBreakdown": "View price breakdown",
+      "closeBreakdown": "Close breakdown"
+    },
+    "vehicleNames": {
+      "sedan": "Sedan",
+      "jeep": "SUV / Jeep (4x4)",
+      "minivan": "Minivan",
+      "business": "Business Minivan"
+    },
+    "units": {
+      "day": { "one": "day", "few": "days", "many": "days", "other": "days" },
+      "night": { "one": "night", "few": "nights", "many": "nights", "other": "nights" }
+    },
+    "errors": {
+      "travelersMin": "At least one traveler is required.",
+      "travelersMax": "For groups larger than {max}, please contact us directly.",
+      "vehicleFit": "Please choose a vehicle that fits your group.",
+      "arrivalRequired": "Please choose your arrival date.",
+      "departureRequired": "Please choose your departure date.",
+      "departureOrder": "Departure must be on or after arrival.",
+      "flightRequired": "Please share your flight details.",
+      "nameRequired": "Please enter your full name.",
+      "emailRequired": "Please enter your email.",
+      "emailInvalid": "Please enter a valid email.",
+      "phoneRequired": "Please enter a phone number.",
+      "submitFailed": "We couldn't send your request just now. Please try again, or reach us on WhatsApp."
+    }
   }
 }

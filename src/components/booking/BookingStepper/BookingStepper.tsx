@@ -1,6 +1,8 @@
 'use client';
 
 import { bookingSteps } from '@/hooks/useBooking';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './BookingStepper.module.scss';
 
@@ -11,6 +13,7 @@ interface BookingStepperProps {
 
 /** Horizontal progress indicator for the booking flow. */
 export default function BookingStepper({ currentIndex, onStepClick }: BookingStepperProps) {
+  const labels = ui(useLocale()).booking.steps;
   return (
     <ol className={styles.stepper}>
       {bookingSteps.map((step, i) => {
@@ -30,7 +33,7 @@ export default function BookingStepper({ currentIndex, onStepClick }: BookingSte
               <span className={styles.marker}>
                 {state === 'done' ? <Icon name="check" size={15} /> : i + 1}
               </span>
-              <span className={styles.label}>{step.label}</span>
+              <span className={styles.label}>{labels[step.id]}</span>
             </button>
             {i < bookingSteps.length - 1 ? (
               <span className={styles.connector} aria-hidden="true" />

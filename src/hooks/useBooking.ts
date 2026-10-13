@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Tour } from '@/types/tour';
+import type { Locale } from '@/lib/locale';
+import { ui, tpl } from '@/lib/uiStrings';
 import {
   type PriceBreakdown,
   type VehicleId,
@@ -53,40 +55,43 @@ const baseInitialData: Omit<BookingData, 'vehicle'> = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Validate only the fields owned by a given step. */
-function validateStep(step: BookingStepId, data: BookingData): BookingErrors {
+type ErrorStrings = ReturnType<typeof ui>['booking']['errors'];
+
+/** Validate only the fields owned by a given step. Messages come from the
+ *  active locale's dictionary so every step error is shown in Russian too. */
+function validateStep(step: BookingStepId, data: BookingData, e: ErrorStrings): BookingErrors {
   const errors: BookingErrors = {};
 
   if (step === 'travelers') {
     if (data.travelers < 1) {
-      errors.travelers = 'At least one traveler is required.';
+      errors.travelers = e.travelersMin;
     } else if (data.travelers > MAX_PRIVATE_PAX) {
-      errors.travelers = `For groups larger than ${MAX_PRIVATE_PAX}, please contact us directly.`;
+      errors.travelers = tpl(e.travelersMax, { max: MAX_PRIVATE_PAX });
     } else if (exceedsCapacity(data.vehicle, data.travelers)) {
-      errors.vehicle = 'Please choose a vehicle that fits your group.';
+      errors.vehicle = e.vehicleFit;
     }
   }
 
   if (step === 'dates') {
-    if (!data.arrivalDate) errors.arrivalDate = 'Please choose your arrival date.';
-    if (!data.departureDate) errors.departureDate = 'Please choose your departure date.';
+    if (!data.arrivalDate) errors.arrivalDate = e.arrivalRequired;
+    if (!data.departureDate) errors.departureDate = e.departureRequired;
     if (
       data.arrivalDate &&
       data.departureDate &&
       new Date(data.departureDate) < new Date(data.arrivalDate)
     ) {
-      errors.departureDate = 'Departure must be on or after arrival.';
+      errors.departureDate = e.departureOrder;
     }
     if (!data.flightDetails.trim()) {
-      errors.flightDetails = 'Please share your flight details.';
+      errors.flightDetails = e.flightRequired;
     }
   }
 
   if (step === 'details') {
-    if (!data.name.trim()) errors.name = 'Please enter your full name.';
-    if (!data.email.trim()) errors.email = 'Please enter your email.';
-    else if (!EMAIL_RE.test(data.email)) errors.email = 'Please enter a valid email.';
-    if (!data.phone.trim()) errors.phone = 'Please enter a phone number.';
+    if (!data.name.trim()) errors.name = e.nameRequired;
+    if (!data.email.trim()) errors.email = e.emailRequired;
+    else if (!EMAIL_RE.test(data.email)) errors.email = e.emailInvalid;
+    if (!data.phone.trim()) errors.phone = e.phoneRequired;
   }
 
   return errors;
@@ -119,7 +124,8 @@ export interface UseBookingResult {
  * Encapsulates the multi-step booking flow: field state, per-step validation,
  * navigation and total price. UI-only — stops at the payment step.
  */
-export function useBooking(tour: Tour): UseBookingResult {
+export function useBooking(tour: Tour, locale: Locale = 'en'): UseBookingResult {
+  const errorStrings = ui(locale).booking.errors;
   const [data, setData] = useState<BookingData>(() => ({
     ...baseInitialData,
     vehicle: defaultVehicle(tour),
@@ -155,14 +161,14 @@ export function useBooking(tour: Tour): UseBookingResult {
 
   const next = useCallback(() => {
     const currentStep = bookingSteps[stepIndex]!.id;
-    const stepErrors = validateStep(currentStep, data);
+    const stepErrors = validateStep(currentStep, data, errorStrings);
     if (Object.keys(stepErrors).length > 0) {
       setErrors(stepErrors);
       return;
     }
     setErrors({});
     setStepIndex((i) => Math.min(i + 1, bookingSteps.length - 1));
-  }, [stepIndex, data]);
+  }, [stepIndex, data, errorStrings]);
 
   const back = useCallback(() => {
     setErrors({});
@@ -216,13 +222,11 @@ export function useBooking(tour: Tour): UseBookingResult {
       if (!res.ok) throw new Error(`Request failed (${res.status})`);
       setIsComplete(true);
     } catch {
-      setSubmitError(
-        'We couldn’t send your request just now. Please try again, or reach us on WhatsApp.',
-      );
+      setSubmitError(errorStrings.submitFailed);
     } finally {
       setIsSubmitting(false);
     }
-  }, [tour, data, total, breakdown.days]);
+  }, [tour, data, total, breakdown.days, errorStrings]);
 
   return {
     data,

@@ -1,9 +1,11 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import LocaleLink from '@/components/ui/LocaleLink/LocaleLink';
 import { site } from '@/config/site';
 import { navItems } from '@/config/navigation';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import Logo from '../Logo/Logo';
 import Icon, { type IconName } from '@/components/ui/Icon/Icon';
 import styles from './Footer.module.scss';
@@ -24,6 +26,9 @@ interface FooterProps {
 export default function Footer({ popular }: FooterProps) {
   const year = new Date().getFullYear();
   const pathname = usePathname();
+  const locale = useLocale();
+  const t = ui(locale);
+  const f = t.footer;
 
   // The /admin area has its own chrome — no public footer there.
   if (pathname?.startsWith('/admin')) return null;
@@ -51,34 +56,34 @@ export default function Footer({ popular }: FooterProps) {
           </ul>
         </div>
 
-        <nav className={styles.col} aria-label="Footer">
-          <h3 className={styles.colTitle}>Explore</h3>
+        <nav className={styles.col} aria-label={f.explore}>
+          <h3 className={styles.colTitle}>{f.explore}</h3>
           <ul className={styles.linkList}>
             {navItems.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className={styles.link}>
-                  {item.label}
-                </Link>
+                <LocaleLink href={item.href} className={styles.link}>
+                  {t.nav[item.key] ?? item.label}
+                </LocaleLink>
               </li>
             ))}
           </ul>
         </nav>
 
-        <nav className={styles.col} aria-label="Popular tours">
-          <h3 className={styles.colTitle}>Popular tours</h3>
+        <nav className={styles.col} aria-label={f.popularTours}>
+          <h3 className={styles.colTitle}>{f.popularTours}</h3>
           <ul className={styles.linkList}>
             {popular.map((tour) => (
               <li key={tour.slug}>
-                <Link href={`/tours/${tour.slug}`} className={styles.link}>
+                <LocaleLink href={`/tours/${tour.slug}`} className={styles.link}>
                   {tour.title}
-                </Link>
+                </LocaleLink>
               </li>
             ))}
           </ul>
         </nav>
 
         <div className={styles.col}>
-          <h3 className={styles.colTitle}>Get in touch</h3>
+          <h3 className={styles.colTitle}>{f.getInTouch}</h3>
           <ul className={styles.contactList}>
             <li>
               <a href={`tel:${site.contact.phone.replace(/\s/g, '')}`} className={styles.contactItem}>
@@ -104,11 +109,9 @@ export default function Footer({ popular }: FooterProps) {
 
       <div className={styles.bottom}>
         <p>
-          © {year} {site.name}. Private tours across Georgia.
+          © {year} {site.name}. {f.rights}
         </p>
-        <p className={styles.finePrint}>
-          Airport pickup &amp; drop-off included with every journey.
-        </p>
+        <p className={styles.finePrint}>{f.transfers}</p>
       </div>
     </footer>
   );

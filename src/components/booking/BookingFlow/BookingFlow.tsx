@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import type { Tour } from '@/types/tour';
 import { useBooking } from '@/hooks/useBooking';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import BookingStepper from '../BookingStepper/BookingStepper';
 import OrderSummary from '../OrderSummary/OrderSummary';
 import MobileSummaryBar from '../MobileSummaryBar/MobileSummaryBar';
@@ -21,7 +23,9 @@ interface BookingFlowProps {
 
 /** Orchestrates the multi-step booking UI: stepper, animated steps, summary. */
 export default function BookingFlow({ tour }: BookingFlowProps) {
-  const booking = useBooking(tour);
+  const locale = useLocale();
+  const t = ui(locale).booking.nav;
+  const booking = useBooking(tour, locale);
   const {
     data,
     errors,
@@ -116,16 +120,16 @@ export default function BookingFlow({ tour }: BookingFlowProps) {
               variant="ghost"
               onClick={booking.back}
               disabled={isFirst}
-              aria-label="Previous step"
+              aria-label={t.prevAria}
             >
-              Back
+              {t.back}
             </Button>
 
             {!isLast ? (
               // On mobile the Continue action lives in the sticky bottom bar,
               // so this in-flow one is hidden there to avoid duplication.
               <Button onClick={booking.next} icon="arrow-right" className={styles.navContinue}>
-                Continue
+                {t.continue}
               </Button>
             ) : (
               <span className={styles.navSpacer} />

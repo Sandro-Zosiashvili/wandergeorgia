@@ -9,12 +9,13 @@ export function formatUSD(amount: number): string {
   return `$${usdFormatter.format(amount)}`;
 }
 
-/** Human date, e.g. "12 Aug 2026". Returns "" for empty input. */
-export function formatDate(iso: string): string {
+/** Human date, e.g. "12 Aug 2026" (en) / "12 авг. 2026 г." (ru). Returns ""
+ *  for empty input. */
+export function formatDate(iso: string, locale: 'en' | 'ru' = 'en'): string {
   if (!iso) return '';
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
-  return date.toLocaleDateString('en-GB', {
+  return date.toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-GB', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',

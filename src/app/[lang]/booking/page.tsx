@@ -40,11 +40,11 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
       <Container>
         {tour ? (
           <>
-            <BookingHeader tourTitle={tour.title} tourSlug={tour.slug} />
+            <BookingHeader tourTitle={tour.title} tourSlug={tour.slug} lang={l} />
             <BookingFlow tour={tour} />
           </>
         ) : (
-          <BookingTourPicker tours={await loadTours(l)} />
+          <BookingTourPicker tours={await loadTours(l)} lang={l} />
         )}
       </Container>
     </div>

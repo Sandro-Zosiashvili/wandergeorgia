@@ -2,38 +2,41 @@ import type { StepProps } from '../stepProps';
 import StepShell from '../../StepShell/StepShell';
 import { getVehicle } from '@/lib/pricing';
 import { formatDate, nightsBetween } from '@/lib/format';
+import { plural } from '@/lib/plural';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import Icon from '@/components/ui/Icon/Icon';
 import styles from './ReviewStep.module.scss';
 
 /** Step 4 — confirm everything before the payment step. */
 export default function ReviewStep({ tour, data }: StepProps) {
+  const locale = useLocale();
+  const t = ui(locale).booking;
+  const r = t.reviewStep;
   const nights = nightsBetween(data.arrivalDate, data.departureDate);
   const vehicle = getVehicle(data.vehicle);
 
   const rows: { icon: Parameters<typeof Icon>[0]['name']; label: string; value: string }[] = [
-    { icon: 'compass', label: 'Tour', value: tour.title },
-    { icon: 'users', label: 'Travelers', value: `${data.travelers}` },
-    { icon: vehicle.icon, label: 'Vehicle', value: vehicle.label },
+    { icon: 'compass', label: r.tour, value: tour.title },
+    { icon: 'users', label: r.travelers, value: `${data.travelers}` },
+    { icon: vehicle.icon, label: r.vehicle, value: t.vehicleNames[data.vehicle] },
     {
       icon: 'calendar',
-      label: 'In Georgia',
+      label: r.inGeorgia,
       value:
         data.arrivalDate && data.departureDate
-          ? `${formatDate(data.arrivalDate)} → ${formatDate(data.departureDate)}${
-              nights ? ` · ${nights} night${nights === 1 ? '' : 's'}` : ''
+          ? `${formatDate(data.arrivalDate, locale)} → ${formatDate(data.departureDate, locale)}${
+              nights ? ` · ${nights} ${plural(locale, nights, t.units.night)}` : ''
             }`
           : '—',
     },
-    { icon: 'guide', label: 'Name', value: data.name || '—' },
-    { icon: 'mail', label: 'Email', value: data.email || '—' },
-    { icon: 'phone', label: 'Phone', value: data.phone || '—' },
+    { icon: 'guide', label: r.name, value: data.name || '—' },
+    { icon: 'mail', label: r.email, value: data.email || '—' },
+    { icon: 'phone', label: r.phone, value: data.phone || '—' },
   ];
 
   return (
-    <StepShell
-      title="Review your booking"
-      description="Please check the details below. You won't be charged yet — the next step is payment."
-    >
+    <StepShell title={r.title} description={r.description}>
       <dl className={styles.list}>
         {rows.map((row) => (
           <div key={row.label} className={styles.row}>
@@ -48,7 +51,7 @@ export default function ReviewStep({ tour, data }: StepProps) {
           <div className={styles.row}>
             <dt className={styles.term}>
               <Icon name="plane-arrival" size={17} />
-              Flights
+              {r.flights}
             </dt>
             <dd className={styles.desc}>{data.flightDetails}</dd>
           </div>
@@ -57,7 +60,7 @@ export default function ReviewStep({ tour, data }: StepProps) {
 
       <p className={styles.note}>
         <Icon name="check" size={17} />
-        Airport pickup on arrival and drop-off on departure are included.
+        {r.note}
       </p>
     </StepShell>
   );

@@ -1,45 +1,45 @@
 import type { StepProps } from '../stepProps';
 import StepShell from '../../StepShell/StepShell';
 import TextField from '@/components/ui/TextField/TextField';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import styles from './DetailsStep.module.scss';
 
 /** Step 3 — contact details. */
 export default function DetailsStep({ data, errors, update }: StepProps) {
+  const t = ui(useLocale()).booking.detailsStep;
   return (
-    <StepShell
-      title="Your details"
-      description="Just so we can confirm your booking and reach you before the trip."
-    >
+    <StepShell title={t.title} description={t.description}>
       <TextField
-        label="Full name"
+        label={t.nameLabel}
         icon="guide"
         required
         value={data.name}
         onChange={(v) => update('name', v)}
         error={errors.name}
-        placeholder="Jane Doe"
+        placeholder={t.namePlaceholder}
       />
 
       <div className={styles.row}>
         <TextField
-          label="Email"
+          label={t.emailLabel}
           type="email"
           icon="mail"
           required
           value={data.email}
           onChange={(v) => update('email', v)}
           error={errors.email}
-          placeholder="jane@example.com"
+          placeholder={t.emailPlaceholder}
         />
         <TextField
-          label="Phone"
+          label={t.phoneLabel}
           type="tel"
           icon="phone"
           required
           value={data.phone}
           onChange={(v) => update('phone', v)}
           error={errors.phone}
-          placeholder="+1 555 123 4567"
+          placeholder={t.phonePlaceholder}
         />
       </div>
     </StepShell>

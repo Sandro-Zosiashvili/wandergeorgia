@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import LocaleLink from '@/components/ui/LocaleLink/LocaleLink';
 import type { Tour } from '@/types/tour';
 import { unsplashSized } from '@/lib/images';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import Icon from '@/components/ui/Icon/Icon';
 import TourHeroSlideshow from '../TourHeroSlideshow/TourHeroSlideshow';
 import styles from './TourHero.module.scss';
@@ -18,7 +20,11 @@ interface TourHeroProps {
  *  visitor flips through the slideshow, the overlaid title/facts fade away so
  *  the photo is unobstructed, returning once they pause. */
 export default function TourHero({ tour }: TourHeroProps) {
-  const typeLabel = tour.type === 'multi-day' ? `${tour.days}-day package` : 'Day tour';
+  const t = ui(useLocale());
+  const typeLabel =
+    tour.type === 'multi-day'
+      ? t.booking.summary.dayPackageTag.replace('{days}', String(tour.days))
+      : t.booking.summary.dayTourTag;
   const hasAirportTransfers = tour.included.some((inc) => inc.icon.startsWith('plane'));
   const [browsing, setBrowsing] = useState(false);
 
@@ -54,11 +60,11 @@ export default function TourHero({ tour }: TourHeroProps) {
 
       <div className={[styles.inner, browsing ? styles.innerBrowsing : ''].filter(Boolean).join(' ')}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-          <Link href="/">Home</Link>
+          <LocaleLink href="/">{t.nav.home}</LocaleLink>
           <Icon name="chevron-right" size={14} />
-          <Link href={tour.type === 'multi-day' ? '/#packages' : '/#day-tours'}>
-            {tour.type === 'multi-day' ? 'Packages' : 'Day tours'}
-          </Link>
+          <LocaleLink href={tour.type === 'multi-day' ? '/#packages' : '/#day-tours'}>
+            {tour.type === 'multi-day' ? t.nav.packages : t.nav.dayTours}
+          </LocaleLink>
           <Icon name="chevron-right" size={14} />
           <span aria-current="page">{tour.title}</span>
         </nav>

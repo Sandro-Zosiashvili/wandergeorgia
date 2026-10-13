@@ -3,22 +3,22 @@ import StepShell from '../../StepShell/StepShell';
 import NumberStepper from '@/components/ui/NumberStepper/NumberStepper';
 import VehicleSelector from '../../VehicleSelector/VehicleSelector';
 import Icon from '@/components/ui/Icon/Icon';
+import { useLocale } from '@/hooks/useLocale';
+import { ui } from '@/lib/uiStrings';
 import styles from './TravelersStep.module.scss';
 
 /** Step 1 — group size and the vehicle that carries them. */
 export default function TravelersStep({ tour, data, errors, update }: StepProps) {
+  const t = ui(useLocale()).booking.travelersStep;
   return (
-    <StepShell
-      title="Your group & vehicle"
-      description="Your tour is entirely private — pick your group size and the vehicle you'd like, and the price updates instantly."
-    >
+    <StepShell title={t.title} description={t.description}>
       <NumberStepper
-        label="Travelers"
+        label={t.travelersLabel}
         value={data.travelers}
         onChange={(v) => update('travelers', v)}
         min={1}
         max={16}
-        hint="Infants and children count toward the group — mention ages later."
+        hint={t.travelersHint}
       />
       {errors.travelers ? (
         <p className={styles.fieldError} role="alert">

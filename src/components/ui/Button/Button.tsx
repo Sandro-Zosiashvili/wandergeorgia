@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import LocaleLink from '../LocaleLink/LocaleLink';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import Icon, { type IconName } from '../Icon/Icon';
 import styles from './Button.module.scss';
@@ -34,8 +34,10 @@ type AsButton = CommonProps &
 type ButtonProps = AsLink | AsButton;
 
 /**
- * The one button in the system. Renders a next/link, a plain anchor for
- * external URLs, or a native button — with consistent premium styling.
+ * The one button in the system. Renders a locale-aware link (LocaleLink), a
+ * plain anchor for external URLs, or a native button — with consistent premium
+ * styling. Internal hrefs are automatically prefixed with the active locale,
+ * so callers pass plain paths like `/tours/x` and get `/ru/tours/x`.
  */
 export default function Button(props: ButtonProps) {
   const {
@@ -83,9 +85,9 @@ export default function Button(props: ButtonProps) {
       );
     }
     return (
-      <Link href={props.href} className={classes}>
+      <LocaleLink href={props.href} className={classes}>
         {content}
-      </Link>
+      </LocaleLink>
     );
   }
 

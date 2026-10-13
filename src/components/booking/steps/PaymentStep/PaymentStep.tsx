@@ -3,6 +3,9 @@ import StepShell from '../../StepShell/StepShell';
 import Button from '@/components/ui/Button/Button';
 import Icon from '@/components/ui/Icon/Icon';
 import { site, whatsappLink } from '@/config/site';
+import { useLocale } from '@/hooks/useLocale';
+import { localePath } from '@/lib/locale';
+import { ui, tpl } from '@/lib/uiStrings';
 import styles from './PaymentStep.module.scss';
 
 interface PaymentStepProps {
@@ -24,25 +27,24 @@ export default function PaymentStep({
   submitError,
   onSubmit,
 }: PaymentStepProps) {
+  const locale = useLocale();
+  const t = ui(locale).booking.paymentStep;
+
   if (isComplete) {
     return (
-      <StepShell title="Request received">
+      <StepShell title={t.receivedTitle}>
         <div className={styles.success}>
           <span className={styles.successIcon} aria-hidden="true">
             <Icon name="check" size={34} />
           </span>
-          <h3 className={styles.successTitle}>Thank you — your request is on its way.</h3>
-          <p className={styles.successText}>
-            We&apos;ve emailed you a confirmation and our team will get back to you
-            within 24 hours to finalise your private tour. No payment is taken now —
-            you&apos;ll arrange it directly with us.
-          </p>
+          <h3 className={styles.successTitle}>{t.successTitle}</h3>
+          <p className={styles.successText}>{t.successText}</p>
           <div className={styles.successActions}>
-            <Button href="/" variant="outline" icon="arrow-right">
-              Back to home
+            <Button href={localePath(locale, '/')} variant="outline" icon="arrow-right">
+              {t.backHome}
             </Button>
             <Button href={whatsappLink()} external icon="whatsapp" iconLeading>
-              Message us on WhatsApp
+              {t.messageWhatsapp}
             </Button>
           </div>
         </div>
@@ -51,12 +53,9 @@ export default function PaymentStep({
   }
 
   return (
-    <StepShell
-      title="Confirm your request"
-      description="Send us your trip details and we'll reply within 24 hours to confirm everything. No payment is required now."
-    >
+    <StepShell title={t.confirmTitle} description={t.confirmDescription}>
       <div className={styles.totalBox}>
-        <span className={styles.totalLabel}>Estimated total</span>
+        <span className={styles.totalLabel}>{t.estimatedTotal}</span>
         <span className={styles.totalValue}>{formatUSD(total)}</span>
       </div>
 
@@ -74,12 +73,12 @@ export default function PaymentStep({
         onClick={onSubmit}
         disabled={isSubmitting}
       >
-        {isSubmitting ? 'Sending…' : 'Send booking request'}
+        {isSubmitting ? t.sending : t.sendRequest}
       </Button>
 
       <p className={styles.fine}>
         <Icon name="shield" size={15} />
-        We only use your details to arrange this tour. Questions? Call {site.contact.phone}.
+        {tpl(t.fine, { phone: site.contact.phone })}
       </p>
     </StepShell>
   );
