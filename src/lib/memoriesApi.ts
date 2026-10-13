@@ -6,6 +6,17 @@
 
 export type MemoryType = 'image' | 'video';
 
+/** Translatable memory fields that can be overridden per locale (Russian). */
+export interface MemoryI18nFields {
+  tourTitle?: string;
+  caption?: string;
+}
+
+/** Per-locale text overrides (English stays in the base columns). */
+export interface MemoryI18n {
+  ru?: MemoryI18nFields;
+}
+
 export interface ApiMemory {
   id: string;
   type: MemoryType;
@@ -18,6 +29,8 @@ export interface ApiMemory {
   date: string;
   orderIndex: number;
   isActive: boolean;
+  /** Russian (and future-locale) overrides; null/absent when none set. */
+  i18n?: MemoryI18n | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -34,6 +47,8 @@ export interface MemoryInput {
   date?: string;
   orderIndex?: number;
   isActive?: boolean;
+  /** Per-locale overrides to persist (e.g. { ru: { tourTitle, caption } }). */
+  i18n?: MemoryI18n;
 }
 
 export class ApiError extends Error {

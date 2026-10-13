@@ -23,17 +23,28 @@ import MemoryFormDrawer, {
 } from './MemoryFormDrawer';
 import styles from './Memories.module.scss';
 
-const formFromMemory = (m: ApiMemory): MemoryFormState => ({
-  type: m.type,
-  mediaUrl: m.mediaUrl,
-  thumbnailUrl: m.thumbnailUrl,
-  tourTitle: m.tourTitle,
-  caption: m.caption,
-  travelerName: m.travelerName,
-  country: m.country,
-  date: m.date || new Date().toISOString().slice(0, 10),
-  isActive: m.isActive,
-});
+/** Show a stored RU value only when it's a genuine translation (not an English
+ *  fallback), so the admin sees at a glance what still needs translating. */
+const ruText = (ru: string | undefined, en: string): string => (ru && ru !== en ? ru : '');
+
+const formFromMemory = (m: ApiMemory): MemoryFormState => {
+  const ru = m.i18n?.ru ?? {};
+  return {
+    type: m.type,
+    mediaUrl: m.mediaUrl,
+    thumbnailUrl: m.thumbnailUrl,
+    tourTitle: m.tourTitle,
+    caption: m.caption,
+    travelerName: m.travelerName,
+    country: m.country,
+    date: m.date || new Date().toISOString().slice(0, 10),
+    isActive: m.isActive,
+    ru: {
+      tourTitle: ruText(ru.tourTitle, m.tourTitle),
+      caption: ruText(ru.caption, m.caption),
+    },
+  };
+};
 
 const dateFmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 const fmtDate = (iso: string) => {

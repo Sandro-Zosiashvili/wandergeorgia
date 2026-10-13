@@ -6,8 +6,11 @@ import { useEffect, useRef, useState } from 'react';
 import Icon from '@/components/ui/Icon/Icon';
 import AdminDrawer from '@/components/admin/AdminDrawer/AdminDrawer';
 import Toggle from '@/components/admin/Toggle/Toggle';
-import type { MemoryInput, MemoryType } from '@/lib/memoriesApi';
+import type { MemoryInput, MemoryType, MemoryI18nFields } from '@/lib/memoriesApi';
 import styles from './MemoryFormDrawer.module.scss';
+
+/** Which language the translatable content inputs are currently editing. */
+export type EditLang = 'en' | 'ru';
 
 export interface MemoryFormState {
   type: MemoryType;
@@ -19,6 +22,8 @@ export interface MemoryFormState {
   country: string;
   date: string;
   isActive: boolean;
+  /** Russian overrides for the translatable fields (English lives above). */
+  ru: { tourTitle: string; caption: string };
 }
 
 /** A sensible blank form — a photo, visible, dated today. */
@@ -32,21 +37,34 @@ export const blankMemoryForm = (): MemoryFormState => ({
   country: '',
   date: new Date().toISOString().slice(0, 10),
   isActive: true,
+  ru: { tourTitle: '', caption: '' },
 });
 
 /** Map the editor state to the API payload (trimmed). Photos never carry a
- *  separate thumbnail — the grid reuses the image itself. */
-export const toMemoryInput = (f: MemoryFormState): MemoryInput => ({
-  type: f.type,
-  mediaUrl: f.mediaUrl.trim(),
-  thumbnailUrl: f.type === 'video' ? f.thumbnailUrl.trim() : '',
-  tourTitle: f.tourTitle.trim(),
-  caption: f.caption.trim(),
-  travelerName: f.travelerName.trim(),
-  country: f.country.trim(),
-  date: f.date,
-  isActive: f.isActive,
-});
+ *  separate thumbnail — the grid reuses the image itself. The Russian override
+ *  is only sent when something was translated, so an edit never wipes it. */
+export const toMemoryInput = (f: MemoryFormState): MemoryInput => {
+  const ru: MemoryI18nFields = {};
+  if (f.ru.tourTitle.trim()) ru.tourTitle = f.ru.tourTitle.trim();
+  if (f.ru.caption.trim()) ru.caption = f.ru.caption.trim();
+  return {
+    type: f.type,
+    mediaUrl: f.mediaUrl.trim(),
+    thumbnailUrl: f.type === 'video' ? f.thumbnailUrl.trim() : '',
+    tourTitle: f.tourTitle.trim(),
+    caption: f.caption.trim(),
+    travelerName: f.travelerName.trim(),
+    country: f.country.trim(),
+    date: f.date,
+    isActive: f.isActive,
+    ...(Object.keys(ru).length ? { i18n: { ru } } : {}),
+  };
+};
+
+/** Guarantee the RU sub-object exists so older/HMR-preserved forms never crash. */
+function normalizeForm(f: MemoryFormState): MemoryFormState {
+  return { ...f, ru: f.ru ?? { tourTitle: '', caption: '' } };
+}
 
 /** Common traveler countries for the quick-pick datalist. */
 const COUNTRIES = [
@@ -75,14 +93,16 @@ export default function MemoryFormDrawer({
   onCancel,
   onSubmit,
 }: MemoryFormDrawerProps) {
-  const [form, setForm] = useState<MemoryFormState>(initial);
+  const [form, setForm] = useState<MemoryFormState>(() => normalizeForm(initial));
+  const [editLang, setEditLang] = useState<EditLang>('en');
   const [error, setError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Re-seed whenever the drawer is (re)opened with a new record.
   useEffect(() => {
     if (open) {
-      setForm(initial);
+      setForm(normalizeForm(initial));
+      setEditLang('en');
       setError(null);
       setUploadError(null);
     }
@@ -90,6 +110,10 @@ export default function MemoryFormDrawer({
 
   const set = <K extends keyof MemoryFormState>(key: K, value: MemoryFormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  /** Set a Russian override (tourTitle / caption). */
+  const setRu = (key: keyof MemoryFormState['ru'], value: string) =>
+    setForm((f) => ({ ...f, ru: { ...f.ru, [key]: value } }));
 
   // Photos preview the image itself; videos preview their poster/thumbnail.
   const previewSrc = form.type === 'video' ? form.thumbnailUrl.trim() : form.mediaUrl.trim();
@@ -126,6 +150,33 @@ export default function MemoryFormDrawer({
     >
       <div className={styles.form}>
         {error ? <p className={styles.err}>{error}</p> : null}
+
+        {/* Content-language switch — admin chrome stays English; this only
+            changes which language the Tour and Caption fields are editing. */}
+        <div className={styles.langBar}>
+          <span className={styles.langBarLabel}>Content language</span>
+          <div className={styles.langToggle} role="tablist" aria-label="Content language">
+            {(['en', 'ru'] as const).map((lng) => (
+              <button
+                key={lng}
+                type="button"
+                role="tab"
+                aria-selected={editLang === lng}
+                className={[styles.langOpt, editLang === lng ? styles.langOptActive : '']
+                  .filter(Boolean)
+                  .join(' ')}
+                onClick={() => setEditLang(lng)}
+              >
+                {lng === 'en' ? 'English' : 'Русский'}
+              </button>
+            ))}
+          </div>
+          {editLang === 'ru' ? (
+            <span className={styles.langHint}>
+              Optional — a blank field falls back to English on the site.
+            </span>
+          ) : null}
+        </div>
 
         {/* Media type — editable on create, fixed on edit (can't change type). */}
         <div className={styles.field}>
@@ -224,32 +275,45 @@ export default function MemoryFormDrawer({
           ) : null}
         </div>
 
-        {/* Tour / location */}
+        {/* Tour / location — translatable */}
         <label className={styles.field}>
-          <span className={styles.fieldLabel}>Tour / location</span>
-          <input
-            className={styles.input}
-            list="memory-tour-titles"
-            value={form.tourTitle}
-            onChange={(e) => set('tourTitle', e.target.value)}
-            placeholder="e.g. Kazbegi & Gergeti Trinity"
-          />
-          <datalist id="memory-tour-titles">
-            {tourTitles.map((t) => (
-              <option key={t} value={t} />
-            ))}
-          </datalist>
+          <span className={styles.fieldLabel}>
+            {editLang === 'en' ? 'Tour / location' : 'Tour / location (Russian)'}
+          </span>
+          {editLang === 'en' ? (
+            <>
+              <input
+                className={styles.input}
+                list="memory-tour-titles"
+                value={form.tourTitle}
+                onChange={(e) => set('tourTitle', e.target.value)}
+                placeholder="e.g. Kazbegi & Gergeti Trinity"
+              />
+              <datalist id="memory-tour-titles">
+                {tourTitles.map((t) => (
+                  <option key={t} value={t} />
+                ))}
+              </datalist>
+            </>
+          ) : (
+            <input
+              className={styles.input}
+              value={form.ru.tourTitle}
+              onChange={(e) => setRu('tourTitle', e.target.value)}
+              placeholder={form.tourTitle || 'Казбеги и Гергетская Троица'}
+            />
+          )}
         </label>
 
-        {/* Caption */}
+        {/* Caption — translatable */}
         <label className={styles.field}>
-          <span className={styles.fieldLabel}>Caption</span>
+          <span className={styles.fieldLabel}>{editLang === 'en' ? 'Caption' : 'Caption (Russian)'}</span>
           <textarea
             className={styles.textarea}
             rows={3}
-            value={form.caption}
-            onChange={(e) => set('caption', e.target.value)}
-            placeholder="A short traveler quote…"
+            value={editLang === 'en' ? form.caption : form.ru.caption}
+            onChange={(e) => (editLang === 'en' ? set('caption', e.target.value) : setRu('caption', e.target.value))}
+            placeholder={editLang === 'en' ? 'A short traveler quote…' : form.caption || 'Короткая цитата путешественника…'}
             maxLength={500}
           />
         </label>
